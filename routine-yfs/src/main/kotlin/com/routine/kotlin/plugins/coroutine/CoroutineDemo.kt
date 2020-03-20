@@ -12,12 +12,7 @@ fun main() {
     val list = listOf("a", "b", "c", "d", "e")
     println("start process" + LocalDateTime.now())
     val resultList = CoroutineScope(Dispatchers.Default).async {
-        val deferredList = mutableListOf<Deferred<String>>()
-        list.forEach {
-            val str = async { getStr(it) }
-            deferredList.add(str)
-        }
-        deferredList.map { it.await() }
+        list.map { async { getStr(it) } }.map { it.await() }
     }.asCompletableFuture().get()
     println(resultList + LocalDateTime.now())
 }
