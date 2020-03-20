@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.mapstruct
+Bnd-LastModified: 1584088503821
+Build-Jdk: 1.8.0_191
+Built-By: yfs
+Bundle-Description: An annotation processor for generating type-safe bea
+ n mappers
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: MapStruct Core
+Bundle-SymbolicName: org.mapstruct
+Bundle-Version: 1.4.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: org.mapstruct;version="1.4.0";uses:="org.mapstruct.contr
+ ol",org.mapstruct.util;version="1.4.0",org.mapstruct.control;version="1
+ .4.0",org.mapstruct.factory;version="1.4.0"
+Import-Package: org.mapstruct.control;version="[1.4,2)"
+Originally-Created-By: Apache Maven Bundle Plugin
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-4.0.0.201805111645

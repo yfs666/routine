@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$USER_HOME$/study1/yfs-study-web/src/main/java" charset="UTF-8" />
+    <file url="file://$USER_HOME$/study1/yfs-study-web/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-maven-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-domtests/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java2/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java5" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java5/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java5/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-kotlin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3-java8" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3-java8/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3-java8/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mapstruct/build-config/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mapstruct/core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mapstruct/processor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mapstruct/processor/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mybatis-generator-gui/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mybatis-generator-gui/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

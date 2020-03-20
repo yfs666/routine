@@ -1,0 +1,48 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.mybatis.parent
+Bnd-LastModified: 1583896065417
+Build-Jdk: 1.8.0_191
+Built-By: yfs
+Bundle-Description: Tests for the MyBatis3 code generator using Kotlin
+Bundle-DocURL: http://www.mybatis.org/mybatis-generator/mybatis-generato
+ r-systests-kotlin/
+Bundle-License: https://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: MyBatis Generator Tests (Kotlin)
+Bundle-SymbolicName: org.mybatis.generator.mybatis-generator-systests-ko
+ tlin
+Bundle-Vendor: MyBatis.org
+Bundle-Version: 1.4.1.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Implementation-Build-Date: 2020-03-11 03:06:45+0000
+Implementation-Title: MyBatis Generator Tests (Kotlin)
+Implementation-URL: http://www.mybatis.org/mybatis-generator/mybatis-gen
+ erator-systests-kotlin/
+Implementation-Vendor: MyBatis.org
+Implementation-Vendor-Id: org.mybatis.generator
+Implementation-Version: 1.4.1-SNAPSHOT
+Import-Package: kotlin,kotlin.collections,kotlin.jvm.functions,kotlin.jv
+ m.internal,kotlin.reflect,mbg.test.common,org.apache.ibatis.annotations
+ ,org.apache.ibatis.type,org.mybatis.dynamic.sql,org.mybatis.dynamic.sql
+ .delete,org.mybatis.dynamic.sql.delete.render,org.mybatis.dynamic.sql.i
+ nsert,org.mybatis.dynamic.sql.insert.render,org.mybatis.dynamic.sql.sel
+ ect,org.mybatis.dynamic.sql.select.render,org.mybatis.dynamic.sql.updat
+ e,org.mybatis.dynamic.sql.update.render,org.mybatis.dynamic.sql.util,or
+ g.mybatis.dynamic.sql.util.kotlin,org.mybatis.dynamic.sql.util.kotlin.m
+ ybatis3,org.mybatis.dynamic.sql.where.condition
+Include-Resource: generatorConfig.xml=src/main/resources/generatorConfig
+ .xml
+Private-Package: mbg.test.mb3.common,mbg.test.mb3.generated.dsql.kotlin.
+ mapper,mbg.test.mb3.generated.dsql.kotlin.mapper.mbgtest,mbg.test.mb3.g
+ enerated.dsql.kotlin.miscellaneous.mapper,mbg.test.mb3.generated.dsql.k
+ otlin.miscellaneous.model,mbg.test.mb3.generated.dsql.kotlin.model,mbg.
+ test.mb3.generated.dsql.kotlin.model.mbgtest,mbg.test.mb3.generated.dsq
+ l.kotlin.modelonly,mbg.test.mb3.generated.dsql.kotlin.readonly.mapper,m
+ bg.test.mb3.generated.dsql.kotlin.readonly.model
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Specification-Title: MyBatis Generator Tests (Kotlin)
+Specification-Vendor: MyBatis.org
+Specification-Version: 1.4.1-SNAPSHOT
+Tool: Bnd-4.1.0.201810181252
+X-Compile-Source-JDK: 1.8
+X-Compile-Target-JDK: 1.8

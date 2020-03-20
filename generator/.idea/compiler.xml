@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mybatis-generator-systests-mybatis3" />
+        <module name="mapstruct-build-config" />
+        <module name="mybatis-generator-gui" />
+        <module name="mybatis-generator-maven-plugin" />
+        <module name="mybatis-generator-systests-mybatis3-java8" />
+        <module name="mybatis-generator-core" />
+        <module name="mybatis-generator-systests-common" />
+        <module name="mybatis-generator-systests-kotlin" />
+        <module name="mapstruct" />
+        <module name="mapstruct-jdk8" />
+        <module name="yfs-study-web" />
+        <module name="mybatis-generator-systests-ibatis2-java5" />
+        <module name="mapstruct-integrationtest" />
+        <module name="mybatis-generator-systests-ibatis2-java2" />
+        <module name="mybatis-generator-systests-domtests" />
+        <module name="mapstruct-distribution" />
+      </profile>
+      <profile name="Annotation profile for MapStruct Aggregator" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
+        </processorPath>
+        <module name="mapstruct-processor" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mapstruct" target="1.8" />
+      <module name="mapstruct-aggregator" target="1.5" />
+      <module name="mapstruct-build-config" target="1.8" />
+      <module name="mapstruct-distribution" target="1.8" />
+      <module name="mapstruct-documentation" target="1.5" />
+      <module name="mapstruct-integrationtest" target="1.8" />
+      <module name="mapstruct-jdk8" target="1.8" />
+      <module name="mapstruct-parent" target="1.5" />
+      <module name="mapstruct-processor" target="1.8" />
+      <module name="mybatis-generator" target="1.6" />
+      <module name="mybatis-generator-core" target="1.6" />
+      <module name="mybatis-generator-gui" target="1.8" />
+      <module name="mybatis-generator-maven-plugin" target="1.6" />
+      <module name="mybatis-generator-systests-common" target="1.6" />
+      <module name="mybatis-generator-systests-domtests" target="1.6" />
+      <module name="mybatis-generator-systests-ibatis2-java2" target="1.4" />
+      <module name="mybatis-generator-systests-ibatis2-java5" target="1.6" />
+      <module name="mybatis-generator-systests-kotlin" target="1.8" />
+      <module name="mybatis-generator-systests-mybatis3" target="1.6" />
+      <module name="mybatis-generator-systests-mybatis3-java8" target="1.8" />
+      <module name="yfs-study-web" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

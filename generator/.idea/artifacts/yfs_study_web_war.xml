@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="yfs-study-web:war">
+    <output-path>$USER_HOME$/study1/yfs-study-web/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>yfs-study-web</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="yfs-study-web.war">
+      <element id="artifact" artifact-name="yfs-study-web:war exploded" />
+    </root>
+  </artifact>
+</component>

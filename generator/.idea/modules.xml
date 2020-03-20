@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/generator.iml" filepath="$PROJECT_DIR$/.idea/generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/core/mapstruct.iml" filepath="$PROJECT_DIR$/../mapstruct/core/mapstruct.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/mapstruct-aggregator.iml" filepath="$PROJECT_DIR$/../mapstruct/mapstruct-aggregator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/build-config/mapstruct-build-config.iml" filepath="$PROJECT_DIR$/../mapstruct/build-config/mapstruct-build-config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/distribution/mapstruct-distribution.iml" filepath="$PROJECT_DIR$/../mapstruct/distribution/mapstruct-distribution.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/documentation/mapstruct-documentation.iml" filepath="$PROJECT_DIR$/../mapstruct/documentation/mapstruct-documentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/integrationtest/mapstruct-integrationtest.iml" filepath="$PROJECT_DIR$/../mapstruct/integrationtest/mapstruct-integrationtest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/core-jdk8/mapstruct-jdk8.iml" filepath="$PROJECT_DIR$/../mapstruct/core-jdk8/mapstruct-jdk8.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/parent/mapstruct-parent.iml" filepath="$PROJECT_DIR$/../mapstruct/parent/mapstruct-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mapstruct/processor/mapstruct-processor.iml" filepath="$PROJECT_DIR$/../mapstruct/processor/mapstruct-processor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator.iml" filepath="$PROJECT_DIR$/core/mybatis-generator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-core/mybatis-generator-core.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-core/mybatis-generator-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mybatis-generator-gui/mybatis-generator-gui.iml" filepath="$PROJECT_DIR$/../mybatis-generator-gui/mybatis-generator-gui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-maven-plugin/mybatis-generator-maven-plugin.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-maven-plugin/mybatis-generator-maven-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-common/mybatis-generator-systests-common.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-common/mybatis-generator-systests-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-domtests/mybatis-generator-systests-domtests.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-domtests/mybatis-generator-systests-domtests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java2/mybatis-generator-systests-ibatis2-java2.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java2/mybatis-generator-systests-ibatis2-java2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java5/mybatis-generator-systests-ibatis2-java5.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-ibatis2-java5/mybatis-generator-systests-ibatis2-java5.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-kotlin/mybatis-generator-systests-kotlin.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-kotlin/mybatis-generator-systests-kotlin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3/mybatis-generator-systests-mybatis3.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3/mybatis-generator-systests-mybatis3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3-java8/mybatis-generator-systests-mybatis3-java8.iml" filepath="$PROJECT_DIR$/core/mybatis-generator-systests-mybatis3-java8/mybatis-generator-systests-mybatis3-java8.iml" />
+      <module fileurl="file://$USER_HOME$/study1/yfs-study-web/yfs-study-web.iml" filepath="$USER_HOME$/study1/yfs-study-web/yfs-study-web.iml" />
+    </modules>
+  </component>
+</project>

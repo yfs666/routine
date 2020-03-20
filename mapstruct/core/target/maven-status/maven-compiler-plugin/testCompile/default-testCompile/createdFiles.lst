@@ -1,0 +1,11 @@
+org/mapstruct/test/model/SomeClass.class
+org/mapstruct/test/model/FooImpl.class
+org/mapstruct/factory/MappersTest.class
+org/mapstruct/test/model/SomeClass$FooImpl.class
+org/mapstruct/test/model/Foo.class
+org/mapstruct/test/model/SomeClass$NestedClass$Foo.class
+org/mapstruct/test/model/SomeClass$NestedClass.class
+org/mapstruct/test/model/SomeClass$Foo.class
+org/mapstruct/test/model/SomeClass$NestedClass$FooImpl.class
+org/mapstruct/factory/PackagePrivateMapperImpl.class
+org/mapstruct/factory/PackagePrivateMapper.class
