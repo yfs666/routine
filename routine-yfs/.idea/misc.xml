@@ -5,9 +5,28 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/../mybatis-3/pom.xml" />
         <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/broker/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/client/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/common/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/distribution/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/example/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/filter/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/filtersrv/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/logappender/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/namesrv/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/openmessaging/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/remoting/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/srvutil/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/store/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/test/pom.xml" />
+        <option value="$PROJECT_DIR$/../rocketmq-all-4.2.0/tools/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">

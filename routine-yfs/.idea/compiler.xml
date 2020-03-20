@@ -6,23 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rocketmq-tools" />
         <module name="routine-yfs" />
-        <module name="rocketmq-test" />
-        <module name="rocketmq-openmessaging" />
-        <module name="rocketmq-logappender" />
-        <module name="rocketmq-broker" />
-        <module name="rocketmq-namesrv" />
-        <module name="rocketmq-filtersrv" />
-        <module name="rocketmq-remoting" />
-        <module name="rocketmq-store" />
-        <module name="mybatis" />
-        <module name="rocketmq-common" />
-        <module name="rocketmq-srvutil" />
-        <module name="rocketmq-example" />
-        <module name="rocketmq-client" />
-        <module name="rocketmq-filter" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+
+    </bytecodeTargetLevel>
   </component>
 </project>
