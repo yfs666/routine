@@ -1,0 +1,5 @@
+#Mon Feb 24 19:32:30 CST 2020
+module-resource*?\:/io/netty/suppressions.xml=2FABD81D219BF019C659A4A6ACE87022CE88CE54
+/Users/yfs/study1/netty/testsuite-osgi/src/test/java/io/netty/osgitests/OsgiBundleTest.java=1582536213000
+/Users/yfs/study1/netty/testsuite-osgi/src/test/java/io/netty/osgitests/package-info.java=1582536213000
+configuration*?=20C80BABB248C9338077AD0A4EB04FF268A7C4E7

@@ -9,8 +9,44 @@
         <module name="routine-yfs" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-
-    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="netty-all" options="-Xlint:-options" />
+      <module name="netty-buffer" options="-Xlint:-options" />
+      <module name="netty-codec" options="-Xlint:-options" />
+      <module name="netty-codec-dns" options="-Xlint:-options" />
+      <module name="netty-codec-haproxy" options="-Xlint:-options" />
+      <module name="netty-codec-http" options="-Xlint:-options" />
+      <module name="netty-codec-http2" options="-Xlint:-options" />
+      <module name="netty-codec-memcache" options="-Xlint:-options" />
+      <module name="netty-codec-mqtt" options="-Xlint:-options" />
+      <module name="netty-codec-redis" options="-Xlint:-options" />
+      <module name="netty-codec-smtp" options="-Xlint:-options" />
+      <module name="netty-codec-socks" options="-Xlint:-options" />
+      <module name="netty-codec-stomp" options="-Xlint:-options" />
+      <module name="netty-codec-xml" options="-Xlint:-options" />
+      <module name="netty-common" options="-Xlint:-options" />
+      <module name="netty-example" options="-Xlint:-options" />
+      <module name="netty-handler" options="-Xlint:-options" />
+      <module name="netty-handler-proxy" options="-Xlint:-options" />
+      <module name="netty-microbench" options="-Xlint:-options" />
+      <module name="netty-resolver" options="-Xlint:-options" />
+      <module name="netty-resolver-dns" options="-Xlint:-options" />
+      <module name="netty-testsuite" options="-Xlint:-options" />
+      <module name="netty-testsuite-autobahn" options="-Xlint:-options" />
+      <module name="netty-testsuite-http2" options="-Xlint:-options" />
+      <module name="netty-testsuite-native-image" options="-Xlint:-options" />
+      <module name="netty-testsuite-osgi" options="-Xlint:-options" />
+      <module name="netty-testsuite-shading" options="-Xlint:-options" />
+      <module name="netty-transport" options="-Xlint:-options" />
+      <module name="netty-transport-native-epoll" options="-Xlint:-options" />
+      <module name="netty-transport-native-kqueue" options="-Xlint:-options" />
+      <module name="netty-transport-native-unix-common" options="-Xlint:-options" />
+      <module name="netty-transport-native-unix-common-tests" options="-Xlint:-options" />
+      <module name="netty-transport-rxtx" options="-Xlint:-options" />
+      <module name="netty-transport-sctp" options="-Xlint:-options" />
+      <module name="netty-transport-udt" options="-Xlint:-options" />
+    </option>
   </component>
 </project>

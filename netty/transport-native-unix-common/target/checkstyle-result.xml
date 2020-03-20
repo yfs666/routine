@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/DomainSocketReadMode.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/DomainSocketChannelConfig.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/FileDescriptor.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/ErrorsStaticallyReferencedJniMethods.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/DatagramSocketAddress.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/NativeInetAddress.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/PeerCredentials.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/SocketWritableByteChannel.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/LimitsStaticallyReferencedJniMethods.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/DomainSocketAddress.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/UnixChannelOption.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/UnixChannelUtil.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/UnixChannel.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/DomainSocketChannel.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/ServerDomainSocketChannel.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/Limits.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/IovArray.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/Socket.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/Errors.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/Buffer.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/PreferredDirectByteBufAllocator.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/main/java/io/netty/channel/unix/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common/src/test/java/io/netty/channel/unix/UnixChannelUtilTest.java">
+</file>
+</checkstyle>

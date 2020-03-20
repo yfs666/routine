@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Chat</title>
+    <script src="http://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var socket;
+    if (!window.WebSocket) {
+        window.WebSocket = window.MozWebSocket;
+    }
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://localhost:8080/ws");
+        socket.onmessage = function (event) {
+            var p = "<p>" + event.data + "</p>";
+            $("#chat-div").append(p);
+        };
+        socket.onopen = function (event) {
+            $("#chat-div").append("连接开启");
+        };
+        socket.onclose = function (event) {
+            $("#chat-div").append("连接被关闭");
+        };
+    } else {
+        alert("你的浏览器不支持 WebSocket！");
+    }
+
+    function send(message) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.send(message);
+        } else {
+            alert("连接没有开启.");
+        }
+    }
+</script>
+
+<div id="login-div">
+    <input type="text" id="user-name"/>
+    <input type="button" id="login-button" value="登录"  />
+</div>
+
+<form onsubmit="return false;" id="chat-form" style="display: none">
+    <h3>WebSocket 聊天室：</h3>
+    <div id="chat-div" style="height: 500px; width: 1000px; overflow: auto;">
+
+    </div>
+    <label>
+        <textarea name="message" style="width: 1000px; height: 100px;"></textarea>
+    </label>
+    <input type="button" value="发送消息" onclick="send(this.form.message.value)">
+    <!--    <input type="button" onclick="javascript:document.getElementById('responseText').value=''" value="清空聊天记录">-->
+</form>
+<br>
+<br>
+</body>
+<script>
+    $(function () {
+        $("#login-button").click(function () {
+            var user_info = "user:" + $("#user-name").val();
+            socket.send(user_info);
+            $("#login-div").hide();
+            $("#chat-form").show();
+        });
+    });
+</script>
+</html>

@@ -10,6 +10,10 @@
         <option value="$PROJECT_DIR$/../mapstruct/pom.xml" />
         <option value="$PROJECT_DIR$/../generator/core/pom.xml" />
         <option value="$PROJECT_DIR$/../mybatis-generator-gui/pom.xml" />
+        <option value="$PROJECT_DIR$/../Java8InAction-master/pom.xml" />
+        <option value="$PROJECT_DIR$/../netty/pom.xml" />
+        <option value="$PROJECT_DIR$/../netty-in-action/pom.xml" />
+        <option value="$PROJECT_DIR$/../yfs-netty-study/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

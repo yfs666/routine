@@ -1,0 +1,4 @@
+#Mon Feb 24 19:32:31 CST 2020
+module-resource*?\:/io/netty/suppressions.xml=2FABD81D219BF019C659A4A6ACE87022CE88CE54
+/Users/yfs/study1/netty/testsuite-shading/src/test/java/io/netty/testsuite/shading/ShadingIT.java=1582536213000
+configuration*?=3D9405C9298A7218B5EF2F9ED7F1E4EC2609FAF4

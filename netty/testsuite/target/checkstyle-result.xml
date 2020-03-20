@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/AbstractSingleThreadEventLoopTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/AbstractTestsuiteTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/AbstractComboTestsuiteTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/TestsuitePermutation.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/udt/UDTClientServerConnectionTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/udt/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/sctp/SctpTestPermutation.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/sctp/SctpEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/sctp/AbstractSctpTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/sctp/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketTestPermutation.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketSslSessionReuseTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/ServerSocketSuspendTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramUnicastIPv6Test.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketDataReadInitialStateTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketCancelWriteTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketAutoReadTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketConnectionAttemptTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketSslEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketShutdownOutputBySelfTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramConnectNotExistsTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketGatheringWriteTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramUnicastIPv6MappedTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractClientSocketTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketChannelNotYetConnectedTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketSslClientRenegotiateTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramMulticastIPv6Test.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketStartTlsTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractSocketTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramMulticastTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/CompositeBufferGatheringWriteTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketFileRegionTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketMultipleConnectTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketFixedLengthEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketSslGreetingTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketConditionalWritabilityTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/WriteBeforeRegisteredTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketHalfClosedTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/DatagramUnicastTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractServerSocketTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractDatagramTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketObjectEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractSocketShutdownOutputByPeerTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketRstTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketCloseForciblyTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketReadPendingTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/TrafficShapingHandlerTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketShutdownOutputByPeerTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketBufReleaseTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/AbstractSocketReuseFdTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketConnectTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketStringEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketExceptionHandlingTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/transport/socket/SocketSpdyEchoTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/util/TestUtils.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite/src/main/java/io/netty/testsuite/util/package-info.java">
+</file>
+</checkstyle>

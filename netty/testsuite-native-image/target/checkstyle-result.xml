@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/testsuite-native-image/src/main/java/io/netty/testsuite/svm/HttpNativeServerInitializer.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-native-image/src/main/java/io/netty/testsuite/svm/HttpNativeServer.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-native-image/src/main/java/io/netty/testsuite/svm/HttpNativeServerHandler.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-native-image/src/main/java/io/netty/testsuite/svm/package-info.java">
+</file>
+</checkstyle>

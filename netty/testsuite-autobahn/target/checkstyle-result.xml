@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/testsuite-autobahn/src/main/java/io/netty/testsuite/autobahn/AutobahnServer.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-autobahn/src/main/java/io/netty/testsuite/autobahn/AutobahnServerInitializer.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-autobahn/src/main/java/io/netty/testsuite/autobahn/AutobahnServerHandler.java">
+</file>
+<file name="/Users/yfs/study1/netty/testsuite-autobahn/src/main/java/io/netty/testsuite/autobahn/package-info.java">
+</file>
+</checkstyle>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/transport-native-unix-common-tests/src/main/java/io/netty/channel/unix/tests/UnixTestUtils.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common-tests/src/main/java/io/netty/channel/unix/tests/DetectPeerCloseWithoutReadTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common-tests/src/main/java/io/netty/channel/unix/tests/SocketTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/transport-native-unix-common-tests/src/main/java/io/netty/channel/unix/tests/package-info.java">
+</file>
+</checkstyle>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.18">
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddressStream.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/SingletonDnsServerAddresses.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/PreferredAddressTypeComparator.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsCnameCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsQueryContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DatagramDnsQueryContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsRecordResolveContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsQueryLifecycleObserverFactory.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsNameResolverException.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/MultiDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/ShuffledDnsServerAddressStream.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/BiDnsQueryLifecycleObserver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/SequentialDnsServerAddressStream.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsQueryContextManager.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/AuthoritativeDnsServerCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/Cache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NoopDnsQueryLifecycleObserver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/UniSequentialDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddresses.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/RotationalDnsServerAddresses.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/AuthoritativeDnsServerCacheAdapter.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsServerAddressStreamProviders.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NoopDnsCnameCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsResolveContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsAddressResolveContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsAddressResolverGroup.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsAddressDecoder.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NoopDnsCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsNameResolverBuilder.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsNameResolverTimeoutException.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsQueryLifecycleObserver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/SingletonDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/TraceDnsQueryLifecycleObserver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultAuthoritativeDnsServerCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/TraceDnsQueryLifeCycleObserverFactory.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/RoundRobinDnsAddressResolverGroup.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsCnameCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NoopAuthoritativeDnsServerCache.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NameServerComparator.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/BiDnsQueryLifecycleObserverFactory.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/InflightNameResolver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/NoopDnsQueryLifecycleObserverFactory.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/SequentialDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsServerAddresses.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/TcpDnsQueryContext.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsNameResolver.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DnsCacheEntry.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/package-info.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/UnixResolverDnsServerAddressStreamProvider.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/main/java/io/netty/resolver/dns/DirContextUtils.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/SearchDomainTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DefaultAuthoritativeDnsServerCacheTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DnsNameResolverTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DnsNameResolverClientSubnetTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/UnixResolverDnsServerAddressStreamProviderTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DnsServerAddressesTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/TestDnsServer.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/NameServerComparatorTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/PreferredAddressTypeComparatorTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DefaultDnsCacheTest.java">
+</file>
+<file name="/Users/yfs/study1/netty/resolver-dns/src/test/java/io/netty/resolver/dns/DefaultDnsCnameCacheTest.java">
+</file>
+</checkstyle>

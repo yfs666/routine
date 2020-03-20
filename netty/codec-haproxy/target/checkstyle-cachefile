@@ -1,0 +1,15 @@
+#Mon Feb 24 19:33:04 CST 2020
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyProxiedProtocol.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyTLV.java=1582542727000
+/Users/yfs/study1/netty/codec-haproxy/src/test/java/io/netty/handler/codec/haproxy/HAProxyMessageDecoderTest.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyMessage.java=1582542727000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxySSLTLV.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyMessageDecoder.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyCommand.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyProtocolException.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyProtocolVersion.java=1582536212000
+module-resource*?\:/io/netty/suppressions.xml=2FABD81D219BF019C659A4A6ACE87022CE88CE54
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/package-info.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/main/java/io/netty/handler/codec/haproxy/HAProxyConstants.java=1582536212000
+/Users/yfs/study1/netty/codec-haproxy/src/test/java/io/netty/handler/codec/haproxy/HAProxySSLTLVTest.java=1582536212000
+configuration*?=85B56B9B85523134A027D1801E1D88B89315EE0B
