@@ -625,50 +625,29 @@ public class Demo01 {
     private List<User> listByIds(List<Integer> list) {
         return list.stream().map(id -> User.of(id, "name-" + id)).collect(Collectors.toList());
     }
-
     @Test
     public void test31() throws InterruptedException {
-//        Mono<List<User>> listMono = Mono.fromSupplier(() -> this.listByIds(Arrays.asList(ids))).subscribeOn(Schedulers.elastic());
-
-        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        Collection<List<Integer>> values = list.stream().collect(Collectors.groupingBy(it -> it % 3)).values();
+        List<String> list = Arrays.asList("aa", "bb", "cc", "bb", "cc", "bb", "cc", "bb", "cc", "dd");
+        // values 的格式是 [aa,aa,aa] [bb,bb,bb] [cc,cc,cc],[dd]
+        Collection<List<String>> values = list.stream().collect(Collectors.groupingBy(it -> it)).values();
+        System.out.println("开始执行：当前时间是" + LocalDateTime.now());
         Flux.fromStream(values.stream())
-                .flatMap(it -> Flux.fromStream(it.stream()).delayUntil(d -> Mono.delay(Duration.ofSeconds(getRandom()))).subscribeOn(Schedulers.elastic()))
-                .subscribe(it -> {
-                    System.out.println(LocalDateTime.now() + "--" + it);
-                });
-//        values.forEach(detailList -> {
-//            Flux.fromStream(detailList.stream())
-//                    .subscribeOn(Schedulers.elastic())
-//                    .delayUntil(d -> Mono.delay(Duration.ofSeconds(getRandom())))
-//                    .subscribe(it -> {
-//                        System.out.println(LocalDateTime.now() + "--" + it);
-//                    });
-//        });
+                // 对于现在的数据，it共有4个，分别是[aa,aa,aa] [bb,bb,bb] [cc,cc,cc],[dd]，那么有三个线程分别消费他们
+                .flatMap(it -> {
+                    System.out.println(it + ",thread name === " + Thread.currentThread().getName());
+                    return Flux.fromStream(it.stream())
+                            .delayUntil(d -> Mono.delay(Duration.ofSeconds(getRandom())));
+
+                }).subscribe(it -> {
+            System.out.println("it=" + it + ",time=" + LocalDateTime.now() + ",thread name === " + Thread.currentThread().getName());
+        });
         Thread.sleep(50000000L);
-
-
-//        Flux.just(values)
-//                .flatMap(aa -> Mono.fromSupplier(() -> aa).subscribeOn(Schedulers.fromExecutorService(Executors.newSingleThreadExecutor())).subscribe())
-//                .flatMapIterable(Function.identity())
-//                .flatMapIterable(Function.identity())
-//                .subscribe(it -> {
-//                    try {
-//                        Thread.sleep(5000L);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    System.out.println(it);
-//                })
-//        ;
-
-        System.out.println("end");
     }
 
     private int getRandom() {
-        Random random = new Random();
-        System.out.println("执行random");
-        return random.nextInt(10);
+        int i = new Random().nextInt(10);
+        System.out.println("执行random,random is " + i + ",thread name === " + Thread.currentThread().getName());
+        return i;
     }
 
 
