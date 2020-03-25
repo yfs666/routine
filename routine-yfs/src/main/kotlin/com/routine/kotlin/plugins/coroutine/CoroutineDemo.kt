@@ -7,6 +7,10 @@ import kotlin.system.measureTimeMillis
 
 
 fun main() {
+    launchTest()
+}
+
+fun testBlock() {
     runBlocking {
         val launch = launch {
             // 默认继承 parent coroutine 的 CoroutineDispatcher，指定运行在 main 线程
@@ -26,22 +30,32 @@ fun main() {
 }
 
 fun launchTest() {
-    val list = listOf("aa", "bb", "cc", "bb", "cc", "bb", "cc", "bb", "cc", "dde")
+    val list = listOf("aa", "bb", "cc", "bb", "cc", "bb", "cc", "bb", "cc", "dd", "aa", "a", "v", "s", "s", "fads", "hh", "qd", "de", "kk", "aa", "bb", "cc",
+            "bb", "cc", "bb", "cc", "bb", "cc", "dd", "aa", "a", "v", "s", "s", "fads", "hh", "qd", "de", "kk",
+            "bgb", "cgc", "gbb", "cgc", "bgb", "cg", "dgd", "aa", "a", "v", "s", "s", "fads", "hh", "qd", "de", "kk",
+            "bab", "cca", "abb", "acc", "abb", "cac", "dad", "aaa", "aaf", "fv", "sf", "sf", "hello", "hfh", "qdf", "def", "kkf",
+            "bqab", "ccqa", "qabb", "qacc", "abqb", "cacq", "dadq", "aqaa", "aaqf", "qfv", "sfq", "sqf", "heqllo", "hfqh", "qqdf", "dqef", "qkkf",
+            "bab", "cac", "bab", "cca", "bab", "cca", "dda", "aaa", "ab", "vb", "bs", "bs", "fabds", "hbh", "qbd", "bde", "kbk",
+            "bbs", "csc", "bbs", "ccs", "bsb", "ccs", "dsd", "aab", "ab", "vb", "sb", "sb", "fadbs", "hhb", "qdb", "dbe", "kbk",
+            "bb", "cc", "bb", "cc", "bb", "cc", "dd", "aa", "a", "v", "s", "s", "fads", "hh", "qd", "de", "kk",
+            "bkb", "ckc", "kbb", "ckc", "bbk", "cck", "ddk", "aak", "ak", "vk", "sk", "ks", "fakds", "hkh", "qkd", "dke", "kkk",
+            "blb", "clc", "bbl", "clc", "lbb", "clc", "ddl", "aal", "al", "vl", "sl", "ls", "fadls", "hlh", "qld", "dle", "klk"
+    )
     // values 的格式是 [aa,aa,aa] [bb,bb,bb] [cc,cc,cc],[dd]
     val values = list.groupBy { it }.values.toList()
-    CoroutineScope(Dispatchers.IO).async {
-        values.forEach {
-            launch {
-                it.forEach {
-                    delay(5000)
-                    println(it + ",current thread is " + Thread.currentThread().id)
-                }
-            }
-        }
-    }.asCompletableFuture().get()
-    println("end 1----------------------------")
+//    CoroutineScope(Dispatchers.IO).async {
+//        values.forEach {
+//            launch {
+//                it.forEach {
+//                    delay(50000)
+//                    println(it + ",current thread is " + Thread.currentThread().id)
+//                }
+//            }
+//        }
+//    }.asCompletableFuture().get()
+//    println("end 1----------------------------")
     values.forEach {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Unconfined).launch {
             it.forEach {
                 delay(5000)
                 println(it + ",current thread is " + Thread.currentThread().id)

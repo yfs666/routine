@@ -32,5 +32,6 @@ build/
 .vscode/
 
 /src/main/webapp/WEB-INF/classes/
+routine-yfs/src/main/webapp/WEB-INF/classes/
 /pom.xml.versionsBackup
 .DS_Store

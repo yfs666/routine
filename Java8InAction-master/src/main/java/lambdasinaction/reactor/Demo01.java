@@ -622,6 +622,16 @@ public class Demo01 {
                 .subscribe(System.out::println);
     }
 
+    @Test
+    public void test32() {
+//         Flux.just(1, 3, 5, 2, 4, 6, 11, 12, 13)
+//                .groupBy(i -> i % 2 == 0 ? "even" : "odd")
+//                .concatMap(g -> g.defaultIfEmpty(-1)
+//                        .map(String::valueOf)
+//                        .startWith(g.key()));
+
+    }
+
     private List<User> listByIds(List<Integer> list) {
         return list.stream().map(id -> User.of(id, "name-" + id)).collect(Collectors.toList());
     }

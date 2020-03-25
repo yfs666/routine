@@ -6,7 +6,69 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="netty-transport-native-epoll" />
+        <module name="netty-buffer" />
+        <module name="mybatis-generator-systests-mybatis3-java8" />
+        <module name="netty-codec-dns" />
+        <module name="netty-dev-tools" />
+        <module name="lambdasinaction" />
+        <module name="mapstruct-integrationtest" />
+        <module name="mybatis-generator-systests-mybatis3" />
+        <module name="mybatis-generator-systests-domtests" />
+        <module name="chapter10" />
+        <module name="yfs-netty-study" />
+        <module name="mapstruct" />
+        <module name="mybatis-generator-gui" />
+        <module name="netty-codec-xml" />
+        <module name="netty-transport-native-kqueue" />
+        <module name="netty-transport" />
+        <module name="netty-codec-haproxy" />
+        <module name="mybatis-generator-systests-ibatis2-java5" />
+        <module name="netty-transport-rxtx" />
+        <module name="netty-codec" />
+        <module name="netty-codec-http" />
+        <module name="echo-client" />
+        <module name="mybatis-generator-core" />
+        <module name="netty-codec-socks" />
+        <module name="netty-all" />
+        <module name="netty-codec-redis" />
+        <module name="echo-server" />
         <module name="routine-yfs" />
+        <module name="mapstruct-distribution" />
+        <module name="chapter9" />
+        <module name="chapter8" />
+        <module name="netty-handler-proxy" />
+        <module name="netty-handler" />
+        <module name="mapstruct-jdk8" />
+        <module name="netty-codec-mqtt" />
+        <module name="netty-codec-memcache" />
+        <module name="netty-resolver-dns" />
+        <module name="chapter13" />
+        <module name="chapter12" />
+        <module name="chapter11" />
+        <module name="mybatis-generator-systests-common" />
+        <module name="mybatis" />
+        <module name="netty-codec-http2" />
+        <module name="netty-transport-sctp" />
+        <module name="netty-transport-native-unix-common-tests" />
+        <module name="netty-common" />
+        <module name="netty-transport-udt" />
+        <module name="netty-codec-stomp" />
+        <module name="mybatis-generator-maven-plugin" />
+        <module name="netty-resolver" />
+        <module name="mybatis-generator-systests-ibatis2-java2" />
+        <module name="netty-codec-smtp" />
+        <module name="netty-transport-native-unix-common" />
+      </profile>
+      <profile name="Annotation profile for MapStruct Aggregator" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
+        </processorPath>
+        <module name="mapstruct-processor" />
       </profile>
     </annotationProcessing>
   </component>
