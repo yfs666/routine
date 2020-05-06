@@ -17,6 +17,7 @@
         <option value="$PROJECT_DIR$/../netty/pom.xml" />
         <option value="$PROJECT_DIR$/../netty-in-action/pom.xml" />
         <option value="$PROJECT_DIR$/../yfs-netty-study/pom.xml" />
+        <option value="$PROJECT_DIR$/../spring-boot/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
