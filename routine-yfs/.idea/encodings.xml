@@ -23,6 +23,7 @@
     <file url="file://$PROJECT_DIR$/../generator/core/mybatis-generator-systests-mybatis3-java8/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../generator/core/mybatis-generator-systests-mybatis3/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../generator/core/mybatis-generator-systests-mybatis3/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mapstruct/build-config/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../mapstruct/core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../mapstruct/processor/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../mapstruct/processor/src/main/resources" charset="UTF-8" />
@@ -65,11 +66,19 @@
     <file url="file://$PROJECT_DIR$/../netty/common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/dev-tools/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/example/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/example/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/handler-proxy/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/handler/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/handler/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/microbench/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/microbench/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/resolver-dns/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/resolver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/testsuite-autobahn/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/testsuite-http2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/testsuite-native-image/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../netty/testsuite/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport-native-epoll/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport-native-kqueue/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport-native-unix-common-tests/src/main/java" charset="UTF-8" />
@@ -79,6 +88,43 @@
     <file url="file://$PROJECT_DIR$/../netty/transport-udt/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-actuator-autoconfigure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-actuator-autoconfigure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-actuator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-actuator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-autoconfigure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-autoconfigure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-cli/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-devtools/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-devtools/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-docs/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-properties-migrator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-properties-migrator/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-test-autoconfigure/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-test-autoconfigure/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-test/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-test/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-antlib/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-antlib/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-autoconfigure-processor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-autoconfigure-processor/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-configuration-docs/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-configuration-metadata/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-gradle-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-gradle-plugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-loader-tools/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-loader-tools/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-loader/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-maven-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-maven-plugin/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot-tools/spring-boot-test-support/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-tests/spring-boot-integration-tests/spring-boot-configuration-processor-tests/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-tests/spring-boot-integration-tests/spring-boot-launch-script-tests/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../yfs-netty-study/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../yfs-netty-study/src/main/resources" charset="UTF-8" />
   </component>
 </project>
