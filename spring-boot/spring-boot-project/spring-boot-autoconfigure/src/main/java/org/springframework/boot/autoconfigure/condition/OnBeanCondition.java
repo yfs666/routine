@@ -151,13 +151,16 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 
 	protected final MatchResult getMatchingBeans(ConditionContext context, Spec<?> spec) {
 		ClassLoader classLoader = context.getClassLoader();
+		// 获得当前bean工厂
 		ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+		// 判断当前的搜索策略是否是PARENTS或者ANCESTORS，默认是ALL
 		boolean considerHierarchy = spec.getStrategy() != SearchStrategy.CURRENT;
 		Set<Class<?>> parameterizedContainers = spec.getParameterizedContainers();
 		if (spec.getStrategy() == SearchStrategy.ANCESTORS) {
 			BeanFactory parent = beanFactory.getParentBeanFactory();
 			Assert.isInstanceOf(ConfigurableListableBeanFactory.class, parent,
 					"Unable to use SearchStrategy.ANCESTORS");
+			// 如果是PARENTS或者ANCESTORS，当前bean工厂就用父工厂
 			beanFactory = (ConfigurableListableBeanFactory) parent;
 		}
 		MatchResult result = new MatchResult();
@@ -617,7 +620,6 @@ class OnBeanCondition extends FilteringSpringBootCondition implements Configurat
 		}
 
 	}
-
 	/**
 	 * Specialized {@link Spec specification} for
 	 * {@link ConditionalOnSingleCandidate @ConditionalOnSingleCandidate}.
