@@ -111,7 +111,9 @@ abstract class FilteringSpringBootCondition extends SpringBootCondition
 	}
 
 	protected enum ClassNameFilter {
-
+		/**
+		 * 指定类存在
+		 */
 		PRESENT {
 
 			@Override
@@ -120,7 +122,9 @@ abstract class FilteringSpringBootCondition extends SpringBootCondition
 			}
 
 		},
-
+		/**
+		 * 指定类不存在
+		 */
 		MISSING {
 
 			@Override

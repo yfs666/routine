@@ -64,11 +64,14 @@ class OnClassCondition extends FilteringSpringBootCondition {
 		int split = autoConfigurationClasses.length / 2;
 		OutcomesResolver firstHalfResolver = createOutcomesResolver(autoConfigurationClasses, 0, split,
 				autoConfigurationMetadata);
+		// 将前一半类创建一个OutcomesResolver，使用的是新线程
 		OutcomesResolver secondHalfResolver = new StandardOutcomesResolver(autoConfigurationClasses, split,
 				autoConfigurationClasses.length, autoConfigurationMetadata, getBeanClassLoader());
+		// 分别执行解析，secondHalf是当前线程执行的，先去执行它，然后再看firstHalf，firstHalf是另一个线程执行的，相当于异步，然后通过Thread.join阻塞到执行完
 		ConditionOutcome[] secondHalf = secondHalfResolver.resolveOutcomes();
 		ConditionOutcome[] firstHalf = firstHalfResolver.resolveOutcomes();
 		ConditionOutcome[] outcomes = new ConditionOutcome[autoConfigurationClasses.length];
+		// 创建并合并outcomes
 		System.arraycopy(firstHalf, 0, outcomes, 0, firstHalf.length);
 		System.arraycopy(secondHalf, 0, outcomes, split, secondHalf.length);
 		return outcomes;
@@ -92,15 +95,19 @@ class OnClassCondition extends FilteringSpringBootCondition {
 		ConditionMessage matchMessage = ConditionMessage.empty();
 		List<String> onClasses = getCandidates(metadata, ConditionalOnClass.class);
 		if (onClasses != null) {
+			// 执行匹配，看看是否有缺失
 			List<String> missing = filter(onClasses, ClassNameFilter.MISSING, classLoader);
+			// 如果不匹配，返回不匹配信息
 			if (!missing.isEmpty()) {
 				return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnClass.class)
 						.didNotFind("required class", "required classes").items(Style.QUOTE, missing));
 			}
+			// 如果匹配，添加到matchMessage中
 			matchMessage = matchMessage.andCondition(ConditionalOnClass.class)
 					.found("required class", "required classes")
 					.items(Style.QUOTE, filter(onClasses, ClassNameFilter.PRESENT, classLoader));
 		}
+		// 获取 ConditionalOnMissingClass 的注解属性，下面执行逻辑和上面类似
 		List<String> onMissingClasses = getCandidates(metadata, ConditionalOnMissingClass.class);
 		if (onMissingClasses != null) {
 			List<String> present = filter(onMissingClasses, ClassNameFilter.PRESENT, classLoader);
@@ -165,7 +172,7 @@ class OnClassCondition extends FilteringSpringBootCondition {
 	}
 
 	private final class StandardOutcomesResolver implements OutcomesResolver {
-
+		// 所有的配置类的数组
 		private final String[] autoConfigurationClasses;
 
 		private final int start;
@@ -176,6 +183,14 @@ class OnClassCondition extends FilteringSpringBootCondition {
 
 		private final ClassLoader beanClassLoader;
 
+		/**
+		 * 把所有配置类的数组都拿过来，通过开始位置和结束位置标记需要执行哪些
+		 * @param autoConfigurationClasses 所有的配置类的数组
+		 * @param start 开始位置
+		 * @param end 结束位置
+		 * @param autoConfigurationMetadata 元数据
+		 * @param beanClassLoader 类加载器
+		 */
 		private StandardOutcomesResolver(String[] autoConfigurationClasses, int start, int end,
 				AutoConfigurationMetadata autoConfigurationMetadata, ClassLoader beanClassLoader) {
 			this.autoConfigurationClasses = autoConfigurationClasses;
@@ -193,9 +208,11 @@ class OnClassCondition extends FilteringSpringBootCondition {
 		private ConditionOutcome[] getOutcomes(String[] autoConfigurationClasses, int start, int end,
 				AutoConfigurationMetadata autoConfigurationMetadata) {
 			ConditionOutcome[] outcomes = new ConditionOutcome[end - start];
+			// 从循环可以知道设置开始结束位置的原因
 			for (int i = start; i < end; i++) {
 				String autoConfigurationClass = autoConfigurationClasses[i];
 				if (autoConfigurationClass != null) {
+					// 获取指定自动配置的类ConditionalOnClass
 					String candidates = autoConfigurationMetadata.get(autoConfigurationClass, "ConditionalOnClass");
 					if (candidates != null) {
 						outcomes[i - start] = getOutcome(candidates);
