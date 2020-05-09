@@ -60,6 +60,7 @@ public class ParentContextCloserApplicationListener
 	}
 
 	private void maybeInstallListenerInParent(ConfigurableApplicationContext child) {
+		// 如果child是当前容器 && 父容器是ConfigurableApplicationContext类型， 则向父容器添加监听事件。监听父容器的关闭事件
 		if (child == this.context && child.getParent() instanceof ConfigurableApplicationContext) {
 			ConfigurableApplicationContext parent = (ConfigurableApplicationContext) child.getParent();
 			parent.addApplicationListener(createContextCloserListener(child));

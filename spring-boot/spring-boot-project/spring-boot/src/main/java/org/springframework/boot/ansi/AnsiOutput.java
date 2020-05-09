@@ -171,6 +171,7 @@ public abstract class AnsiOutput {
 		/**
 		 * Try to detect whether ANSI coloring capabilities are available. The default
 		 * value for {@link AnsiOutput}.
+		 * 自动检测，根据是否支持ANSI的功能，来判断是否要彩色输出
 		 */
 		DETECT,
 

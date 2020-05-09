@@ -31,7 +31,9 @@ class ClearCachesApplicationListener implements ApplicationListener<ContextRefre
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		// 清空ReflectionUtils缓存
 		ReflectionUtils.clearCache();
+		// 清空类加载器的缓存
 		clearClassLoaderCaches(Thread.currentThread().getContextClassLoader());
 	}
 
@@ -40,12 +42,14 @@ class ClearCachesApplicationListener implements ApplicationListener<ContextRefre
 			return;
 		}
 		try {
+			// 同构反射调用ClassLoader类的clearCache方法，清空它的缓存
 			Method clearCacheMethod = classLoader.getClass().getDeclaredMethod("clearCache");
 			clearCacheMethod.invoke(classLoader);
 		}
 		catch (Exception ex) {
 			// Ignore
 		}
+		// 如果有父加载器，通过递归，清除父加载器的缓存
 		clearClassLoaderCaches(classLoader.getParent());
 	}
 

@@ -58,20 +58,31 @@ public class BackgroundPreinitializer implements ApplicationListener<SpringAppli
 	 * @since 2.1.0
 	 */
 	public static final String IGNORE_BACKGROUNDPREINITIALIZER_PROPERTY_NAME = "spring.backgroundpreinitializer.ignore";
-
+	/**
+	 * 预初始化任务是否已启动
+	 */
 	private static final AtomicBoolean preinitializationStarted = new AtomicBoolean(false);
-
+	/**
+	 * 预初始化任务的 CountDownLatch 对象，用于实现等待预初始化任务是否完成
+	 */
 	private static final CountDownLatch preinitializationComplete = new CountDownLatch(1);
 
 	@Override
 	public void onApplicationEvent(SpringApplicationEvent event) {
+		// 如果是开启后台预初始化任务，默认情况下开启
+		// && 是ApplicationStartingEvent时间，表示应用正在启动中
+		// && 机器是多核环境
+		// && 预初始化任务未启动， compareAndSet保证高并发操作的线程安全
+		// 如果符合上述条件，就执行启动操作
 		if (!Boolean.getBoolean(IGNORE_BACKGROUNDPREINITIALIZER_PROPERTY_NAME)
 				&& event instanceof ApplicationStartingEvent && multipleProcessors()
 				&& preinitializationStarted.compareAndSet(false, true)) {
 			performPreinitialization();
 		}
+		// 如果是if中的两个事件至少一个，说明应用启动成功后失败，则等待预初始化任务完成
 		if ((event instanceof ApplicationReadyEvent || event instanceof ApplicationFailedEvent)
 				&& preinitializationStarted.get()) {
+			// 判断预初始化任务已经启动，通过CountDownLatch实现，保证多线程的线程安全，预初始化任务执行完了
 			try {
 				preinitializationComplete.await();
 			}
@@ -91,11 +102,13 @@ public class BackgroundPreinitializer implements ApplicationListener<SpringAppli
 
 				@Override
 				public void run() {
+					// 安全运行每个初始化任务
 					runSafely(new ConversionServiceInitializer());
 					runSafely(new ValidationInitializer());
 					runSafely(new MessageConverterInitializer());
 					runSafely(new JacksonInitializer());
 					runSafely(new CharsetInitializer());
+					// 标记完成
 					preinitializationComplete.countDown();
 				}
 
