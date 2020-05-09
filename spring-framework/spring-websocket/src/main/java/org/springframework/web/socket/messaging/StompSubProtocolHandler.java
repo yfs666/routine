@@ -114,7 +114,7 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 	@Nullable
 	private ApplicationEventPublisher eventPublisher;
 
-	private final Stats stats = new Stats();
+	private final DefaultStats stats = new DefaultStats();
 
 
 	/**
@@ -203,15 +203,25 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 
 	/**
 	 * Return a String describing internal state and counters.
+	 * Effectively {@code toString()} on {@link #getStats() getStats()}.
 	 */
 	public String getStatsInfo() {
 		return this.stats.toString();
+	}
+
+	/**
+	 * Return a structured object with internal state and counters.
+	 * @since 5.2
+	 */
+	public Stats getStats() {
+		return this.stats;
 	}
 
 
 	/**
 	 * Handle incoming WebSocket messages from clients.
 	 */
+	@Override
 	public void handleMessageFromClient(WebSocketSession session,
 			WebSocketMessage<?> webSocketMessage, MessageChannel outputChannel) {
 
@@ -642,13 +652,37 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 		return MessageBuilder.createMessage(EMPTY_PAYLOAD, headerAccessor.getMessageHeaders());
 	}
 
+
 	@Override
 	public String toString() {
 		return "StompSubProtocolHandler" + getSupportedProtocols();
 	}
 
 
-	private static class Stats {
+	/**
+	 * Contract for access to session counters.
+	 * @since 5.2
+	 */
+	public interface Stats {
+
+		/**
+		 * The number of CONNECT frames processed.
+		 */
+		int getTotalConnect();
+
+		/**
+		 * The number of CONNECTED frames processed.
+		 */
+		int getTotalConnected();
+
+		/**
+		 * The number of DISCONNECT frames processed.
+		 */
+		int getTotalDisconnect();
+	}
+
+
+	private static class DefaultStats implements Stats {
 
 		private final AtomicInteger connect = new AtomicInteger();
 
@@ -668,6 +702,22 @@ public class StompSubProtocolHandler implements SubProtocolHandler, ApplicationE
 			this.disconnect.incrementAndGet();
 		}
 
+		@Override
+		public int getTotalConnect() {
+			return this.connect.get();
+		}
+
+		@Override
+		public int getTotalConnected() {
+			return this.connected.get();
+		}
+
+		@Override
+		public int getTotalDisconnect() {
+			return this.disconnect.get();
+		}
+
+		@Override
 		public String toString() {
 			return "processed CONNECT(" + this.connect.get() + ")-CONNECTED(" +
 					this.connected.get() + ")-DISCONNECT(" + this.disconnect.get() + ")";

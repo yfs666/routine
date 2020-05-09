@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -668,14 +668,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public String getServerName() {
-		String rawHostHeader = getHeader(HttpHeaders.HOST);
-		String host = rawHostHeader;
+		String host = getHeader(HttpHeaders.HOST);
 		if (host != null) {
 			host = host.trim();
 			if (host.startsWith("[")) {
-				int indexOfClosingBracket = host.indexOf(']');
-				Assert.state(indexOfClosingBracket > -1, () -> "Invalid Host header: " + rawHostHeader);
-				host = host.substring(0, indexOfClosingBracket + 1);
+				host = host.substring(1, host.indexOf(']'));
 			}
 			else if (host.contains(":")) {
 				host = host.substring(0, host.indexOf(':'));
@@ -693,15 +690,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public int getServerPort() {
-		String rawHostHeader = getHeader(HttpHeaders.HOST);
-		String host = rawHostHeader;
+		String host = getHeader(HttpHeaders.HOST);
 		if (host != null) {
 			host = host.trim();
 			int idx;
 			if (host.startsWith("[")) {
-				int indexOfClosingBracket = host.indexOf(']');
-				Assert.state(indexOfClosingBracket > -1, () -> "Invalid Host header: " + rawHostHeader);
-				idx = host.indexOf(':', indexOfClosingBracket);
+				idx = host.indexOf(':', host.indexOf(']'));
 			}
 			else {
 				idx = host.indexOf(':');
@@ -1312,6 +1306,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	 * Otherwise it simply returns the current session id.
 	 * @since 4.0.3
 	 */
+	@Override
 	public String changeSessionId() {
 		Assert.isTrue(this.session != null, "The request does not have a session");
 		if (this.session instanceof MockHttpSession) {

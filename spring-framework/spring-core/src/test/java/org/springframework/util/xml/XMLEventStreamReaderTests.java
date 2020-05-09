@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2013 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,16 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 import org.xmlunit.util.Predicate;
 
-import static org.junit.Assert.*;
-import static org.xmlunit.matchers.CompareMatcher.*;
+import org.springframework.core.testfixture.xml.XmlContent;
 
-public class XMLEventStreamReaderTests {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class XMLEventStreamReaderTests {
 
 	private static final String XML =
 			"<?pi content?><root xmlns='namespace'><prefix:child xmlns:prefix='namespace2'>content</prefix:child></root>"
@@ -42,29 +43,29 @@ public class XMLEventStreamReaderTests {
 
 	private XMLEventStreamReader streamReader;
 
-	@Before
-	public void createStreamReader() throws Exception {
+	@BeforeEach
+	void createStreamReader() throws Exception {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		XMLEventReader eventReader = inputFactory.createXMLEventReader(new StringReader(XML));
 		streamReader = new XMLEventStreamReader(eventReader);
 	}
 
 	@Test
-	public void readAll() throws Exception {
+	void readAll() throws Exception {
 		while (streamReader.hasNext()) {
 			streamReader.next();
 		}
 	}
 
 	@Test
-	public void readCorrect() throws Exception {
+	void readCorrect() throws Exception {
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		StAXSource source = new StAXSource(streamReader);
 		StringWriter writer = new StringWriter();
 		transformer.transform(source, new StreamResult(writer));
 		Predicate<Node> nodeFilter = n ->
 				n.getNodeType() != Node.DOCUMENT_TYPE_NODE && n.getNodeType() != Node.PROCESSING_INSTRUCTION_NODE;
-		assertThat(writer.toString(), isSimilarTo(XML).withNodeFilter(nodeFilter));
+		assertThat(XmlContent.from(writer)).isSimilarTo(XML, nodeFilter);
 	}
 
 }

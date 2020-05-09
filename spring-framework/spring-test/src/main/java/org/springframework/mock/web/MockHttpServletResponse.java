@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,7 @@ import org.springframework.web.util.WebUtils;
  * @author Rod Johnson
  * @author Brian Clozel
  * @author Vedran Pavic
+ * @author Sebastien Deleuze
  * @author Sam Brannen
  * @since 1.0.2
  */
@@ -172,11 +174,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	private void updateContentTypeHeader() {
 		if (this.contentType != null) {
-			StringBuilder sb = new StringBuilder(this.contentType);
-			if (!this.contentType.toLowerCase().contains(CHARSET_PREFIX) && this.charset) {
-				sb.append(";").append(CHARSET_PREFIX).append(this.characterEncoding);
+			String value = this.contentType;
+			if (this.charset && !this.contentType.toLowerCase().contains(CHARSET_PREFIX)) {
+				value = value + ';' + CHARSET_PREFIX + this.characterEncoding;
 			}
-			doAddHeaderValue(HttpHeaders.CONTENT_TYPE, sb.toString(), true);
+			doAddHeaderValue(HttpHeaders.CONTENT_TYPE, value, true);
 		}
 	}
 
@@ -197,7 +199,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		Assert.state(this.writerAccessAllowed, "Writer access not allowed");
 		if (this.writer == null) {
 			Writer targetWriter = (this.characterEncoding != null ?
-					new OutputStreamWriter(this.content, this.characterEncoding) : new OutputStreamWriter(this.content));
+					new OutputStreamWriter(this.content, this.characterEncoding) :
+					new OutputStreamWriter(this.content));
 			this.writer = new ResponsePrintWriter(targetWriter);
 		}
 		return this.writer;
@@ -207,9 +210,35 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		return this.content.toByteArray();
 	}
 
+	/**
+	 * Get the content of the response body as a {@code String}, using the charset
+	 * specified for the response by the application, either through
+	 * {@link HttpServletResponse} methods or through a charset parameter on the
+	 * {@code Content-Type}.
+	 * @return the content as a {@code String}
+	 * @throws UnsupportedEncodingException if the character encoding is not supported
+	 * @see #getContentAsString(Charset)
+	 */
 	public String getContentAsString() throws UnsupportedEncodingException {
 		return (this.characterEncoding != null ?
 				this.content.toString(this.characterEncoding) : this.content.toString());
+	}
+
+	/**
+	 * Get the content of the response body as a {@code String}, using the provided
+	 * {@code fallbackCharset} if no charset has been explicitly defined and otherwise
+	 * using the charset specified for the response by the application, either
+	 * through {@link HttpServletResponse} methods or through a charset parameter on the
+	 * {@code Content-Type}.
+	 * @return the content as a {@code String}
+	 * @throws UnsupportedEncodingException if the character encoding is not supported
+	 * @since 5.2
+	 * @see #getContentAsString()
+	 */
+	public String getContentAsString(Charset fallbackCharset) throws UnsupportedEncodingException {
+		return (isCharset() && this.characterEncoding != null ?
+				this.content.toString(this.characterEncoding) :
+				this.content.toString(fallbackCharset.name()));
 	}
 
 	@Override

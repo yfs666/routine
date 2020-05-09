@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2019 the original author or authors.
+ * Copyright 2002-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.reactivestreams.Publisher;
@@ -182,22 +181,17 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 		if (body instanceof Mono) {
 			return ((Mono<? extends DataBuffer>) body).flatMap(buffer ->
 					doCommit(() -> writeWithInternal(Mono.just(buffer)))
-							.doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release));
+							.doOnDiscard(PooledDataBuffer.class, DataBufferUtils::release))
+					.doOnError(t -> this.getHeaders().clearContentHeaders());
 		}
 		return new ChannelSendOperator<>(body, inner -> doCommit(() -> writeWithInternal(inner)))
-				.doOnError(t -> removeContentLength());
+				.doOnError(t -> this.getHeaders().clearContentHeaders());
 	}
 
 	@Override
 	public final Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
 		return new ChannelSendOperator<>(body, inner -> doCommit(() -> writeAndFlushWithInternal(inner)))
-				.doOnError(t -> removeContentLength());
-	}
-
-	private void removeContentLength() {
-		if (!this.isCommitted()) {
-			this.getHeaders().remove(HttpHeaders.CONTENT_LENGTH);
-		}
+				.doOnError(t -> this.getHeaders().clearContentHeaders());
 	}
 
 	@Override
@@ -223,7 +217,6 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 		if (!this.state.compareAndSet(State.NEW, State.COMMITTING)) {
 			return Mono.empty();
 		}
-
 		this.commitActions.add(() ->
 				Mono.fromRunnable(() -> {
 					applyStatusCode();
@@ -231,15 +224,14 @@ public abstract class AbstractServerHttpResponse implements ServerHttpResponse {
 					applyCookies();
 					this.state.set(State.COMMITTED);
 				}));
-
 		if (writeAction != null) {
 			this.commitActions.add(writeAction);
 		}
-
-		List<? extends Mono<Void>> actions = this.commitActions.stream()
-				.map(Supplier::get).collect(Collectors.toList());
-
-		return Flux.concat(actions).then();
+		Flux<Void> commit = Flux.empty();
+		for (Supplier<? extends Mono<Void>> action : this.commitActions) {
+			commit = commit.concatWith(action.get());
+		}
+		return commit.then();
 	}
 
 

@@ -71,7 +71,8 @@ class ReactorClientHttpResponse implements ClientHttpResponse {
 					// FluxReceive rejects multiple subscribers, but not after a cancel().
 					// Subsequent subscribers after cancel() will not be rejected, but will hang instead.
 					// So we need to intercept and reject them in that case.
-					this.rejectSubscribers.set(true))
+					this.rejectSubscribers.set(true)
+				)
 				.map(byteBuf -> {
 					byteBuf.retain();
 					return this.bufferFactory.wrap(byteBuf);

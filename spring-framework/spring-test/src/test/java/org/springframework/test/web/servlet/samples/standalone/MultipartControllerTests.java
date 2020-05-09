@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -47,9 +46,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 /**
  * @author Rossen Stoyanchev
@@ -274,7 +276,7 @@ public class MultipartControllerTests {
 
 			if (file != null && file.length > 0) {
 				byte[] content = file[0].getBytes();
-				Assert.assertArrayEquals(content, file[1].getBytes());
+				assertThat(file[1].getBytes()).isEqualTo(content);
 				model.addAttribute("fileContent", content);
 			}
 			if (json != null) {
@@ -290,7 +292,7 @@ public class MultipartControllerTests {
 
 			if (file != null && !file.isEmpty()) {
 				byte[] content = file.get(0).getBytes();
-				Assert.assertArrayEquals(content, file.get(1).getBytes());
+				assertThat(file.get(1).getBytes()).isEqualTo(content);
 				model.addAttribute("fileContent", content);
 			}
 			if (json != null) {
@@ -318,7 +320,7 @@ public class MultipartControllerTests {
 
 			if (file.isPresent()) {
 				byte[] content = file.get()[0].getBytes();
-				Assert.assertArrayEquals(content, file.get()[1].getBytes());
+				assertThat(file.get()[1].getBytes()).isEqualTo(content);
 				model.addAttribute("fileContent", content);
 			}
 			model.addAttribute("jsonContent", json);
@@ -332,7 +334,7 @@ public class MultipartControllerTests {
 
 			if (file.isPresent()) {
 				byte[] content = file.get().get(0).getBytes();
-				Assert.assertArrayEquals(content, file.get().get(1).getBytes());
+				assertThat(file.get().get(1).getBytes()).isEqualTo(content);
 				model.addAttribute("fileContent", content);
 			}
 			model.addAttribute("jsonContent", json);

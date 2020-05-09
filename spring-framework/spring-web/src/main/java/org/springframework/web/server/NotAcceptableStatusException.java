@@ -55,7 +55,7 @@ public class NotAcceptableStatusException extends ResponseStatusException {
 
 
 	/**
-	 * Return a Map with an "Accept" header, or an empty map.
+	 * Return a Map with an "Accept" header.
 	 * @since 5.1.11
 	 */
 	@SuppressWarnings("deprecation")

@@ -32,8 +32,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  *
  * <p>A Map return value can be interpreted in more than one ways depending
  * on the presence of annotations like {@code @ModelAttribute} or
- * {@code @ResponseBody}. Therefore this handler should be configured after
- * the handlers that support these annotations.
+ * {@code @ResponseBody}. As of 5.2 this resolver returns false if the
+ * parameter is annotated.
  *
  * @author Rossen Stoyanchev
  * @since 3.1
@@ -42,7 +42,8 @@ public class MapMethodProcessor implements HandlerMethodArgumentResolver, Handle
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
-		return Map.class.isAssignableFrom(parameter.getParameterType());
+		return Map.class.isAssignableFrom(parameter.getParameterType()) &&
+				parameter.getParameterAnnotations().length == 0;
 	}
 
 	@Override

@@ -17,9 +17,8 @@ package org.springframework.core.io.buffer;
 
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
-
-import static org.junit.Assert.fail;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link LimitedDataBufferList}.
@@ -32,23 +31,18 @@ public class LimitedDataBufferListTests {
 
 
 	@Test
-	public void limitEnforced() {
-		try {
-			new LimitedDataBufferList(5).add(toDataBuffer("123456"));
-			fail();
-		}
-		catch (DataBufferLimitException ex) {
-			// Expected
-		}
+	void limitEnforced() {
+		Assertions.assertThatThrownBy(() -> new LimitedDataBufferList(5).add(toDataBuffer("123456")))
+				.isInstanceOf(DataBufferLimitException.class);
 	}
 
 	@Test
-	public void limitIgnored() {
+	void limitIgnored() {
 		new LimitedDataBufferList(-1).add(toDataBuffer("123456"));
 	}
 
 	@Test
-	public void clearResetsCount() {
+	void clearResetsCount() {
 		LimitedDataBufferList list = new LimitedDataBufferList(5);
 		list.add(toDataBuffer("12345"));
 		list.clear();

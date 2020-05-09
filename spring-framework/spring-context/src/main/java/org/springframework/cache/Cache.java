@@ -104,8 +104,13 @@ public interface Cache {
 	 * Associate the specified value with the specified key in this cache.
 	 * <p>If the cache previously contained a mapping for this key, the old
 	 * value is replaced by the specified value.
+	 * <p>Actual registration may be performed in an asynchronous or deferred
+	 * fashion, with subsequent lookups possibly not seeing the entry yet.
+	 * This may for example be the case with transactional cache decorators.
+	 * Use {@link #putIfAbsent} for guaranteed immediate registration.
 	 * @param key the key with which the specified value is to be associated
 	 * @param value the value to be associated with the specified key
+	 * @see #putIfAbsent(Object, Object)
 	 */
 	void put(Object key, @Nullable Object value);
 
@@ -125,6 +130,8 @@ public interface Cache {
 	 * the operation may also be implemented in two steps, e.g. with a check for
 	 * presence and a subsequent put, in a non-atomic way. Check the documentation
 	 * of the native cache implementation that you are using for more details.
+	 * <p>The default implementation delegates to {@link #get(Object)} and
+	 * {@link #put(Object, Object)} along the lines of the code snippet above.
 	 * @param key the key with which the specified value is to be associated
 	 * @param value the value to be associated with the specified key
 	 * @return the value to which this cache maps the specified key (which may be
@@ -135,18 +142,69 @@ public interface Cache {
 	 * @see #put(Object, Object)
 	 */
 	@Nullable
-	ValueWrapper putIfAbsent(Object key, @Nullable Object value);
+	default ValueWrapper putIfAbsent(Object key, @Nullable Object value) {
+		ValueWrapper existingValue = get(key);
+		if (existingValue == null) {
+			put(key, value);
+		}
+		return existingValue;
+	}
 
 	/**
 	 * Evict the mapping for this key from this cache if it is present.
+	 * <p>Actual eviction may be performed in an asynchronous or deferred
+	 * fashion, with subsequent lookups possibly still seeing the entry.
+	 * This may for example be the case with transactional cache decorators.
+	 * Use {@link #evictIfPresent} for guaranteed immediate removal.
 	 * @param key the key whose mapping is to be removed from the cache
+	 * @see #evictIfPresent(Object)
 	 */
 	void evict(Object key);
 
 	/**
+	 * Evict the mapping for this key from this cache if it is present,
+	 * expecting the key to be immediately invisible for subsequent lookups.
+	 * <p>The default implementation delegates to {@link #evict(Object)},
+	 * returning {@code false} for not-determined prior presence of the key.
+	 * Cache providers and in particular cache decorators are encouraged
+	 * to perform immediate eviction if possible (e.g. in case of generally
+	 * deferred cache operations within a transaction) and to reliably
+	 * determine prior presence of the given key.
+	 * @param key the key whose mapping is to be removed from the cache
+	 * @return {@code true} if the cache was known to have a mapping for
+	 * this key before, {@code false} if it did not (or if prior presence
+	 * could not be determined)
+	 * @since 5.2
+	 * @see #evict(Object)
+	 */
+	default boolean evictIfPresent(Object key) {
+		evict(key);
+		return false;
+	}
+
+	/**
 	 * Clear the cache through removing all mappings.
+	 * <p>Actual clearing may be performed in an asynchronous or deferred
+	 * fashion, with subsequent lookups possibly still seeing the entries.
+	 * This may for example be the case with transactional cache decorators.
+	 * Use {@link #invalidate()} for guaranteed immediate removal of entries.
+	 * @see #invalidate()
 	 */
 	void clear();
+
+	/**
+	 * Invalidate the cache through removing all mappings, expecting all
+	 * entries to be immediately invisible for subsequent lookups.
+	 * @return {@code true} if the cache was known to have mappings before,
+	 * {@code false} if it did not (or if prior presence of entries could
+	 * not be determined)
+	 * @since 5.2
+	 * @see #clear()
+	 */
+	default boolean invalidate() {
+		clear();
+		return false;
+	}
 
 
 	/**

@@ -255,7 +255,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	public static final String FLASH_MAP_MANAGER_ATTRIBUTE = DispatcherServlet.class.getName() + ".FLASH_MAP_MANAGER";
 
 	/**
-	 * Name of request attribute that exposes an Exception resolved with an
+	 * Name of request attribute that exposes an Exception resolved with a
 	 * {@link HandlerExceptionResolver} but where no view was rendered
 	 * (e.g. setting the status code).
 	 */
@@ -1132,6 +1132,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (mappedHandler != null) {
+			// Exception (if any) is already handled..
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}
 	}
@@ -1317,7 +1318,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Using resolved error view: " + exMv, ex);
 			}
-			if (logger.isDebugEnabled()) {
+			else if (logger.isDebugEnabled()) {
 				logger.debug("Using resolved error view: " + exMv);
 			}
 			WebUtils.exposeErrorRequestAttributes(request, ex, getServletName());

@@ -138,6 +138,7 @@ public abstract class AbstractHttpSockJsSession extends AbstractSockJsSession {
 	/**
 	 * Return the selected sub-protocol to use.
 	 */
+	@Override
 	@Nullable
 	public String getAcceptedProtocol() {
 		return this.acceptedProtocol;

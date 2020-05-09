@@ -287,15 +287,13 @@ public class ReloadableResourceBundleMessageSource extends AbstractResourceBased
 		filenames.addAll(calculateFilenamesForLocale(basename, locale));
 
 		// Filenames for default Locale, if any
-		if (isFallbackToSystemLocale()) {
-			Locale defaultLocale = Locale.getDefault();
-			if (!locale.equals(defaultLocale)) {
-				List<String> fallbackFilenames = calculateFilenamesForLocale(basename, defaultLocale);
-				for (String fallbackFilename : fallbackFilenames) {
-					if (!filenames.contains(fallbackFilename)) {
-						// Entry for fallback locale that isn't already in filenames list.
-						filenames.add(fallbackFilename);
-					}
+		Locale defaultLocale = getDefaultLocale();
+		if (defaultLocale != null && !defaultLocale.equals(locale)) {
+			List<String> fallbackFilenames = calculateFilenamesForLocale(basename, defaultLocale);
+			for (String fallbackFilename : fallbackFilenames) {
+				if (!filenames.contains(fallbackFilename)) {
+					// Entry for fallback locale that isn't already in filenames list.
+					filenames.add(fallbackFilename);
 				}
 			}
 		}

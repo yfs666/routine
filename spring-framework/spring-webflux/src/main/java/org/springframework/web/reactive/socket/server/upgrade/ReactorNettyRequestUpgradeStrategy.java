@@ -16,6 +16,7 @@
 
 package org.springframework.web.reactive.socket.server.upgrade;
 
+import java.net.URI;
 import java.util.function.Supplier;
 
 import reactor.core.publisher.Mono;
@@ -82,7 +83,8 @@ public class ReactorNettyRequestUpgradeStrategy implements RequestUpgradeStrateg
 					ReactorNettyWebSocketSession session =
 							new ReactorNettyWebSocketSession(
 									in, out, handshakeInfo, bufferFactory, this.maxFramePayloadLength);
-					return handler.handle(session);
+					URI uri = exchange.getRequest().getURI();
+					return handler.handle(session).checkpoint(uri + " [ReactorNettyRequestUpgradeStrategy]");
 				});
 	}
 

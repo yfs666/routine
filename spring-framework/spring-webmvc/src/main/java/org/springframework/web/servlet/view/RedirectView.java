@@ -23,7 +23,6 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -57,7 +56,7 @@ import org.springframework.web.util.WebUtils;
  * but this behavior can be changed by overriding the
  * {@link #isEligibleProperty(String, Object)} method.
  *
- * <p>A URL for this view is supposed to be a HTTP redirect URL, i.e.
+ * <p>A URL for this view is supposed to be an HTTP redirect URL, i.e.
  * suitable for HttpServletResponse's {@code sendRedirect} method, which
  * is what actually does the redirect if the HTTP 1.0 flag is on, or via sending
  * back an HTTP 303 code - if the HTTP 1.0 compatibility flag is off.
@@ -457,18 +456,17 @@ public class RedirectView extends AbstractUrlBasedView implements SmartView {
 		boolean first = (targetUrl.toString().indexOf('?') < 0);
 		for (Map.Entry<String, Object> entry : queryProperties(model).entrySet()) {
 			Object rawValue = entry.getValue();
-			Iterator<Object> valueIter;
+			Collection<Object> values;
 			if (rawValue != null && rawValue.getClass().isArray()) {
-				valueIter = Arrays.asList(ObjectUtils.toObjectArray(rawValue)).iterator();
+				values = Arrays.asList(ObjectUtils.toObjectArray(rawValue));
 			}
 			else if (rawValue instanceof Collection) {
-				valueIter = ((Collection<Object>) rawValue).iterator();
+				values = ((Collection<Object>) rawValue);
 			}
 			else {
-				valueIter = Collections.singleton(rawValue).iterator();
+				values = Collections.singleton(rawValue);
 			}
-			while (valueIter.hasNext()) {
-				Object value = valueIter.next();
+			for (Object value : values) {
 				if (first) {
 					targetUrl.append('?');
 					first = false;

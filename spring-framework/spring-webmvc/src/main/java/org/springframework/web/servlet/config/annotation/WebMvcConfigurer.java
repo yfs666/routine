@@ -178,7 +178,7 @@ public interface WebMvcConfigurer {
 	 * Configure exception resolvers.
 	 * <p>The given list starts out empty. If it is left empty, the framework
 	 * configures a default set of resolvers, see
-	 * {@link WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List)}.
+	 * {@link WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List, org.springframework.web.accept.ContentNegotiationManager)}.
 	 * Or if any exception resolvers are added to the list, then the application
 	 * effectively takes over and must provide, fully initialized, exception
 	 * resolvers.
@@ -187,7 +187,7 @@ public interface WebMvcConfigurer {
 	 * or modify the list of exception resolvers configured by default.
 	 * @param resolvers initially an empty list
 	 * @see #extendHandlerExceptionResolvers(List)
-	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List)
+	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List, org.springframework.web.accept.ContentNegotiationManager)
 	 */
 	default void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
 	}
@@ -198,7 +198,7 @@ public interface WebMvcConfigurer {
 	 * interfering with default ones.
 	 * @param resolvers the list of configured resolvers to extend
 	 * @since 4.3
-	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List)
+	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List, org.springframework.web.accept.ContentNegotiationManager)
 	 */
 	default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
 	}

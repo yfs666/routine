@@ -153,9 +153,8 @@ public class ResponseBodyEmitterReturnValueHandler implements HandlerMethodRetur
 		// At this point we know we're streaming..
 		ShallowEtagHeaderFilter.disableContentCaching(request);
 
-		// Commit the response and wrap to ignore further header changes
-		outputMessage.getBody();
-		outputMessage.flush();
+		// Wrap the response to ignore further header changes
+		// Headers will be flushed at the first write
 		outputMessage = new StreamingServletServerHttpResponse(outputMessage);
 
 		DeferredResult<?> deferredResult = new DeferredResult<>(emitter.getTimeout());
@@ -199,7 +198,13 @@ public class ResponseBodyEmitterReturnValueHandler implements HandlerMethodRetur
 
 		@Override
 		public void complete() {
-			this.deferredResult.setResult(null);
+			try {
+				this.outputMessage.flush();
+				this.deferredResult.setResult(null);
+			}
+			catch (IOException ex) {
+				this.deferredResult.setErrorResult(ex);
+			}
 		}
 
 		@Override

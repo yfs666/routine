@@ -32,9 +32,9 @@ import org.springframework.util.Assert;
  * transaction. If no transaction is active, {@link #put}, {@link #evict} and
  * {@link #clear} operations will be performed immediately, as usual.
  *
- * <p><b>Note:</b> Use of immediate operations such as {@link #putIfAbsent}
- * cannot be deferred to the after-commit phase of a running transaction.
- * Use these with care in a transactional environment.
+ * <p><b>Note:</b> Use of immediate operations such as {@link #putIfAbsent} and
+ * {@link #evictIfPresent} cannot be deferred to the after-commit phase of a
+ * running transaction. Use these with care in a transactional environment.
  *
  * @author Juergen Hoeller
  * @author Stephane Nicoll
@@ -128,6 +128,11 @@ public class TransactionAwareCacheDecorator implements Cache {
 	}
 
 	@Override
+	public boolean evictIfPresent(Object key) {
+		return this.targetCache.evictIfPresent(key);
+	}
+
+	@Override
 	public void clear() {
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
 			TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
@@ -140,6 +145,11 @@ public class TransactionAwareCacheDecorator implements Cache {
 		else {
 			this.targetCache.clear();
 		}
+	}
+
+	@Override
+	public boolean invalidate() {
+		return this.targetCache.invalidate();
 	}
 
 }

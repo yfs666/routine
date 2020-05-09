@@ -384,7 +384,7 @@ public class ConstructorArgumentValues {
 
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(@Nullable Object other) {
 		if (this == other) {
 			return true;
 		}
@@ -484,7 +484,6 @@ public class ConstructorArgumentValues {
 
 		/**
 		 * Set the value for the constructor argument.
-		 * @see PropertyPlaceholderConfigurer
 		 */
 		public void setValue(@Nullable Object value) {
 			this.value = value;

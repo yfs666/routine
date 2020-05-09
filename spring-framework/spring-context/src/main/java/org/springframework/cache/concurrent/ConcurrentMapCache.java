@@ -169,8 +169,20 @@ public class ConcurrentMapCache extends AbstractValueAdaptingCache {
 	}
 
 	@Override
+	public boolean evictIfPresent(Object key) {
+		return (this.store.remove(key) != null);
+	}
+
+	@Override
 	public void clear() {
 		this.store.clear();
+	}
+
+	@Override
+	public boolean invalidate() {
+		boolean notEmpty = !this.store.isEmpty();
+		this.store.clear();
+		return notEmpty;
 	}
 
 	@Override

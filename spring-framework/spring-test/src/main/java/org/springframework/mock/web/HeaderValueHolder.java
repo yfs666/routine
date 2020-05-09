@@ -98,9 +98,9 @@ class HeaderValueHolder {
 	@Deprecated
 	public static HeaderValueHolder getByName(Map<String, HeaderValueHolder> headers, String name) {
 		Assert.notNull(name, "Header name must not be null");
-		for (String headerName : headers.keySet()) {
-			if (headerName.equalsIgnoreCase(name)) {
-				return headers.get(headerName);
+		for (Map.Entry<String, HeaderValueHolder> entry : headers.entrySet()) {
+			if (entry.getKey().equalsIgnoreCase(name)) {
+				return entry.getValue();
 			}
 		}
 		return null;

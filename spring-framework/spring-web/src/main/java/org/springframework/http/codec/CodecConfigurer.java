@@ -169,8 +169,7 @@ public interface CodecConfigurer {
 		 * It can also occur when splitting the input stream, e.g. delimited text,
 		 * in which case the limit applies to data buffered between delimiters.
 		 * <p>By default this is not set, in which case individual codec defaults
-		 * apply. In 5.1 most codecs are not limited except {@code FormHttpMessageReader}
-		 * which is limited to 256K. In 5.2 all codecs are limited to 256K by default.
+		 * apply. All codecs are limited to 256K by default.
 		 * @param byteCount the max number of bytes to buffer, or -1 for unlimited
 		 * @since 5.1.11
 		 */

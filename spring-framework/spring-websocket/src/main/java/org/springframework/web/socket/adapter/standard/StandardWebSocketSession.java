@@ -140,6 +140,7 @@ public class StandardWebSocketSession extends AbstractWebSocketSession<Session> 
 		return this.extensions;
 	}
 
+	@Override
 	public Principal getPrincipal() {
 		return this.user;
 	}

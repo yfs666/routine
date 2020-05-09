@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import org.springframework.aop.ClassFilter;
 import org.springframework.aop.IntroductionAwareMethodMatcher;
 import org.springframework.aop.MethodMatcher;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
@@ -141,7 +142,7 @@ public abstract class MethodMatchers {
 		}
 
 		@Override
-		public boolean equals(Object other) {
+		public boolean equals(@Nullable Object other) {
 			if (this == other) {
 				return true;
 			}
@@ -213,7 +214,7 @@ public abstract class MethodMatchers {
 		}
 
 		@Override
-		public boolean equals(Object other) {
+		public boolean equals(@Nullable Object other) {
 			if (this == other) {
 				return true;
 			}
@@ -307,7 +308,7 @@ public abstract class MethodMatchers {
 		}
 
 		@Override
-		public boolean equals(Object other) {
+		public boolean equals(@Nullable Object other) {
 			if (this == other) {
 				return true;
 			}

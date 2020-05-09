@@ -99,7 +99,7 @@ public class SubProtocolWebSocketHandler
 
 	private final ReentrantLock sessionCheckLock = new ReentrantLock();
 
-	private final Stats stats = new Stats();
+	private final DefaultStats stats = new DefaultStats();
 
 	private volatile boolean running = false;
 
@@ -187,6 +187,7 @@ public class SubProtocolWebSocketHandler
 	/**
 	 * Return all supported protocols.
 	 */
+	@Override
 	public List<String> getSubProtocols() {
 		return new ArrayList<>(this.protocolHandlerLookup.keySet());
 	}
@@ -248,10 +249,20 @@ public class SubProtocolWebSocketHandler
 
 	/**
 	 * Return a String describing internal state and counters.
+	 * Effectively {@code toString()} on {@link #getStats() getStats()}.
 	 */
 	public String getStatsInfo() {
 		return this.stats.toString();
 	}
+
+	/**
+	 * Return a structured object with various session counters.
+	 * @since 5.2
+	 */
+	public Stats getStats() {
+		return this.stats;
+	}
+
 
 
 	@Override
@@ -563,7 +574,29 @@ public class SubProtocolWebSocketHandler
 	}
 
 
-	private class Stats {
+	/**
+	 * Contract for access to session counters.
+	 * @since 5.2
+	 */
+	public interface Stats {
+
+		int getTotalSessions();
+
+		int getWebSocketSessions();
+
+		int getHttpStreamingSessions();
+
+		int getHttpPollingSessions();
+
+		int getLimitExceededSessions();
+
+		int getNoMessagesReceivedSessions();
+
+		int getTransportErrorSessions();
+	}
+
+
+	private class DefaultStats implements Stats {
 
 		private final AtomicInteger total = new AtomicInteger();
 
@@ -579,28 +612,63 @@ public class SubProtocolWebSocketHandler
 
 		private final AtomicInteger transportError = new AtomicInteger();
 
-		public void incrementSessionCount(WebSocketSession session) {
+		@Override
+		public int getTotalSessions() {
+			return this.total.get();
+		}
+
+		@Override
+		public int getWebSocketSessions() {
+			return this.webSocket.get();
+		}
+
+		@Override
+		public int getHttpStreamingSessions() {
+			return this.httpStreaming.get();
+		}
+
+		@Override
+		public int getHttpPollingSessions() {
+			return this.httpPolling.get();
+		}
+
+		@Override
+		public int getLimitExceededSessions() {
+			return this.limitExceeded.get();
+		}
+
+		@Override
+		public int getNoMessagesReceivedSessions() {
+			return this.noMessagesReceived.get();
+		}
+
+		@Override
+		public int getTransportErrorSessions() {
+			return this.transportError.get();
+		}
+
+		void incrementSessionCount(WebSocketSession session) {
 			getCountFor(session).incrementAndGet();
 			this.total.incrementAndGet();
 		}
 
-		public void decrementSessionCount(WebSocketSession session) {
+		void decrementSessionCount(WebSocketSession session) {
 			getCountFor(session).decrementAndGet();
 		}
 
-		public void incrementLimitExceededCount() {
+		void incrementLimitExceededCount() {
 			this.limitExceeded.incrementAndGet();
 		}
 
-		public void incrementNoMessagesReceivedCount() {
+		void incrementNoMessagesReceivedCount() {
 			this.noMessagesReceived.incrementAndGet();
 		}
 
-		public void incrementTransportError() {
+		void incrementTransportError() {
 			this.transportError.incrementAndGet();
 		}
 
-		private AtomicInteger getCountFor(WebSocketSession session) {
+		AtomicInteger getCountFor(WebSocketSession session) {
 			if (session instanceof PollingSockJsSession) {
 				return this.httpPolling;
 			}
@@ -612,6 +680,7 @@ public class SubProtocolWebSocketHandler
 			}
 		}
 
+		@Override
 		public String toString() {
 			return SubProtocolWebSocketHandler.this.sessions.size() +
 					" current WS(" + this.webSocket.get() +

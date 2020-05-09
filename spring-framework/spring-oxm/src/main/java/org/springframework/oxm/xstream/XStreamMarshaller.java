@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,6 @@ import org.springframework.oxm.support.AbstractMarshaller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.util.function.SingletonSupplier;
 import org.springframework.util.xml.StaxUtils;
 
 /**
@@ -114,7 +113,6 @@ import org.springframework.util.xml.StaxUtils;
  * @author Peter Meijer
  * @author Arjen Poutsma
  * @author Juergen Hoeller
- * @author Sam Brannen
  * @since 3.0
  */
 public class XStreamMarshaller extends AbstractMarshaller implements BeanClassLoaderAware, InitializingBean {
@@ -188,7 +186,8 @@ public class XStreamMarshaller extends AbstractMarshaller implements BeanClassLo
 
 	private ClassLoader beanClassLoader = new CompositeClassLoader();
 
-	private final SingletonSupplier<XStream> xstream = SingletonSupplier.of(this::buildXStream);
+	@Nullable
+	private XStream xstream;
 
 
 	/**
@@ -407,12 +406,12 @@ public class XStreamMarshaller extends AbstractMarshaller implements BeanClassLo
 
 	@Override
 	public void afterPropertiesSet() {
-		// no-op due to use of SingletonSupplier for the XStream field.
+		this.xstream = buildXStream();
 	}
 
 	/**
 	 * Build the native XStream delegate to be used by this marshaller,
-	 * delegating to {@link #constructXStream}, {@link #configureXStream},
+	 * delegating to {@link #constructXStream()}, {@link #configureXStream}
 	 * and {@link #customizeXStream}.
 	 */
 	protected XStream buildXStream() {
@@ -617,11 +616,12 @@ public class XStreamMarshaller extends AbstractMarshaller implements BeanClassLo
 	 * <p><b>NOTE: This method has been marked as final as of Spring 4.0.</b>
 	 * It can be used to access the fully configured XStream for marshalling
 	 * but not configuration purposes anymore.
-	 * <p>As of Spring Framework 5.1.16, creation of the {@link XStream} instance
-	 * returned by this method is thread safe.
 	 */
 	public final XStream getXStream() {
-		return this.xstream.obtain();
+		if (this.xstream == null) {
+			this.xstream = buildXStream();
+		}
+		return this.xstream;
 	}
 
 

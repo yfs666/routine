@@ -16,6 +16,7 @@
 
 package org.springframework.web.reactive.result.method.annotation;
 
+import java.util.Collections;
 import java.util.List;
 
 import reactor.core.publisher.Flux;
@@ -71,12 +72,15 @@ public class RequestPartMethodArgumentResolver extends AbstractMessageReaderArgu
 		String name = getPartName(parameter, requestPart);
 
 		Flux<Part> parts = exchange.getMultipartData()
-				.flatMapMany(map -> {
+				.flatMapIterable(map -> {
 					List<Part> list = map.get(name);
 					if (CollectionUtils.isEmpty(list)) {
-						return (isRequired ? Flux.error(getMissingPartException(name, parameter)) : Flux.empty());
+						if (isRequired) {
+							throw getMissingPartException(name, parameter);
+						}
+						return Collections.emptyList();
 					}
-					return Flux.fromIterable(list);
+					return list;
 				});
 
 		if (Part.class.isAssignableFrom(parameter.getParameterType())) {

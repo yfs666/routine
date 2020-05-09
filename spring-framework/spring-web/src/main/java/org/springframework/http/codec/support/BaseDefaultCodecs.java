@@ -40,6 +40,7 @@ import org.springframework.http.codec.FormHttpMessageReader;
 import org.springframework.http.codec.FormHttpMessageWriter;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.HttpMessageWriter;
+import org.springframework.http.codec.ResourceHttpMessageReader;
 import org.springframework.http.codec.ResourceHttpMessageWriter;
 import org.springframework.http.codec.ServerSentEventHttpMessageReader;
 import org.springframework.http.codec.json.AbstractJackson2Decoder;
@@ -204,7 +205,7 @@ class BaseDefaultCodecs implements CodecConfigurer.DefaultCodecs, CodecConfigure
 		addCodec(readers, new DecoderHttpMessageReader<>(new ByteArrayDecoder()));
 		addCodec(readers, new DecoderHttpMessageReader<>(new ByteBufferDecoder()));
 		addCodec(readers, new DecoderHttpMessageReader<>(new DataBufferDecoder()));
-		addCodec(readers, new DecoderHttpMessageReader<>(new ResourceDecoder()));
+		addCodec(readers, new ResourceHttpMessageReader(new ResourceDecoder()));
 		addCodec(readers, new DecoderHttpMessageReader<>(StringDecoder.textPlainOnly()));
 		if (protobufPresent) {
 			Decoder<?> decoder = this.protobufDecoder != null ? this.protobufDecoder : new ProtobufDecoder();

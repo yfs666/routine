@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2020 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import org.springframework.lang.Nullable;
 
@@ -459,7 +460,7 @@ public abstract class ClassUtils {
 		Class<?> result = null;
 		// Most class names will be quite long, considering that they
 		// SHOULD sit in a package, so a length check is worthwhile.
-		if (name != null && name.length() <= 8) {
+		if (name != null && name.length() <= 7) {
 			// Could be a primitive - likely.
 			result = primitiveTypeNameMap.get(name);
 		}
@@ -532,7 +533,7 @@ public abstract class ClassUtils {
 	 * @param lhsType the target type
 	 * @param rhsType the value type that should be assigned to the target type
 	 * @return if the target type is assignable from the value type
-	 * @see TypeUtils#isAssignable(java.lang.reflect.Type, java.lang.reflect.Type)
+	 * @see TypeUtils#isAssignable
 	 */
 	public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
 		Assert.notNull(lhsType, "Left-hand side type must not be null");
@@ -542,12 +543,17 @@ public abstract class ClassUtils {
 		}
 		if (lhsType.isPrimitive()) {
 			Class<?> resolvedPrimitive = primitiveWrapperTypeMap.get(rhsType);
-			return (lhsType == resolvedPrimitive);
+			if (lhsType == resolvedPrimitive) {
+				return true;
+			}
 		}
 		else {
 			Class<?> resolvedWrapper = primitiveTypeToWrapperMap.get(rhsType);
-			return (resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper));
+			if (resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper)) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	/**
@@ -660,16 +666,11 @@ public abstract class ClassUtils {
 		if (CollectionUtils.isEmpty(classes)) {
 			return "[]";
 		}
-		StringBuilder sb = new StringBuilder("[");
-		for (Iterator<Class<?>> it = classes.iterator(); it.hasNext(); ) {
-			Class<?> clazz = it.next();
-			sb.append(clazz.getName());
-			if (it.hasNext()) {
-				sb.append(", ");
-			}
+		StringJoiner stringJoiner = new StringJoiner(", ", "[", "]");
+		for (Class<?> clazz : classes) {
+			stringJoiner.add(clazz.getName());
 		}
-		sb.append("]");
-		return sb.toString();
+		return stringJoiner.toString();
 	}
 
 	/**
@@ -849,7 +850,9 @@ public abstract class ClassUtils {
 	 * @param object the object to check
 	 * @see #isCglibProxyClass(Class)
 	 * @see org.springframework.aop.support.AopUtils#isCglibProxy(Object)
+	 * @deprecated as of 5.2, in favor of custom (possibly narrower) checks
 	 */
+	@Deprecated
 	public static boolean isCglibProxy(Object object) {
 		return isCglibProxyClass(object.getClass());
 	}
@@ -858,7 +861,9 @@ public abstract class ClassUtils {
 	 * Check whether the specified class is a CGLIB-generated class.
 	 * @param clazz the class to check
 	 * @see #isCglibProxyClassName(String)
+	 * @deprecated as of 5.2, in favor of custom (possibly narrower) checks
 	 */
+	@Deprecated
 	public static boolean isCglibProxyClass(@Nullable Class<?> clazz) {
 		return (clazz != null && isCglibProxyClassName(clazz.getName()));
 	}
@@ -866,7 +871,9 @@ public abstract class ClassUtils {
 	/**
 	 * Check whether the specified class name is a CGLIB-generated class.
 	 * @param className the class name to check
+	 * @deprecated as of 5.2, in favor of custom (possibly narrower) checks
 	 */
+	@Deprecated
 	public static boolean isCglibProxyClassName(@Nullable String className) {
 		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
 	}
@@ -913,14 +920,10 @@ public abstract class ClassUtils {
 		}
 		Class<?> clazz = value.getClass();
 		if (Proxy.isProxyClass(clazz)) {
-			StringBuilder result = new StringBuilder(clazz.getName());
-			result.append(" implementing ");
-			Class<?>[] ifcs = clazz.getInterfaces();
-			for (int i = 0; i < ifcs.length; i++) {
-				result.append(ifcs[i].getName());
-				if (i < ifcs.length - 1) {
-					result.append(',');
-				}
+			String prefix = clazz.getName() + " implementing ";
+			StringJoiner result = new StringJoiner(",", prefix, "");
+			for (Class<?> ifc : clazz.getInterfaces()) {
+				result.add(ifc.getName());
 			}
 			return result.toString();
 		}
@@ -1059,7 +1062,7 @@ public abstract class ClassUtils {
 	 * @param clazz the clazz to analyze
 	 * @param paramTypes the parameter types of the method
 	 * @return whether the class has a corresponding constructor
-	 * @see Class#getConstructor
+	 * @see Class#getMethod
 	 */
 	public static boolean hasConstructor(Class<?> clazz, Class<?>... paramTypes) {
 		return (getConstructorIfAvailable(clazz, paramTypes) != null);
@@ -1124,13 +1127,7 @@ public abstract class ClassUtils {
 			}
 		}
 		else {
-			Set<Method> candidates = new HashSet<>(1);
-			Method[] methods = clazz.getMethods();
-			for (Method method : methods) {
-				if (methodName.equals(method.getName())) {
-					candidates.add(method);
-				}
-			}
+			Set<Method> candidates = findMethodCandidatesByName(clazz, methodName);
 			if (candidates.size() == 1) {
 				return candidates.iterator().next();
 			}
@@ -1169,13 +1166,7 @@ public abstract class ClassUtils {
 			}
 		}
 		else {
-			Set<Method> candidates = new HashSet<>(1);
-			Method[] methods = clazz.getMethods();
-			for (Method method : methods) {
-				if (methodName.equals(method.getName())) {
-					candidates.add(method);
-				}
-			}
+			Set<Method> candidates = findMethodCandidatesByName(clazz, methodName);
 			if (candidates.size() == 1) {
 				return candidates.iterator().next();
 			}
@@ -1369,4 +1360,14 @@ public abstract class ClassUtils {
 		}
 	}
 
+	private static Set<Method> findMethodCandidatesByName(Class<?> clazz, String methodName) {
+		Set<Method> candidates = new HashSet<>(1);
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			if (methodName.equals(method.getName())) {
+				candidates.add(method);
+			}
+		}
+		return candidates;
+	}
 }

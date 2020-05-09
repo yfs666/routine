@@ -27,10 +27,14 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @see BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.BeanFactory#getBean(String)
+ * @see org.springframework.beans.factory.BeanFactory#getBean(Class)
  */
 public class RuntimeBeanReference implements BeanReference {
 
 	private final String beanName;
+
+	@Nullable
+	private final Class<?> beanType;
 
 	private final boolean toParent;
 
@@ -56,13 +60,52 @@ public class RuntimeBeanReference implements BeanReference {
 	public RuntimeBeanReference(String beanName, boolean toParent) {
 		Assert.hasText(beanName, "'beanName' must not be empty");
 		this.beanName = beanName;
+		this.beanType = null;
+		this.toParent = toParent;
+	}
+
+	/**
+	 * Create a new RuntimeBeanReference to a bean of the given type.
+	 * @param beanType type of the target bean
+	 * @since 5.2
+	 */
+	public RuntimeBeanReference(Class<?> beanType) {
+		this(beanType, false);
+	}
+
+	/**
+	 * Create a new RuntimeBeanReference to a bean of the given type,
+	 * with the option to mark it as reference to a bean in the parent factory.
+	 * @param beanType type of the target bean
+	 * @param toParent whether this is an explicit reference to a bean in the
+	 * parent factory
+	 * @since 5.2
+	 */
+	public RuntimeBeanReference(Class<?> beanType, boolean toParent) {
+		Assert.notNull(beanType, "'beanType' must not be empty");
+		this.beanName = beanType.getName();
+		this.beanType = beanType;
 		this.toParent = toParent;
 	}
 
 
+	/**
+	 * Return the requested bean name, or the fully-qualified type name
+	 * in case of by-type resolution.
+	 * @see #getBeanType()
+	 */
 	@Override
 	public String getBeanName() {
 		return this.beanName;
+	}
+
+	/**
+	 * Return the requested bean type if resolution by type is demanded.
+	 * @since 5.2
+	 */
+	@Nullable
+	public Class<?> getBeanType() {
+		return this.beanType;
 	}
 
 	/**
@@ -88,7 +131,7 @@ public class RuntimeBeanReference implements BeanReference {
 
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(@Nullable Object other) {
 		if (this == other) {
 			return true;
 		}
@@ -96,7 +139,8 @@ public class RuntimeBeanReference implements BeanReference {
 			return false;
 		}
 		RuntimeBeanReference that = (RuntimeBeanReference) other;
-		return (this.beanName.equals(that.beanName) && this.toParent == that.toParent);
+		return (this.beanName.equals(that.beanName) && this.beanType == that.beanType &&
+				this.toParent == that.toParent);
 	}
 
 	@Override

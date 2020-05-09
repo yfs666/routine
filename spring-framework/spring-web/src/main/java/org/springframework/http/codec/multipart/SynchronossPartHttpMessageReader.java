@@ -84,7 +84,7 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 	private static final DataBufferFactory bufferFactory = new DefaultDataBufferFactory();
 
 
-	private int maxInMemorySize = -1;
+	private int maxInMemorySize = 256 * 1024;
 
 	private long maxDiskUsagePerPart = -1;
 
@@ -98,11 +98,10 @@ public class SynchronossPartHttpMessageReader extends LoggingCodecSupport implem
 	 * <li>file parts are written to a temporary file.
 	 * <li>non-file parts are rejected with {@link DataBufferLimitException}.
 	 * </ul>
-	 * <p>By default in 5.1 this is set to -1 in which case this limit is
-	 * not enforced and all parts may be written to disk and are limited only
+	 * <p>By default this is set to 256K.
+	 * @param byteCount the in-memory limit in bytes; if set to -1 this limit is
+	 * not enforced, and all parts may be written to disk and are limited only
 	 * by the {@link #setMaxDiskUsagePerPart(long) maxDiskUsagePerPart} property.
-	 * In 5.2 this default value for this limit is set to 256K.
-	 * @param byteCount the in-memory limit in bytes, or -1 for unlimited
 	 * @since 5.1.11
 	 */
 	public void setMaxInMemorySize(int byteCount) {

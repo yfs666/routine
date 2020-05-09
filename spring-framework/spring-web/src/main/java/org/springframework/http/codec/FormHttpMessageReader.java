@@ -128,7 +128,7 @@ public class FormHttpMessageReader extends LoggingCodecSupport
 		MediaType contentType = message.getHeaders().getContentType();
 		Charset charset = getMediaTypeCharset(contentType);
 
-		return DataBufferUtils.join(message.getBody(), getMaxInMemorySize())
+		return DataBufferUtils.join(message.getBody(), this.maxInMemorySize)
 				.map(buffer -> {
 					CharBuffer charBuffer = charset.decode(buffer.asByteBuffer());
 					String body = charBuffer.toString();

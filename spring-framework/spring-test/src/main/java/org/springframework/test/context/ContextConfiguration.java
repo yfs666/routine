@@ -77,14 +77,15 @@ import org.springframework.core.annotation.AliasFor;
  *
  * @author Sam Brannen
  * @since 2.5
- * @see ContextHierarchy
- * @see ActiveProfiles
- * @see TestPropertySource
- * @see ContextLoader
+ * @see org.springframework.test.context.junit.jupiter.SpringJUnitConfig @SpringJUnitConfig
+ * @see org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig @SpringJUnitWebConfig
+ * @see ContextHierarchy @ContextHierarchy
+ * @see ActiveProfiles @ActiveProfiles
+ * @see TestPropertySource @TestPropertySource
  * @see SmartContextLoader
  * @see ContextConfigurationAttributes
  * @see MergedContextConfiguration
- * @see org.springframework.context.ApplicationContext
+ * @see org.springframework.context.ApplicationContext ApplicationContext
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

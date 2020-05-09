@@ -320,6 +320,12 @@ public enum HttpStatus {
 	 */
 	FAILED_DEPENDENCY(424, "Failed Dependency"),
 	/**
+	 * {@code 425 Too Early}.
+	 * @since 5.2
+	 * @see <a href="https://tools.ietf.org/html/rfc8470">RFC 8470</a>
+	 */
+	TOO_EARLY(425, "Too Early"),
+	/**
 	 * {@code 426 Upgrade Required}.
 	 * @see <a href="https://tools.ietf.org/html/rfc2817#section-6">Upgrading to TLS Within HTTP/1.1</a>
 	 */

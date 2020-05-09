@@ -29,6 +29,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.core.ResolvableType;
 import org.springframework.core.io.DescriptiveResource;
 import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
@@ -145,7 +146,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 
 	private boolean abstractFlag = false;
 
-	private boolean lazyInit = false;
+	@Nullable
+	private Boolean lazyInit;
 
 	private int autowireMode = AUTOWIRE_NO;
 
@@ -228,7 +230,6 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		setBeanClassName(original.getBeanClassName());
 		setScope(original.getScope());
 		setAbstract(original.isAbstract());
-		setLazyInit(original.isLazyInit());
 		setFactoryBeanName(original.getFactoryBeanName());
 		setFactoryMethodName(original.getFactoryMethodName());
 		setRole(original.getRole());
@@ -249,6 +250,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			if (originalAbd.hasMethodOverrides()) {
 				setMethodOverrides(new MethodOverrides(originalAbd.getMethodOverrides()));
 			}
+			Boolean lazyInit = originalAbd.getLazyInit();
+			if (lazyInit != null) {
+				setLazyInit(lazyInit);
+			}
 			setAutowireMode(originalAbd.getAutowireMode());
 			setDependencyCheck(originalAbd.getDependencyCheck());
 			setDependsOn(originalAbd.getDependsOn());
@@ -268,6 +273,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		else {
 			setConstructorArgumentValues(new ConstructorArgumentValues(original.getConstructorArgumentValues()));
 			setPropertyValues(new MutablePropertyValues(original.getPropertyValues()));
+			setLazyInit(original.isLazyInit());
 			setResourceDescription(original.getResourceDescription());
 		}
 	}
@@ -297,7 +303,6 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			setScope(other.getScope());
 		}
 		setAbstract(other.isAbstract());
-		setLazyInit(other.isLazyInit());
 		if (StringUtils.hasLength(other.getFactoryBeanName())) {
 			setFactoryBeanName(other.getFactoryBeanName());
 		}
@@ -322,6 +327,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			if (otherAbd.hasMethodOverrides()) {
 				getMethodOverrides().addOverrides(otherAbd.getMethodOverrides());
 			}
+			Boolean lazyInit = otherAbd.getLazyInit();
+			if (lazyInit != null) {
+				setLazyInit(lazyInit);
+			}
 			setAutowireMode(otherAbd.getAutowireMode());
 			setDependencyCheck(otherAbd.getDependencyCheck());
 			setDependsOn(otherAbd.getDependsOn());
@@ -345,6 +354,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		else {
 			getConstructorArgumentValues().addArgumentValues(other.getConstructorArgumentValues());
 			getPropertyValues().addPropertyValues(other.getPropertyValues());
+			setLazyInit(other.isLazyInit());
 			setResourceDescription(other.getResourceDescription());
 		}
 	}
@@ -355,7 +365,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @since 2.5
 	 */
 	public void applyDefaults(BeanDefinitionDefaults defaults) {
-		setLazyInit(defaults.isLazyInit());
+		Boolean lazyInit = defaults.getLazyInit();
+		if (lazyInit != null) {
+			setLazyInit(lazyInit);
+		}
 		setAutowireMode(defaults.getAutowireMode());
 		setDependencyCheck(defaults.getDependencyCheck());
 		setInitMethodName(defaults.getInitMethodName());
@@ -446,6 +459,16 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * Return a resolvable type for this bean definition.
+	 * <p>This implementation delegates to {@link #getBeanClass()}.
+	 * @since 5.2
+	 */
+	@Override
+	public ResolvableType getResolvableType() {
+		return (hasBeanClass() ? ResolvableType.forClass(getBeanClass()) : ResolvableType.NONE);
+	}
+
+	/**
 	 * Set the name of the target scope for the bean.
 	 * <p>The default is singleton status, although this is only applied once
 	 * a bean definition becomes active in the containing factory. A bean
@@ -525,6 +548,17 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	@Override
 	public boolean isLazyInit() {
+		return (this.lazyInit != null && this.lazyInit.booleanValue());
+	}
+
+	/**
+	 * Return whether this bean should be lazily initialized, i.e. not
+	 * eagerly instantiated on startup. Only applicable to a singleton bean.
+	 * @return the lazy-init flag if explicitly set, or {@code null} otherwise
+	 * @since 5.2
+	 */
+	@Nullable
+	public Boolean getLazyInit() {
 		return this.lazyInit;
 	}
 
@@ -1119,7 +1153,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	public abstract AbstractBeanDefinition cloneBeanDefinition();
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(@Nullable Object other) {
 		if (this == other) {
 			return true;
 		}

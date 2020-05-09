@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.web.socket.server.support;
 
 import java.io.IOException;
@@ -21,47 +22,38 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.mock.web.test.MockHttpServletRequest;
-import org.springframework.mock.web.test.MockHttpServletResponse;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.HandshakeHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
+import org.springframework.web.testfixture.servlet.MockHttpServletRequest;
+import org.springframework.web.testfixture.servlet.MockHttpServletResponse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link WebSocketHttpRequestHandler}.
+ *
  * @author Rossen Stoyanchev
  * @since 5.1.9
  */
 public class WebSocketHttpRequestHandlerTests {
 
-	private HandshakeHandler handshakeHandler;
+	private final HandshakeHandler handshakeHandler = mock(HandshakeHandler.class);
 
-	private WebSocketHttpRequestHandler requestHandler;
+	private final WebSocketHttpRequestHandler requestHandler = new WebSocketHttpRequestHandler(mock(WebSocketHandler.class), this.handshakeHandler);
 
-	private MockHttpServletResponse response;
-
-
-	@Before
-	public void setUp() {
-		this.handshakeHandler = mock(HandshakeHandler.class);
-		this.requestHandler = new WebSocketHttpRequestHandler(mock(WebSocketHandler.class), this.handshakeHandler);
-		this.response = new MockHttpServletResponse();
-	}
+	private final MockHttpServletResponse response = new MockHttpServletResponse();
 
 
 	@Test
@@ -71,26 +63,24 @@ public class WebSocketHttpRequestHandlerTests {
 		this.requestHandler.handleRequest(new MockHttpServletRequest(), this.response);
 
 		verify(this.handshakeHandler).doHandshake(any(), any(), any(), any());
-		assertEquals("headerValue", this.response.getHeader("headerName"));
+		assertThat(this.response.getHeader("headerName")).isEqualTo("headerValue");
 	}
 
 	@Test
-	public void failure() throws ServletException, IOException {
+	public void failure() {
 		TestInterceptor interceptor = new TestInterceptor(true);
 		this.requestHandler.setHandshakeInterceptors(Collections.singletonList(interceptor));
 
-		when(this.handshakeHandler.doHandshake(any(), any(), any(), any()))
-				.thenThrow(new IllegalStateException("bad state"));
+		given(this.handshakeHandler.doHandshake(any(), any(), any(), any()))
+				.willThrow(new IllegalStateException("bad state"));
 
-		try {
-			this.requestHandler.handleRequest(new MockHttpServletRequest(), this.response);
-			fail();
-		}
-		catch (HandshakeFailureException ex) {
-			assertSame(ex, interceptor.getException());
-			assertEquals("headerValue", this.response.getHeader("headerName"));
-			assertEquals("exceptionHeaderValue", this.response.getHeader("exceptionHeaderName"));
-		}
+		assertThatThrownBy(() -> this.requestHandler.handleRequest(new MockHttpServletRequest(), this.response))
+				.isInstanceOf(HandshakeFailureException.class)
+				.hasRootCauseInstanceOf(IllegalStateException.class)
+				.hasMessageEndingWith("bad state");
+
+		assertThat(this.response.getHeader("headerName")).isEqualTo("headerValue");
+		assertThat(this.response.getHeader("exceptionHeaderName")).isEqualTo("exceptionHeaderValue");
 	}
 
 	@Test // gh-23179
@@ -101,7 +91,7 @@ public class WebSocketHttpRequestHandlerTests {
 		this.requestHandler.handleRequest(new MockHttpServletRequest(), this.response);
 
 		verifyNoMoreInteractions(this.handshakeHandler);
-		assertEquals("headerValue", this.response.getHeader("headerName"));
+		assertThat(this.response.getHeader("headerName")).isEqualTo("headerValue");
 	}
 
 
@@ -109,16 +99,8 @@ public class WebSocketHttpRequestHandlerTests {
 
 		private final boolean allowHandshake;
 
-		private Exception exception;
-
-
 		private TestInterceptor(boolean allowHandshake) {
 			this.allowHandshake = allowHandshake;
-		}
-
-
-		public Exception getException() {
-			return this.exception;
 		}
 
 
@@ -135,7 +117,6 @@ public class WebSocketHttpRequestHandlerTests {
 				WebSocketHandler wsHandler, Exception exception) {
 
 			response.getHeaders().add("exceptionHeaderName", "exceptionHeaderValue");
-			this.exception = exception;
 		}
 	}
 

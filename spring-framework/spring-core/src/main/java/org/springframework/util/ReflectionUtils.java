@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,21 +46,12 @@ import org.springframework.lang.Nullable;
 public abstract class ReflectionUtils {
 
 	/**
-	 * Pre-built MethodFilter that matches all non-bridge methods.
-	 * @since 3.0
-	 * @deprecated as of 5.0.11, in favor of a custom {@link MethodFilter}
-	 */
-	@Deprecated
-	public static final MethodFilter NON_BRIDGED_METHODS =
-			(method -> !method.isBridge());
-
-	/**
 	 * Pre-built MethodFilter that matches all non-bridge non-synthetic methods
 	 * which are not declared on {@code java.lang.Object}.
 	 * @since 3.0.5
 	 */
 	public static final MethodFilter USER_DECLARED_METHODS =
-			(method -> !method.isBridge() && !method.isSynthetic() && method.getDeclaringClass() != Object.class);
+			(method -> !method.isBridge() && !method.isSynthetic());
 
 	/**
 	 * Pre-built FieldFilter that matches all non-static, non-final fields.
@@ -76,9 +66,13 @@ public abstract class ReflectionUtils {
 	 */
 	private static final String CGLIB_RENAMED_METHOD_PREFIX = "CGLIB$";
 
+	private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
+
 	private static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
 	private static final Field[] EMPTY_FIELD_ARRAY = new Field[0];
+
+	private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
 
 	/**
@@ -96,8 +90,9 @@ public abstract class ReflectionUtils {
 	// Exception handling
 
 	/**
-	 * Handle the given reflection exception. Should only be called if no
-	 * checked exception is expected to be thrown by the target method.
+	 * Handle the given reflection exception.
+	 * <p>Should only be called if no checked exception is expected to be thrown
+	 * by a target method, or if an error occurs while accessing a method or field.
 	 * <p>Throws the underlying RuntimeException or Error in case of an
 	 * InvocationTargetException with such a root cause. Throws an
 	 * IllegalStateException with an appropriate message or
@@ -109,7 +104,7 @@ public abstract class ReflectionUtils {
 			throw new IllegalStateException("Method not found: " + ex.getMessage());
 		}
 		if (ex instanceof IllegalAccessException) {
-			throw new IllegalStateException("Could not access method: " + ex.getMessage());
+			throw new IllegalStateException("Could not access method or field: " + ex.getMessage());
 		}
 		if (ex instanceof InvocationTargetException) {
 			handleInvocationTargetException((InvocationTargetException) ex);
@@ -221,7 +216,7 @@ public abstract class ReflectionUtils {
 	 */
 	@Nullable
 	public static Method findMethod(Class<?> clazz, String name) {
-		return findMethod(clazz, name, new Class<?>[0]);
+		return findMethod(clazz, name, EMPTY_CLASS_ARRAY);
 	}
 
 	/**
@@ -240,16 +235,21 @@ public abstract class ReflectionUtils {
 		Assert.notNull(name, "Method name must not be null");
 		Class<?> searchType = clazz;
 		while (searchType != null) {
-			Method[] methods = (searchType.isInterface() ? searchType.getMethods() : getDeclaredMethods(searchType));
+			Method[] methods = (searchType.isInterface() ? searchType.getMethods() :
+					getDeclaredMethods(searchType, false));
 			for (Method method : methods) {
-				if (name.equals(method.getName()) &&
-						(paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
+				if (name.equals(method.getName()) && (paramTypes == null || hasSameParams(method, paramTypes))) {
 					return method;
 				}
 			}
 			searchType = searchType.getSuperclass();
 		}
 		return null;
+	}
+
+	private static boolean hasSameParams(Method method, Class<?>[] paramTypes) {
+		return (paramTypes.length == method.getParameterCount() &&
+				Arrays.equals(paramTypes, method.getParameterTypes()));
 	}
 
 	/**
@@ -263,7 +263,7 @@ public abstract class ReflectionUtils {
 	 */
 	@Nullable
 	public static Object invokeMethod(Method method, @Nullable Object target) {
-		return invokeMethod(method, target, new Object[0]);
+		return invokeMethod(method, target, EMPTY_OBJECT_ARRAY);
 	}
 
 	/**
@@ -283,52 +283,6 @@ public abstract class ReflectionUtils {
 		}
 		catch (Exception ex) {
 			handleReflectionException(ex);
-		}
-		throw new IllegalStateException("Should never get here");
-	}
-
-	/**
-	 * Invoke the specified JDBC API {@link Method} against the supplied target
-	 * object with no arguments.
-	 * @param method the method to invoke
-	 * @param target the target object to invoke the method on
-	 * @return the invocation result, if any
-	 * @throws SQLException the JDBC API SQLException to rethrow (if any)
-	 * @see #invokeJdbcMethod(java.lang.reflect.Method, Object, Object[])
-	 * @deprecated as of 5.0.11, in favor of custom SQLException handling
-	 */
-	@Deprecated
-	@Nullable
-	public static Object invokeJdbcMethod(Method method, @Nullable Object target) throws SQLException {
-		return invokeJdbcMethod(method, target, new Object[0]);
-	}
-
-	/**
-	 * Invoke the specified JDBC API {@link Method} against the supplied target
-	 * object with the supplied arguments.
-	 * @param method the method to invoke
-	 * @param target the target object to invoke the method on
-	 * @param args the invocation arguments (may be {@code null})
-	 * @return the invocation result, if any
-	 * @throws SQLException the JDBC API SQLException to rethrow (if any)
-	 * @see #invokeMethod(java.lang.reflect.Method, Object, Object[])
-	 * @deprecated as of 5.0.11, in favor of custom SQLException handling
-	 */
-	@Deprecated
-	@Nullable
-	public static Object invokeJdbcMethod(Method method, @Nullable Object target, @Nullable Object... args)
-			throws SQLException {
-		try {
-			return method.invoke(target, args);
-		}
-		catch (IllegalAccessException ex) {
-			handleReflectionException(ex);
-		}
-		catch (InvocationTargetException ex) {
-			if (ex.getTargetException() instanceof SQLException) {
-				throw (SQLException) ex.getTargetException();
-			}
-			handleInvocationTargetException(ex);
 		}
 		throw new IllegalStateException("Should never get here");
 	}
@@ -364,7 +318,7 @@ public abstract class ReflectionUtils {
 	 * @see #doWithMethods
 	 */
 	public static void doWithLocalMethods(Class<?> clazz, MethodCallback mc) {
-		Method[] methods = getDeclaredMethods(clazz);
+		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
 			try {
 				mc.doWith(method);
@@ -401,7 +355,7 @@ public abstract class ReflectionUtils {
 	 */
 	public static void doWithMethods(Class<?> clazz, MethodCallback mc, @Nullable MethodFilter mf) {
 		// Keep backing up the inheritance hierarchy.
-		Method[] methods = getDeclaredMethods(clazz);
+		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
 			if (mf != null && !mf.matches(method)) {
 				continue;
@@ -413,7 +367,7 @@ public abstract class ReflectionUtils {
 				throw new IllegalStateException("Not allowed to access method '" + method.getName() + "': " + ex);
 			}
 		}
-		if (clazz.getSuperclass() != null) {
+		if (clazz.getSuperclass() != null && (mf != USER_DECLARED_METHODS || clazz.getSuperclass() != Object.class)) {
 			doWithMethods(clazz.getSuperclass(), mc, mf);
 		}
 		else if (clazz.isInterface()) {
@@ -443,12 +397,26 @@ public abstract class ReflectionUtils {
 	 * @throws IllegalStateException if introspection fails
 	 */
 	public static Method[] getUniqueDeclaredMethods(Class<?> leafClass) {
+		return getUniqueDeclaredMethods(leafClass, null);
+	}
+
+	/**
+	 * Get the unique set of declared methods on the leaf class and all superclasses.
+	 * Leaf class methods are included first and while traversing the superclass hierarchy
+	 * any methods found with signatures matching a method already included are filtered out.
+	 * @param leafClass the class to introspect
+	 * @param mf the filter that determines the methods to take into account
+	 * @throws IllegalStateException if introspection fails
+	 * @since 5.2
+	 */
+	public static Method[] getUniqueDeclaredMethods(Class<?> leafClass, @Nullable MethodFilter mf) {
 		final List<Method> methods = new ArrayList<>(32);
 		doWithMethods(leafClass, method -> {
 			boolean knownSignature = false;
 			Method methodBeingOverriddenWithCovariantReturnType = null;
 			for (Method existingMethod : methods) {
 				if (method.getName().equals(existingMethod.getName()) &&
+						method.getParameterCount() == existingMethod.getParameterCount() &&
 						Arrays.equals(method.getParameterTypes(), existingMethod.getParameterTypes())) {
 					// Is this a covariant return type situation?
 					if (existingMethod.getReturnType() != method.getReturnType() &&
@@ -467,21 +435,27 @@ public abstract class ReflectionUtils {
 			if (!knownSignature && !isCglibRenamedMethod(method)) {
 				methods.add(method);
 			}
-		});
+		}, mf);
 		return methods.toArray(EMPTY_METHOD_ARRAY);
 	}
 
 	/**
-	 * This variant retrieves {@link Class#getDeclaredMethods()} from a local cache
-	 * in order to avoid the JVM's SecurityManager check and defensive array copying.
-	 * In addition, it also includes Java 8 default methods from locally implemented
-	 * interfaces, since those are effectively to be treated just like declared methods.
+	 * Variant of {@link Class#getDeclaredMethods()} that uses a local cache in
+	 * order to avoid the JVM's SecurityManager check and new Method instances.
+	 * In addition, it also includes Java 8 default methods from locally
+	 * implemented interfaces, since those are effectively to be treated just
+	 * like declared methods.
 	 * @param clazz the class to introspect
 	 * @return the cached array of methods
 	 * @throws IllegalStateException if introspection fails
+	 * @since 5.2
 	 * @see Class#getDeclaredMethods()
 	 */
-	private static Method[] getDeclaredMethods(Class<?> clazz) {
+	public static Method[] getDeclaredMethods(Class<?> clazz) {
+		return getDeclaredMethods(clazz, true);
+	}
+
+	private static Method[] getDeclaredMethods(Class<?> clazz, boolean defensive) {
 		Assert.notNull(clazz, "Class must not be null");
 		Method[] result = declaredMethodsCache.get(clazz);
 		if (result == null) {
@@ -507,7 +481,7 @@ public abstract class ReflectionUtils {
 						"] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
 			}
 		}
-		return result;
+		return (result.length == 0 || !defensive) ? result : result.clone();
 	}
 
 	@Nullable
@@ -534,8 +508,10 @@ public abstract class ReflectionUtils {
 		if (method == null || !method.getName().equals("equals")) {
 			return false;
 		}
-		Class<?>[] paramTypes = method.getParameterTypes();
-		return (paramTypes.length == 1 && paramTypes[0] == Object.class);
+		if (method.getParameterCount() != 1) {
+			return false;
+		}
+		return method.getParameterTypes()[0] == Object.class;
 	}
 
 	/**
@@ -638,10 +614,11 @@ public abstract class ReflectionUtils {
 	}
 
 	/**
-	 * Set the field represented by the supplied {@link Field field object} on the
-	 * specified {@link Object target object} to the specified {@code value}.
-	 * In accordance with {@link Field#set(Object, Object)} semantics, the new value
+	 * Set the field represented by the supplied {@linkplain Field field object} on
+	 * the specified {@linkplain Object target object} to the specified {@code value}.
+	 * <p>In accordance with {@link Field#set(Object, Object)} semantics, the new value
 	 * is automatically unwrapped if the underlying field has a primitive type.
+	 * <p>This method does not support setting {@code static final} fields.
 	 * <p>Thrown exceptions are handled via a call to {@link #handleReflectionException(Exception)}.
 	 * @param field the field to set
 	 * @param target the target object on which to set the field
@@ -653,8 +630,6 @@ public abstract class ReflectionUtils {
 		}
 		catch (IllegalAccessException ex) {
 			handleReflectionException(ex);
-			throw new IllegalStateException(
-					"Unexpected reflection exception - " + ex.getClass().getName() + ": " + ex.getMessage());
 		}
 	}
 
@@ -675,9 +650,8 @@ public abstract class ReflectionUtils {
 		}
 		catch (IllegalAccessException ex) {
 			handleReflectionException(ex);
-			throw new IllegalStateException(
-					"Unexpected reflection exception - " + ex.getClass().getName() + ": " + ex.getMessage());
 		}
+		throw new IllegalStateException("Should never get here");
 	}
 
 	/**

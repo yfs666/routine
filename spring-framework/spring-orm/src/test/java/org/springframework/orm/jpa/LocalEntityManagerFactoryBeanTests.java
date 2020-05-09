@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import javax.persistence.spi.PersistenceProvider;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.ProviderUtil;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Rod Johnson
@@ -43,7 +43,7 @@ public class LocalEntityManagerFactoryBeanTests extends AbstractEntityManagerFac
 
 	private static Map actualProps;
 
-	@After
+	@AfterEach
 	public void verifyClosed() throws Exception {
 		verify(mockEmf).close();
 	}
@@ -73,9 +73,9 @@ public class LocalEntityManagerFactoryBeanTests extends AbstractEntityManagerFac
 		}
 		lemfb.afterPropertiesSet();
 
-		assertSame(entityManagerName, actualName);
+		assertThat(actualName).isSameAs(entityManagerName);
 		if (props != null) {
-			assertEquals(props, actualProps);
+			assertThat((Object) actualProps).isEqualTo(props);
 		}
 		checkInvariants(lemfb);
 
@@ -103,11 +103,13 @@ public class LocalEntityManagerFactoryBeanTests extends AbstractEntityManagerFac
 		}
 
 		// JPA 2.1 method
+		@Override
 		public void generateSchema(PersistenceUnitInfo persistenceUnitInfo, Map map) {
 			throw new UnsupportedOperationException();
 		}
 
 		// JPA 2.1 method
+		@Override
 		public boolean generateSchema(String persistenceUnitName, Map map) {
 			throw new UnsupportedOperationException();
 		}

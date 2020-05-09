@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
  * character entity references.
  *
  * <p>Reference:
- * <a href="http://www.w3.org/TR/html4/charset.html">http://www.w3.org/TR/html4/charset.html</a>
+ * <a href="https://www.w3.org/TR/html4/charset.html">https://www.w3.org/TR/html4/charset.html</a>
  *
  * <p>For a comprehensive set of String escaping utilities, consider
  * <a href="https://commons.apache.org/proper/commons-text/">Apache Commons Text</a>
@@ -53,8 +53,8 @@ public abstract class HtmlUtils {
 	 * <p>Escapes all special characters to their corresponding
 	 * entity reference (e.g. {@code &lt;}).
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @return the escaped string
@@ -71,8 +71,8 @@ public abstract class HtmlUtils {
 	 * specified encoding. In other words, if a special character does
 	 * not have to be escaped for the given encoding, it may not be.
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
@@ -102,8 +102,8 @@ public abstract class HtmlUtils {
 	 * <p>Escapes all special characters to their corresponding numeric
 	 * reference in decimal format (&#<i>Decimal</i>;).
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @return the escaped string
@@ -120,8 +120,8 @@ public abstract class HtmlUtils {
 	 * specified encoding. In other words, if a special character does
 	 * not have to be escaped for the given encoding, it may not be.
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
@@ -152,8 +152,8 @@ public abstract class HtmlUtils {
 	 * <p>Escapes all special characters to their corresponding numeric
 	 * reference in hex format (&#x<i>Hex</i>;).
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @return the escaped string
@@ -170,8 +170,8 @@ public abstract class HtmlUtils {
 	 * specified encoding. In other words, if a special character does
 	 * not have to be escaped for the given encoding, it may not be.
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (unescaped) input string
 	 * @param encoding the name of a supported {@link java.nio.charset.Charset charset}
@@ -209,8 +209,8 @@ public abstract class HtmlUtils {
 	 * <p>Gracefully handles malformed character references by copying original
 	 * characters as is when encountered.
 	 * <p>Reference:
-	 * <a href="http://www.w3.org/TR/html4/sgml/entities.html">
-	 * http://www.w3.org/TR/html4/sgml/entities.html
+	 * <a href="https://www.w3.org/TR/html4/sgml/entities.html">
+	 * https://www.w3.org/TR/html4/sgml/entities.html
 	 * </a>
 	 * @param input the (escaped) input string
 	 * @return the unescaped string

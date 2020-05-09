@@ -45,9 +45,10 @@ import org.springframework.util.MimeType;
  * @since 5.0
  * @param <T> the element type
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractDataBufferDecoder<T> extends AbstractDecoder<T> {
 
-	private int maxInMemorySize = -1;
+	private int maxInMemorySize = 256 * 1024;
 
 
 	protected AbstractDataBufferDecoder(MimeType... supportedMimeTypes) {
@@ -63,8 +64,7 @@ public abstract class AbstractDataBufferDecoder<T> extends AbstractDecoder<T> {
 	 * {@link org.springframework.core.io.Resource Resource}, {@code String}, etc.
 	 * It can also occur when splitting the input stream, e.g. delimited text,
 	 * in which case the limit applies to data buffered between delimiters.
-	 * <p>By default in 5.1 this is set to -1, unlimited. In 5.2 the default
-	 * value for this limit is set to 256K.
+	 * <p>By default this is set to 256K.
 	 * @param byteCount the max number of bytes to buffer, or -1 for unlimited
 	 * @since 5.1.11
 	 */
@@ -98,8 +98,15 @@ public abstract class AbstractDataBufferDecoder<T> extends AbstractDecoder<T> {
 
 	/**
 	 * How to decode a {@code DataBuffer} to the target element type.
+	 * @deprecated as of 5.2, please implement
+	 * {@link #decode(DataBuffer, ResolvableType, MimeType, Map)} instead
 	 */
-	protected abstract T decodeDataBuffer(DataBuffer buffer, ResolvableType elementType,
-			@Nullable MimeType mimeType, @Nullable Map<String, Object> hints);
+	@Deprecated
+	@Nullable
+	protected T decodeDataBuffer(DataBuffer buffer, ResolvableType elementType,
+			@Nullable MimeType mimeType, @Nullable Map<String, Object> hints) {
+
+		return decode(buffer, elementType, mimeType, hints);
+	}
 
 }

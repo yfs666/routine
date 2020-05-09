@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2018 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,6 @@ public abstract class RequestPredicates {
 		return request -> true;
 	}
 
-
 	/**
 	 * Return a {@code RequestPredicate} that matches if the request's
 	 * HTTP method is equal to the given method.
@@ -112,6 +111,9 @@ public abstract class RequestPredicates {
 	 */
 	public static RequestPredicate path(String pattern) {
 		Assert.notNull(pattern, "'pattern' must not be null");
+		if (!pattern.isEmpty() && !pattern.startsWith("/")) {
+			pattern = "/" + pattern;
+		}
 		return pathPredicates(DEFAULT_PATTERN_PARSER).apply(pattern);
 	}
 
@@ -350,7 +352,7 @@ public abstract class RequestPredicates {
 		void pathExtension(String extension);
 
 		/**
-		 * Receive notification of a HTTP header predicate.
+		 * Receive notification of an HTTP header predicate.
 		 * @param name the name of the HTTP header to check
 		 * @param value the desired value of the HTTP header
 		 * @see RequestPredicates#headers(Predicate)
@@ -943,6 +945,11 @@ public abstract class RequestPredicates {
 		@Override
 		public Optional<InetSocketAddress> remoteAddress() {
 			return this.request.remoteAddress();
+		}
+
+		@Override
+		public Optional<InetSocketAddress> localAddress() {
+			return this.request.localAddress();
 		}
 
 		@Override

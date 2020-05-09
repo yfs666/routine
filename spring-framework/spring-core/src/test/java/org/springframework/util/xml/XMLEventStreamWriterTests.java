@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2012 the original author or authors.
+ * Copyright 2002-2019 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,16 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 import org.xmlunit.util.Predicate;
 
-import static org.junit.Assert.*;
-import static org.xmlunit.matchers.CompareMatcher.*;
+import org.springframework.core.testfixture.xml.XmlContent;
 
-public class XMLEventStreamWriterTests {
+import static org.assertj.core.api.Assertions.assertThat;
+
+class XMLEventStreamWriterTests {
 
 	private static final String XML =
 			"<?pi content?><root xmlns='namespace'><prefix:child xmlns:prefix='namespace2'><!--comment-->content</prefix:child></root>";
@@ -39,8 +40,8 @@ public class XMLEventStreamWriterTests {
 
 	private StringWriter stringWriter;
 
-	@Before
-	public void createStreamReader() throws Exception {
+	@BeforeEach
+	void createStreamReader() throws Exception {
 		stringWriter = new StringWriter();
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
 		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(stringWriter);
@@ -48,7 +49,7 @@ public class XMLEventStreamWriterTests {
 	}
 
 	@Test
-	public void write() throws Exception {
+	void write() throws Exception {
 		streamWriter.writeStartDocument();
 		streamWriter.writeProcessingInstruction("pi", "content");
 		streamWriter.writeStartElement("namespace", "root");
@@ -62,7 +63,7 @@ public class XMLEventStreamWriterTests {
 		streamWriter.writeEndDocument();
 
 		Predicate<Node> nodeFilter = n -> n.getNodeType() != Node.DOCUMENT_TYPE_NODE && n.getNodeType() != Node.PROCESSING_INSTRUCTION_NODE;
-		assertThat(stringWriter.toString(), isSimilarTo(XML).withNodeFilter(nodeFilter));
+		assertThat(XmlContent.from(stringWriter)).isSimilarTo(XML, nodeFilter);
 	}
 
 
