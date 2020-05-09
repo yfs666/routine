@@ -90,9 +90,11 @@ public class ConfigurationWarningsApplicationContextInitializer
 
 		@Override
 		public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+			// 遍历校验数组
 			for (Check check : this.checks) {
 				String message = check.getWarning(registry);
 				if (StringUtils.hasLength(message)) {
+					// 如果有错，就打印warn日志
 					warn(message);
 				}
 			}
@@ -126,7 +128,10 @@ public class ConfigurationWarningsApplicationContextInitializer
 	 * {@link Check} for {@code @ComponentScan} on problematic package.
 	 */
 	protected static class ComponentScanPackageCheck implements Check {
-
+		/**
+		 * 有问题的包的集合
+		 * 也就是禁止使用 @componentScan 注解扫描的包的集合
+		 */
 		private static final Set<String> PROBLEM_PACKAGES;
 
 		static {
@@ -138,8 +143,11 @@ public class ConfigurationWarningsApplicationContextInitializer
 
 		@Override
 		public String getWarning(BeanDefinitionRegistry registry) {
+			// 获得要扫描的包
 			Set<String> scannedPackages = getComponentScanningPackages(registry);
+			// 有问题的包
 			List<String> problematicPackages = getProblematicPackages(scannedPackages);
+			// 如果没有有问题的包，就是没问题
 			if (problematicPackages.isEmpty()) {
 				return null;
 			}
@@ -148,10 +156,13 @@ public class ConfigurationWarningsApplicationContextInitializer
 		}
 
 		protected Set<String> getComponentScanningPackages(BeanDefinitionRegistry registry) {
+			// 扫描包的集合
 			Set<String> packages = new LinkedHashSet<>();
+			// 获得所有BeanDefinition名称数组
 			String[] names = registry.getBeanDefinitionNames();
 			for (String name : names) {
 				BeanDefinition definition = registry.getBeanDefinition(name);
+				// 判断是否是注解扫描
 				if (definition instanceof AnnotatedBeanDefinition) {
 					AnnotatedBeanDefinition annotatedDefinition = (AnnotatedBeanDefinition) definition;
 					addComponentScanningPackages(packages, annotatedDefinition.getMetadata());
@@ -161,8 +172,10 @@ public class ConfigurationWarningsApplicationContextInitializer
 		}
 
 		private void addComponentScanningPackages(Set<String> packages, AnnotationMetadata metadata) {
+			// 获得ComponentScan注解
 			AnnotationAttributes attributes = AnnotationAttributes
 					.fromMap(metadata.getAnnotationAttributes(ComponentScan.class.getName(), true));
+			// 如果存在，则添加到packages中
 			if (attributes != null) {
 				addPackages(packages, attributes.getStringArray("value"));
 				addPackages(packages, attributes.getStringArray("basePackages"));

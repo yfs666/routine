@@ -680,10 +680,13 @@ public class SpringApplication {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void applyInitializers(ConfigurableApplicationContext context) {
+		// 遍历set
 		for (ApplicationContextInitializer initializer : getInitializers()) {
+			// 校验泛型非空
 			Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
 					ApplicationContextInitializer.class);
 			Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
+			// 初始化
 			initializer.initialize(context);
 		}
 	}

@@ -43,7 +43,7 @@ public class DelegatingApplicationContextInitializer
 		implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
 
 	// NOTE: Similar to org.springframework.web.context.ContextLoader
-
+	// 环境变量配置的属性
 	private static final String PROPERTY_NAME = "context.initializer.classes";
 
 	private int order = 0;
@@ -51,6 +51,7 @@ public class DelegatingApplicationContextInitializer
 	@Override
 	public void initialize(ConfigurableApplicationContext context) {
 		ConfigurableEnvironment environment = context.getEnvironment();
+		// 从环境变量中获取类集合
 		List<Class<?>> initializerClasses = getInitializerClasses(environment);
 		if (!initializerClasses.isEmpty()) {
 			applyInitializerClasses(context, initializerClasses);
@@ -85,6 +86,7 @@ public class DelegatingApplicationContextInitializer
 		for (Class<?> initializerClass : initializerClasses) {
 			initializers.add(instantiateInitializer(contextClass, initializerClass));
 		}
+		// 执行初始化逻辑
 		applyInitializers(context, initializers);
 	}
 
@@ -96,13 +98,16 @@ public class DelegatingApplicationContextInitializer
 						"Could not add context initializer [%s] as its generic parameter [%s] is not assignable "
 								+ "from the type of application context used by this context loader [%s]: ",
 						initializerClass.getName(), requireContextClass.getName(), contextClass.getName()));
+		// 创建对象
 		return (ApplicationContextInitializer<?>) BeanUtils.instantiateClass(initializerClass);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void applyInitializers(ConfigurableApplicationContext context,
 			List<ApplicationContextInitializer<?>> initializers) {
+		// 排序
 		initializers.sort(new AnnotationAwareOrderComparator());
+		// 循环执行初始化
 		for (ApplicationContextInitializer initializer : initializers) {
 			initializer.initialize(context);
 		}
