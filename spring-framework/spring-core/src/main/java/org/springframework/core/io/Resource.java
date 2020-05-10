@@ -139,6 +139,7 @@ public interface Resource extends InputStreamSource {
 	 * Determine the content length for this resource.
 	 * @throws IOException if the resource cannot be resolved
 	 * (in the file system or as some other known physical resource type)
+	 * 资源内容的长度
 	 */
 	long contentLength() throws IOException;
 
@@ -146,6 +147,7 @@ public interface Resource extends InputStreamSource {
 	 * Determine the last-modified timestamp for this resource.
 	 * @throws IOException if the resource cannot be resolved
 	 * (in the file system or as some other known physical resource type)
+	 * 资源的最后修改时间
 	 */
 	long lastModified() throws IOException;
 
@@ -154,6 +156,7 @@ public interface Resource extends InputStreamSource {
 	 * @param relativePath the relative path (relative to this resource)
 	 * @return the resource handle for the relative resource
 	 * @throws IOException if the relative resource cannot be determined
+	 * 根据资源的相对路径创建新资源
 	 */
 	Resource createRelative(String relativePath) throws IOException;
 
