@@ -200,9 +200,14 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		}
 	}
 
-
+	/**
+	 * 内置的ResourceLoader资源定位器
+	 */
 	private final ResourceLoader resourceLoader;
 
+	/**
+	 * Ant 路径匹配器
+	 */
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
 
@@ -279,6 +284,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		Assert.notNull(locationPattern, "Location pattern must not be null");
 		if (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
 			// a class path resource (multiple resources for same name possible)
+			// 路径包含通配符
 			if (getPathMatcher().isPattern(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()))) {
 				// a class path resource pattern
 				return findPathMatchingResources(locationPattern);
@@ -318,10 +324,12 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
+		// 执行所有的classpath资源
 		Set<Resource> result = doFindAllClassPathResources(path);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Resolved classpath location [" + location + "] to resources " + result);
 		}
+		// set转化成Resource数组
 		return result.toArray(new Resource[0]);
 	}
 
@@ -335,11 +343,14 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	protected Set<Resource> doFindAllClassPathResources(String path) throws IOException {
 		Set<Resource> result = new LinkedHashSet<>(16);
 		ClassLoader cl = getClassLoader();
+		// 通过ClassLoader加载路径下的所有资源
 		Enumeration<URL> resourceUrls = (cl != null ? cl.getResources(path) : ClassLoader.getSystemResources(path));
 		while (resourceUrls.hasMoreElements()) {
 			URL url = resourceUrls.nextElement();
+			// 将URL转化成UrlResource
 			result.add(convertClassLoaderURL(url));
 		}
+		// 加载路径下所有的jar包
 		if ("".equals(path)) {
 			// The above result is likely to be incomplete, i.e. only containing file system references.
 			// We need to have pointers to each of the jar files on the classpath as well...
@@ -489,10 +500,13 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @see org.springframework.util.PathMatcher
 	 */
 	protected Resource[] findPathMatchingResources(String locationPattern) throws IOException {
+		// 确定根路径和子路径
 		String rootDirPath = determineRootDir(locationPattern);
 		String subPattern = locationPattern.substring(rootDirPath.length());
+		// 属于循环调用，以类递归方式
 		Resource[] rootDirResources = getResources(rootDirPath);
 		Set<Resource> result = new LinkedHashSet<>(16);
+		// 循环处理各种类型的资源，最后转化成资源数组
 		for (Resource rootDirResource : rootDirResources) {
 			rootDirResource = resolveRootDirResource(rootDirResource);
 			URL rootDirUrl = rootDirResource.getURL();
@@ -527,16 +541,23 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * remainder of the location as pattern.
 	 * <p>Will return "/WEB-INF/" for the pattern "/WEB-INF/*.xml",
 	 * for example.
+	 * eg
 	 * @param location the location to check
 	 * @return the part of the location that denotes the root directory
 	 * @see #retrieveMatchingFiles
 	 */
+	//	 classpath*:test/cc*/spring-*.xml  则确定跟路径为   classpath*:test/
+	//   classpath*:test/aa/spring-*.xml   则表示根路径为   classpath*:test/aa/
 	protected String determineRootDir(String location) {
+		//  找到冒号的后一位
 		int prefixEnd = location.indexOf(':') + 1;
 		int rootDirEnd = location.length();
+		// 在从冒号开始到最后的字符串中，循环判断是否包含通配符，如果包含，则截取最后一个由斜杠分隔的部分
+		// 例如：在我们路径中，就是最后的ap?-context.xml这一段。再循环判断剩下的部分，直到剩下的路径中都不包含通配符。
 		while (rootDirEnd > prefixEnd && getPathMatcher().isPattern(location.substring(prefixEnd, rootDirEnd))) {
 			rootDirEnd = location.lastIndexOf('/', rootDirEnd - 2) + 1;
 		}
+		// 如果查找完成后，rootDirEnd = 0 了，则将之前赋值的 prefixEnd 的值赋给 rootDirEnd ，也就是冒号的后一位
 		if (rootDirEnd == 0) {
 			rootDirEnd = prefixEnd;
 		}

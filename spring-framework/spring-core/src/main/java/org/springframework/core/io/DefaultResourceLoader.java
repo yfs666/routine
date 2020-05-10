@@ -143,14 +143,14 @@ public class DefaultResourceLoader implements ResourceLoader {
 	@Override
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
-
+		// 主要用于实现自定义的Resource，如果我们有自定义Resource，不需要写一个R继承ResourceLoader的类，而是使用默认的，通过addProtocolResolver传入自己的协议解析器即可
 		for (ProtocolResolver protocolResolver : getProtocolResolvers()) {
 			Resource resource = protocolResolver.resolve(location, this);
 			if (resource != null) {
 				return resource;
 			}
 		}
-
+		// 如果是windows的D:/开头的，会找不到解析类型，最后会抛异常，然后返回一个ClassPathContextResource，通常这里会有问题
 		if (location.startsWith("/")) {
 			return getResourceByPath(location);
 		}
