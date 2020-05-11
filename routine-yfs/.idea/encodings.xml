@@ -222,6 +222,8 @@
     <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-project/spring-boot/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-tests/spring-boot-integration-tests/spring-boot-configuration-processor-tests/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../spring-boot/spring-boot-tests/spring-boot-integration-tests/spring-boot-launch-script-tests/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-framework/spring-beans/src/main/java/org/springframework/beans/factory/support/AbstractBeanDefinitionReader.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../spring-framework/spring-beans/src/main/java/org/springframework/beans/factory/xml/BeanDefinitionParserDelegate.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../spring-framework/spring-beans/src/main/java/org/springframework/beans/factory/xml/DefaultBeanDefinitionDocumentReader.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../spring-framework/spring-beans/src/main/java/org/springframework/beans/factory/xml/DefaultDocumentLoader.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../spring-framework/spring-beans/src/main/java/org/springframework/beans/factory/xml/PluggableSchemaResolver.java" charset="UTF-8" />
