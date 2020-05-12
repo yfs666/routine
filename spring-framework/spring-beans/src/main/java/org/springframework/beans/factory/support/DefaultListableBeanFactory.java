@@ -910,7 +910,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		Assert.hasText(beanName, "Bean name must not be empty");
 		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-
+		// 校验beanDefinition，这是注册之前的最后一次校验，主要是对属性methodOverrides进行校验
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
 				((AbstractBeanDefinition) beanDefinition).validate();
@@ -948,9 +948,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							"] with [" + beanDefinition + "]");
 				}
 			}
+			// 允许覆盖，直接覆盖原有的
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
 		else {
+			// 检查是否已开启，以此来判断是否对map进行并发控制（加锁）
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
