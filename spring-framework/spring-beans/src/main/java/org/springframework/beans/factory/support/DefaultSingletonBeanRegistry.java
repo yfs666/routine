@@ -171,6 +171,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
 	 * @return the registered singleton object, or {@code null} if none found
+	 * 首先从一级缓存singletonObjects获取
+	 * 如果没有，并且当前bean正在创建，从二级缓存earlySingletonObjects获取，它是未创建完的对象
+	 * 如果二级缓存没有，并且允许提前关联，则会通过三级缓存singletonFactories获取，获取到后放入二级缓存，并同时删除三级缓存
+	 * 二级缓存的意义就是将三级缓存的数据提前曝光，而三级缓存只是一个工厂，它获取对象是一个顺势状态，并且singletonObjects维度串行
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
