@@ -3,9 +3,390 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="dubbo-demo-consumer" />
+        <module name="dubbo-rpc-webservice" />
+        <module name="dubbo-config-spring" />
+        <module name="dubbo-test-benchmark" />
+        <module name="dubbo-rpc-injvm" />
+        <module name="dubbo-remoting-p2p" />
+        <module name="dubbo-registry-api" />
+        <module name="dubbo-serialization-jdk" />
+        <module name="dubbo-remoting-http" />
+        <module name="dubbo-monitor-default" />
+        <module name="dubbo-qos" />
+        <module name="dubbo-common" />
+        <module name="mybatis" />
+        <module name="dubbo-rpc-rmi" />
+        <module name="dubbo-registry-nacos" />
+        <module name="dubbo" />
+        <module name="dubbo-registry-default" />
+        <module name="utils" />
+        <module name="mybatis-generator-gui" />
+        <module name="dubbo-serialization-fst" />
+        <module name="dubbo-registry-redis" />
+        <module name="dubbo-remoting-netty4" />
+        <module name="dubbo-remoting-api" />
+        <module name="dubbo-remoting-mina" />
+        <module name="dubbo-remoting-zookeeper" />
+        <module name="dubbo-filter-cache" />
+        <module name="dubbo-container-log4j" />
+        <module name="dubbo-rpc-thrift" />
+        <module name="dubbo-remoting-netty" />
+        <module name="dubbo-demo-provider" />
+        <module name="dubbo-rpc-memcached" />
+        <module name="dubbo-test-spring3" />
+        <module name="echo-server" />
+        <module name="lambdasinaction" />
+        <module name="dubbo-rpc-dubbo" />
+        <module name="chapter13" />
+        <module name="chapter12" />
+        <module name="chapter11" />
+        <module name="chapter10" />
+        <module name="my-mvc" />
+        <module name="echo-client" />
+        <module name="chapter9" />
+        <module name="chapter8" />
+        <module name="chapter7" />
+        <module name="chapter6" />
+        <module name="chapter5" />
+        <module name="chapter4" />
+        <module name="dubbo-serialization-hessian2" />
+        <module name="dubbo-rpc-rest" />
+        <module name="yfs-netty-study" />
+        <module name="dubbo-demo-api" />
+        <module name="dubbo-filter-validation" />
+        <module name="dubbo-container-spring" />
+        <module name="dubbo-rpc-http" />
+        <module name="dubbo-monitor-api" />
+        <module name="dubbo-registry-multicast" />
+        <module name="dubbo-remoting-grizzly" />
+        <module name="dubbo-cluster" />
+        <module name="dubbo-container-api" />
+        <module name="dubbo-serialization-kryo" />
+        <module name="dubbo-rpc-redis" />
+        <module name="routine-yfs" />
+        <module name="dubbo-test-integration" />
+        <module name="dubbo-rpc-api" />
+        <module name="dubbo-registry-zookeeper" />
+        <module name="dubbo-config-api" />
+        <module name="dubbo-container-logback" />
+        <module name="dubbo-serialization-fastjson" />
+        <module name="dubbo-test-examples" />
+        <module name="dubbo-serialization-api" />
+        <module name="dubbo-rpc-hessian" />
+        <module name="chapter1" />
+      </profile>
+      <profile name="Annotation profile for mapstruct-processor" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
+        </processorPath>
+        <module name="mapstruct-processor" />
+      </profile>
+      <profile name="Annotation profile for MyBatis Generator" enabled="true">
+        <sourceOutputDir name="../../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mybatis-generator-maven-plugin" />
+        <module name="mybatis-generator-systests-mybatis3" />
+        <module name="mybatis-generator-systests-mybatis3-java8" />
+        <module name="mybatis-generator-systests-domtests" />
+        <module name="mybatis-generator-systests-common" />
+        <module name="mybatis-generator-systests-ibatis2-java5" />
+        <module name="mybatis-generator-core" />
+        <module name="mybatis-generator-systests-ibatis2-java2" />
+      </profile>
+      <profile name="Annotation profile for Netty" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="netty-testsuite-shading" />
+        <module name="netty-resolver-dns" />
+        <module name="netty-microbench" />
+        <module name="netty-transport-native-kqueue" />
+        <module name="netty-transport-native-unix-common" />
+        <module name="netty-codec-stomp" />
+        <module name="netty-handler-proxy" />
+        <module name="netty-codec" />
+        <module name="netty-codec-smtp" />
+        <module name="netty-handler" />
+        <module name="netty-resolver" />
+        <module name="netty-transport-rxtx" />
+        <module name="netty-codec-socks" />
+        <module name="netty-buffer" />
+        <module name="netty-example" />
+        <module name="netty-codec-haproxy" />
+        <module name="netty-transport-sctp" />
+        <module name="mapstruct-build-config" />
+        <module name="netty-dev-tools" />
+        <module name="netty-transport-udt" />
+        <module name="netty-common" />
+        <module name="netty-codec-xml" />
+        <module name="mapstruct" />
+        <module name="netty-testsuite-native-image" />
+        <module name="netty-codec-mqtt" />
+        <module name="netty-codec-redis" />
+        <module name="netty-testsuite-http2" />
+        <module name="netty-codec-http" />
+        <module name="netty-testsuite-osgi" />
+        <module name="netty-transport-native-unix-common-tests" />
+        <module name="netty-codec-dns" />
+        <module name="netty-codec-memcache" />
+        <module name="mapstruct-integrationtest" />
+        <module name="mapstruct-jdk8" />
+        <module name="netty-codec-http2" />
+        <module name="mapstruct-distribution" />
+        <module name="netty-testsuite-autobahn" />
+        <module name="netty-transport-native-epoll" />
+        <module name="netty-transport" />
+        <module name="netty-testsuite" />
+        <module name="netty-all" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="chapter1" target="1.7" />
+      <module name="chapter10" target="1.7" />
+      <module name="chapter11" target="1.7" />
+      <module name="chapter12" target="1.7" />
+      <module name="chapter13" target="1.7" />
+      <module name="chapter2" target="1.7" />
+      <module name="chapter4" target="1.7" />
+      <module name="chapter5" target="1.7" />
+      <module name="chapter6" target="1.7" />
+      <module name="chapter7" target="1.7" />
+      <module name="chapter8" target="1.7" />
+      <module name="chapter9" target="1.7" />
+      <module name="dubbo" target="1.6" />
+      <module name="dubbo-bom" target="1.5" />
+      <module name="dubbo-cluster" target="1.6" />
+      <module name="dubbo-common" target="1.6" />
+      <module name="dubbo-config" target="1.6" />
+      <module name="dubbo-config-api" target="1.6" />
+      <module name="dubbo-config-spring" target="1.6" />
+      <module name="dubbo-container" target="1.6" />
+      <module name="dubbo-container-api" target="1.6" />
+      <module name="dubbo-container-log4j" target="1.6" />
+      <module name="dubbo-container-logback" target="1.6" />
+      <module name="dubbo-container-spring" target="1.6" />
+      <module name="dubbo-demo" target="1.6" />
+      <module name="dubbo-demo-api" target="1.6" />
+      <module name="dubbo-demo-consumer" target="1.6" />
+      <module name="dubbo-demo-provider" target="1.6" />
+      <module name="dubbo-dependencies-bom" target="1.5" />
+      <module name="dubbo-distribution" target="1.6" />
+      <module name="dubbo-filter" target="1.6" />
+      <module name="dubbo-filter-cache" target="1.6" />
+      <module name="dubbo-filter-validation" target="1.6" />
+      <module name="dubbo-monitor" target="1.6" />
+      <module name="dubbo-monitor-api" target="1.6" />
+      <module name="dubbo-monitor-default" target="1.6" />
+      <module name="dubbo-parent" target="1.6" />
+      <module name="dubbo-plugin" target="1.6" />
+      <module name="dubbo-qos" target="1.6" />
+      <module name="dubbo-registry" target="1.6" />
+      <module name="dubbo-registry-api" target="1.6" />
+      <module name="dubbo-registry-default" target="1.6" />
+      <module name="dubbo-registry-multicast" target="1.6" />
+      <module name="dubbo-registry-nacos" target="1.6" />
+      <module name="dubbo-registry-redis" target="1.6" />
+      <module name="dubbo-registry-zookeeper" target="1.6" />
+      <module name="dubbo-remoting" target="1.6" />
+      <module name="dubbo-remoting-api" target="1.6" />
+      <module name="dubbo-remoting-grizzly" target="1.6" />
+      <module name="dubbo-remoting-http" target="1.6" />
+      <module name="dubbo-remoting-mina" target="1.6" />
+      <module name="dubbo-remoting-netty" target="1.6" />
+      <module name="dubbo-remoting-netty4" target="1.6" />
+      <module name="dubbo-remoting-p2p" target="1.6" />
+      <module name="dubbo-remoting-zookeeper" target="1.6" />
+      <module name="dubbo-rpc" target="1.6" />
+      <module name="dubbo-rpc-api" target="1.6" />
+      <module name="dubbo-rpc-dubbo" target="1.6" />
+      <module name="dubbo-rpc-hessian" target="1.6" />
+      <module name="dubbo-rpc-http" target="1.6" />
+      <module name="dubbo-rpc-injvm" target="1.6" />
+      <module name="dubbo-rpc-memcached" target="1.6" />
+      <module name="dubbo-rpc-redis" target="1.6" />
+      <module name="dubbo-rpc-rest" target="1.6" />
+      <module name="dubbo-rpc-rmi" target="1.6" />
+      <module name="dubbo-rpc-thrift" target="1.6" />
+      <module name="dubbo-rpc-webservice" target="1.6" />
+      <module name="dubbo-serialization" target="1.6" />
+      <module name="dubbo-serialization-api" target="1.6" />
+      <module name="dubbo-serialization-fastjson" target="1.6" />
+      <module name="dubbo-serialization-fst" target="1.6" />
+      <module name="dubbo-serialization-hessian2" target="1.6" />
+      <module name="dubbo-serialization-jdk" target="1.6" />
+      <module name="dubbo-serialization-kryo" target="1.6" />
+      <module name="dubbo-test" target="1.6" />
+      <module name="dubbo-test-benchmark" target="1.6" />
+      <module name="dubbo-test-compatibility" target="1.6" />
+      <module name="dubbo-test-examples" target="1.6" />
+      <module name="dubbo-test-integration" target="1.6" />
+      <module name="dubbo-test-spring3" target="1.6" />
+      <module name="echo-client" target="1.7" />
+      <module name="echo-server" target="1.7" />
+      <module name="lambdasinaction" target="1.8" />
+      <module name="mapstruct" target="1.8" />
+      <module name="mapstruct-aggregator" target="1.5" />
+      <module name="mapstruct-build-config" target="1.8" />
+      <module name="mapstruct-distribution" target="1.8" />
+      <module name="mapstruct-documentation" target="1.5" />
+      <module name="mapstruct-integrationtest" target="1.8" />
+      <module name="mapstruct-jdk8" target="1.8" />
+      <module name="mapstruct-parent" target="1.5" />
+      <module name="mapstruct-processor" target="1.8" />
+      <module name="my-mvc" target="1.7" />
+      <module name="mybatis" target="1.8" />
+      <module name="mybatis-generator" target="1.6" />
+      <module name="mybatis-generator-core" target="1.6" />
+      <module name="mybatis-generator-gui" target="1.8" />
+      <module name="mybatis-generator-maven-plugin" target="1.6" />
+      <module name="mybatis-generator-systests-common" target="1.6" />
+      <module name="mybatis-generator-systests-domtests" target="1.6" />
+      <module name="mybatis-generator-systests-ibatis2-java2" target="1.4" />
+      <module name="mybatis-generator-systests-ibatis2-java5" target="1.6" />
+      <module name="mybatis-generator-systests-mybatis3" target="1.6" />
+      <module name="mybatis-generator-systests-mybatis3-java8" target="1.8" />
+      <module name="netty-all" target="1.6" />
+      <module name="netty-bom" target="1.5" />
+      <module name="netty-buffer" target="1.6" />
+      <module name="netty-codec" target="1.6" />
+      <module name="netty-codec-dns" target="1.6" />
+      <module name="netty-codec-haproxy" target="1.6" />
+      <module name="netty-codec-http" target="1.6" />
+      <module name="netty-codec-http2" target="1.6" />
+      <module name="netty-codec-memcache" target="1.6" />
+      <module name="netty-codec-mqtt" target="1.6" />
+      <module name="netty-codec-redis" target="1.6" />
+      <module name="netty-codec-smtp" target="1.6" />
+      <module name="netty-codec-socks" target="1.6" />
+      <module name="netty-codec-stomp" target="1.6" />
+      <module name="netty-codec-xml" target="1.6" />
+      <module name="netty-common" target="1.6" />
+      <module name="netty-dev-tools" target="1.5" />
+      <module name="netty-example" target="1.6" />
+      <module name="netty-handler" target="1.6" />
+      <module name="netty-handler-proxy" target="1.6" />
+      <module name="netty-microbench" target="1.6" />
+      <module name="netty-parent" target="1.6" />
+      <module name="netty-resolver" target="1.6" />
+      <module name="netty-resolver-dns" target="1.6" />
+      <module name="netty-tarball" target="1.6" />
+      <module name="netty-testsuite" target="1.6" />
+      <module name="netty-testsuite-autobahn" target="1.6" />
+      <module name="netty-testsuite-http2" target="1.6" />
+      <module name="netty-testsuite-native-image" target="1.6" />
+      <module name="netty-testsuite-osgi" target="1.6" />
+      <module name="netty-testsuite-shading" target="1.6" />
+      <module name="netty-transport" target="1.6" />
+      <module name="netty-transport-native-epoll" target="1.6" />
+      <module name="netty-transport-native-kqueue" target="1.6" />
+      <module name="netty-transport-native-unix-common" target="1.6" />
+      <module name="netty-transport-native-unix-common-tests" target="1.6" />
+      <module name="netty-transport-rxtx" target="1.6" />
+      <module name="netty-transport-sctp" target="1.6" />
+      <module name="netty-transport-udt" target="1.6" />
+      <module name="nia-samples-parent" target="1.5" />
+      <module name="org.springframework.boot.gradle.plugin" target="1.8" />
+      <module name="rocketmq-all" target="1.7" />
+      <module name="routine-yfs" target="1.5" />
       <module name="spring" target="1.8" />
+      <module name="spring-boot" target="1.8" />
+      <module name="spring-boot-actuator" target="1.8" />
+      <module name="spring-boot-actuator-autoconfigure" target="1.8" />
+      <module name="spring-boot-antlib" target="1.8" />
+      <module name="spring-boot-autoconfigure" target="1.8" />
+      <module name="spring-boot-autoconfigure-processor" target="1.8" />
+      <module name="spring-boot-build" target="1.5" />
+      <module name="spring-boot-cli" target="1.8" />
+      <module name="spring-boot-configuration-docs" target="1.8" />
+      <module name="spring-boot-configuration-metadata" target="1.8" />
+      <module name="spring-boot-configuration-processor" target="1.8" />
+      <module name="spring-boot-configuration-processor-tests" target="1.8" />
+      <module name="spring-boot-dependencies" target="1.5" />
+      <module name="spring-boot-devtools" target="1.8" />
+      <module name="spring-boot-devtools-tests" target="1.8" />
+      <module name="spring-boot-docs" target="1.8" />
+      <module name="spring-boot-gradle-plugin" target="1.8" />
+      <module name="spring-boot-integration-tests" target="1.8" />
+      <module name="spring-boot-launch-script-tests" target="1.8" />
+      <module name="spring-boot-loader" target="1.8" />
+      <module name="spring-boot-loader-tools" target="1.8" />
+      <module name="spring-boot-maven-plugin" target="1.8" />
+      <module name="spring-boot-parent" target="1.8" />
+      <module name="spring-boot-project" target="1.5" />
+      <module name="spring-boot-properties-migrator" target="1.8" />
+      <module name="spring-boot-server-tests" target="1.8" />
+      <module name="spring-boot-smoke-tests-invoker" target="1.8" />
+      <module name="spring-boot-starter" target="1.8" />
+      <module name="spring-boot-starter-activemq" target="1.8" />
+      <module name="spring-boot-starter-actuator" target="1.8" />
+      <module name="spring-boot-starter-amqp" target="1.8" />
+      <module name="spring-boot-starter-aop" target="1.8" />
+      <module name="spring-boot-starter-artemis" target="1.8" />
+      <module name="spring-boot-starter-batch" target="1.8" />
+      <module name="spring-boot-starter-cache" target="1.8" />
+      <module name="spring-boot-starter-cloud-connectors" target="1.8" />
+      <module name="spring-boot-starter-data-cassandra" target="1.8" />
+      <module name="spring-boot-starter-data-cassandra-reactive" target="1.8" />
+      <module name="spring-boot-starter-data-couchbase" target="1.8" />
+      <module name="spring-boot-starter-data-couchbase-reactive" target="1.8" />
+      <module name="spring-boot-starter-data-elasticsearch" target="1.8" />
+      <module name="spring-boot-starter-data-jdbc" target="1.8" />
+      <module name="spring-boot-starter-data-jpa" target="1.8" />
+      <module name="spring-boot-starter-data-ldap" target="1.8" />
+      <module name="spring-boot-starter-data-mongodb" target="1.8" />
+      <module name="spring-boot-starter-data-mongodb-reactive" target="1.8" />
+      <module name="spring-boot-starter-data-neo4j" target="1.8" />
+      <module name="spring-boot-starter-data-redis" target="1.8" />
+      <module name="spring-boot-starter-data-redis-reactive" target="1.8" />
+      <module name="spring-boot-starter-data-rest" target="1.8" />
+      <module name="spring-boot-starter-data-solr" target="1.8" />
+      <module name="spring-boot-starter-freemarker" target="1.8" />
+      <module name="spring-boot-starter-groovy-templates" target="1.8" />
+      <module name="spring-boot-starter-hateoas" target="1.8" />
+      <module name="spring-boot-starter-integration" target="1.8" />
+      <module name="spring-boot-starter-jdbc" target="1.8" />
+      <module name="spring-boot-starter-jersey" target="1.8" />
+      <module name="spring-boot-starter-jetty" target="1.8" />
+      <module name="spring-boot-starter-jooq" target="1.8" />
+      <module name="spring-boot-starter-json" target="1.8" />
+      <module name="spring-boot-starter-jta-atomikos" target="1.8" />
+      <module name="spring-boot-starter-jta-bitronix" target="1.8" />
+      <module name="spring-boot-starter-log4j2" target="1.8" />
+      <module name="spring-boot-starter-logging" target="1.8" />
+      <module name="spring-boot-starter-mail" target="1.8" />
+      <module name="spring-boot-starter-mustache" target="1.8" />
+      <module name="spring-boot-starter-oauth2-client" target="1.8" />
+      <module name="spring-boot-starter-oauth2-resource-server" target="1.8" />
+      <module name="spring-boot-starter-parent" target="1.8" />
+      <module name="spring-boot-starter-quartz" target="1.8" />
+      <module name="spring-boot-starter-reactor-netty" target="1.8" />
+      <module name="spring-boot-starter-rsocket" target="1.8" />
+      <module name="spring-boot-starter-security" target="1.8" />
+      <module name="spring-boot-starter-test" target="1.8" />
+      <module name="spring-boot-starter-thymeleaf" target="1.8" />
+      <module name="spring-boot-starter-tomcat" target="1.8" />
+      <module name="spring-boot-starter-undertow" target="1.8" />
+      <module name="spring-boot-starter-validation" target="1.8" />
+      <module name="spring-boot-starter-web" target="1.8" />
+      <module name="spring-boot-starter-web-services" target="1.8" />
+      <module name="spring-boot-starter-webflux" target="1.8" />
+      <module name="spring-boot-starter-websocket" target="1.8" />
+      <module name="spring-boot-starters" target="1.8" />
+      <module name="spring-boot-test" target="1.8" />
+      <module name="spring-boot-test-autoconfigure" target="1.8" />
+      <module name="spring-boot-test-support" target="1.8" />
+      <module name="spring-boot-tests" target="1.8" />
+      <module name="spring-boot-tools" target="1.8" />
       <module name="spring.buildSrc" target="1.8" />
       <module name="spring.buildSrc.main" target="1.8" />
       <module name="spring.buildSrc.test" target="1.8" />
@@ -104,6 +485,8 @@
       <module name="spring.spring-websocket.testFixtures" target="1.8" />
       <module name="spring.test" target="1.8" />
       <module name="spring.testFixtures" target="1.8" />
+      <module name="utils" target="1.8" />
+      <module name="yfs-netty-study" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
