@@ -23,6 +23,7 @@
         <option value="$PROJECT_DIR$/../spring-boot/pom.xml" />
         <option value="$PROJECT_DIR$/../dubbo-2.6.x/pom.xml" />
         <option value="$PROJECT_DIR$/../my-mvc/pom.xml" />
+        <option value="$PROJECT_DIR$/../dubbo-spring-boot-project/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

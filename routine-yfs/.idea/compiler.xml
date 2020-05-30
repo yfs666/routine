@@ -3,152 +3,6 @@
   <component name="CompilerConfiguration">
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
-      <profile name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="dubbo-demo-consumer" />
-        <module name="dubbo-rpc-webservice" />
-        <module name="dubbo-config-spring" />
-        <module name="dubbo-test-benchmark" />
-        <module name="dubbo-rpc-injvm" />
-        <module name="dubbo-remoting-p2p" />
-        <module name="dubbo-registry-api" />
-        <module name="dubbo-serialization-jdk" />
-        <module name="dubbo-remoting-http" />
-        <module name="dubbo-monitor-default" />
-        <module name="dubbo-qos" />
-        <module name="dubbo-common" />
-        <module name="mybatis" />
-        <module name="dubbo-rpc-rmi" />
-        <module name="dubbo-registry-nacos" />
-        <module name="dubbo" />
-        <module name="dubbo-registry-default" />
-        <module name="utils" />
-        <module name="mybatis-generator-gui" />
-        <module name="dubbo-serialization-fst" />
-        <module name="dubbo-registry-redis" />
-        <module name="dubbo-remoting-netty4" />
-        <module name="dubbo-remoting-api" />
-        <module name="dubbo-remoting-mina" />
-        <module name="dubbo-remoting-zookeeper" />
-        <module name="dubbo-filter-cache" />
-        <module name="dubbo-container-log4j" />
-        <module name="dubbo-rpc-thrift" />
-        <module name="dubbo-remoting-netty" />
-        <module name="dubbo-demo-provider" />
-        <module name="dubbo-rpc-memcached" />
-        <module name="dubbo-test-spring3" />
-        <module name="echo-server" />
-        <module name="lambdasinaction" />
-        <module name="dubbo-rpc-dubbo" />
-        <module name="chapter13" />
-        <module name="chapter12" />
-        <module name="chapter11" />
-        <module name="chapter10" />
-        <module name="my-mvc" />
-        <module name="echo-client" />
-        <module name="chapter9" />
-        <module name="chapter8" />
-        <module name="chapter7" />
-        <module name="chapter6" />
-        <module name="chapter5" />
-        <module name="chapter4" />
-        <module name="dubbo-serialization-hessian2" />
-        <module name="dubbo-rpc-rest" />
-        <module name="yfs-netty-study" />
-        <module name="dubbo-demo-api" />
-        <module name="dubbo-filter-validation" />
-        <module name="dubbo-container-spring" />
-        <module name="dubbo-rpc-http" />
-        <module name="dubbo-monitor-api" />
-        <module name="dubbo-registry-multicast" />
-        <module name="dubbo-remoting-grizzly" />
-        <module name="dubbo-cluster" />
-        <module name="dubbo-container-api" />
-        <module name="dubbo-serialization-kryo" />
-        <module name="dubbo-rpc-redis" />
-        <module name="routine-yfs" />
-        <module name="dubbo-test-integration" />
-        <module name="dubbo-rpc-api" />
-        <module name="dubbo-registry-zookeeper" />
-        <module name="dubbo-config-api" />
-        <module name="dubbo-container-logback" />
-        <module name="dubbo-serialization-fastjson" />
-        <module name="dubbo-test-examples" />
-        <module name="dubbo-serialization-api" />
-        <module name="dubbo-rpc-hessian" />
-        <module name="chapter1" />
-      </profile>
-      <profile name="Annotation profile for mapstruct-processor" enabled="true">
-        <sourceOutputDir name="../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
-          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
-        </processorPath>
-        <module name="mapstruct-processor" />
-      </profile>
-      <profile name="Annotation profile for MyBatis Generator" enabled="true">
-        <sourceOutputDir name="../../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../../target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="mybatis-generator-maven-plugin" />
-        <module name="mybatis-generator-systests-mybatis3" />
-        <module name="mybatis-generator-systests-mybatis3-java8" />
-        <module name="mybatis-generator-systests-domtests" />
-        <module name="mybatis-generator-systests-common" />
-        <module name="mybatis-generator-systests-ibatis2-java5" />
-        <module name="mybatis-generator-core" />
-        <module name="mybatis-generator-systests-ibatis2-java2" />
-      </profile>
-      <profile name="Annotation profile for Netty" enabled="true">
-        <sourceOutputDir name="../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="netty-testsuite-shading" />
-        <module name="netty-resolver-dns" />
-        <module name="netty-microbench" />
-        <module name="netty-transport-native-kqueue" />
-        <module name="netty-transport-native-unix-common" />
-        <module name="netty-codec-stomp" />
-        <module name="netty-handler-proxy" />
-        <module name="netty-codec" />
-        <module name="netty-codec-smtp" />
-        <module name="netty-handler" />
-        <module name="netty-resolver" />
-        <module name="netty-transport-rxtx" />
-        <module name="netty-codec-socks" />
-        <module name="netty-buffer" />
-        <module name="netty-example" />
-        <module name="netty-codec-haproxy" />
-        <module name="netty-transport-sctp" />
-        <module name="mapstruct-build-config" />
-        <module name="netty-dev-tools" />
-        <module name="netty-transport-udt" />
-        <module name="netty-common" />
-        <module name="netty-codec-xml" />
-        <module name="mapstruct" />
-        <module name="netty-testsuite-native-image" />
-        <module name="netty-codec-mqtt" />
-        <module name="netty-codec-redis" />
-        <module name="netty-testsuite-http2" />
-        <module name="netty-codec-http" />
-        <module name="netty-testsuite-osgi" />
-        <module name="netty-transport-native-unix-common-tests" />
-        <module name="netty-codec-dns" />
-        <module name="netty-codec-memcache" />
-        <module name="mapstruct-integrationtest" />
-        <module name="mapstruct-jdk8" />
-        <module name="netty-codec-http2" />
-        <module name="mapstruct-distribution" />
-        <module name="netty-testsuite-autobahn" />
-        <module name="netty-transport-native-epoll" />
-        <module name="netty-transport" />
-        <module name="netty-testsuite" />
-        <module name="netty-all" />
-      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="chapter1" target="1.7" />
@@ -225,6 +79,29 @@
       <module name="dubbo-serialization-hessian2" target="1.6" />
       <module name="dubbo-serialization-jdk" target="1.6" />
       <module name="dubbo-serialization-kryo" target="1.6" />
+      <module name="dubbo-spring-boot-actuator" target="1.8" />
+      <module name="dubbo-spring-boot-actuator-compatible" target="1.8" />
+      <module name="dubbo-spring-boot-auto-configure-consumer-sample" target="1.8" />
+      <module name="dubbo-spring-boot-auto-configure-provider-sample" target="1.8" />
+      <module name="dubbo-spring-boot-auto-configure-samples" target="1.8" />
+      <module name="dubbo-spring-boot-autoconfigure" target="1.8" />
+      <module name="dubbo-spring-boot-autoconfigure-compatible" target="1.8" />
+      <module name="dubbo-spring-boot-compatible" target="1.8" />
+      <module name="dubbo-spring-boot-distribution" target="1.8" />
+      <module name="dubbo-spring-boot-externalized-configuration-consumer-sample" target="1.8" />
+      <module name="dubbo-spring-boot-externalized-configuration-provider-sample" target="1.8" />
+      <module name="dubbo-spring-boot-externalized-configuration-samples" target="1.8" />
+      <module name="dubbo-spring-boot-parent" target="1.8" />
+      <module name="dubbo-spring-boot-project" target="1.7" />
+      <module name="dubbo-spring-boot-registry-nacos-consumer-sample" target="1.8" />
+      <module name="dubbo-spring-boot-registry-nacos-provider-sample" target="1.8" />
+      <module name="dubbo-spring-boot-registry-nacos-samples" target="1.8" />
+      <module name="dubbo-spring-boot-registry-zookeeper-consumer-sample" target="1.8" />
+      <module name="dubbo-spring-boot-registry-zookeeper-provider-sample" target="1.8" />
+      <module name="dubbo-spring-boot-registry-zookeeper-samples" target="1.8" />
+      <module name="dubbo-spring-boot-sample-api" target="1.8" />
+      <module name="dubbo-spring-boot-samples" target="1.8" />
+      <module name="dubbo-spring-boot-starter" target="1.8" />
       <module name="dubbo-test" target="1.6" />
       <module name="dubbo-test-benchmark" target="1.6" />
       <module name="dubbo-test-compatibility" target="1.6" />
