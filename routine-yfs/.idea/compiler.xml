@@ -21,6 +21,7 @@
         <module name="dubbo-registry-redis" />
         <module name="mapstruct-distribution" />
         <module name="mapstruct-integrationtest" />
+        <module name="netty-dev-tools" />
         <module name="dubbo-serialization-hessian2" />
         <module name="dubbo-spring-boot-actuator" />
         <module name="dubbo-container-log4j" />
@@ -30,6 +31,7 @@
         <module name="dubbo-spring-boot-sample-api" />
         <module name="dubbo-test-spring3" />
         <module name="chapter10" />
+        <module name="netty-codec-mqtt" />
         <module name="dubbo-config-spring" />
         <module name="netty-example" />
         <module name="dubbo-remoting-p2p" />
@@ -45,7 +47,6 @@
         <module name="dubbo-rpc-rest" />
         <module name="dubbo-container-api" />
         <module name="netty-testsuite" />
-        <module name="mybatis-generator-core" />
         <module name="netty-codec-redis" />
         <module name="chapter1" />
         <module name="dubbo-remoting-netty" />
@@ -60,7 +61,6 @@
         <module name="netty-testsuite-native-image" />
         <module name="mybatis-generator-systests-mybatis3-java8" />
         <module name="utils" />
-        <module name="netty-codec-haproxy" />
         <module name="dubbo-remoting-http" />
         <module name="netty-resolver" />
         <module name="dubbo-test-examples" />
@@ -85,21 +85,20 @@
         <module name="dubbo-spring-boot-registry-nacos-consumer-sample" />
         <module name="routine-yfs" />
         <module name="yfs-netty-study" />
-        <module name="netty-codec" />
         <module name="dubbo-serialization-kryo" />
         <module name="dubbo-registry-default" />
         <module name="netty-all" />
         <module name="netty-testsuite-autobahn" />
         <module name="netty-resolver-dns" />
-        <module name="netty-common" />
+        <module name="netty-codec-http2" />
         <module name="mapstruct-jdk8" />
         <module name="es-train" />
-        <module name="netty-codec-mqtt" />
+        <module name="netty-codec-haproxy" />
         <module name="dubbo-rpc-memcached" />
         <module name="mybatis-generator-maven-plugin" />
         <module name="mybatis-generator-systests-mybatis3" />
-        <module name="netty-dev-tools" />
-        <module name="netty-transport-native-unix-common" />
+        <module name="netty-codec" />
+        <module name="mybatis-generator-core" />
         <module name="dubbo-test-benchmark" />
         <module name="netty-transport-sctp" />
         <module name="netty-transport-native-unix-common-tests" />
@@ -112,7 +111,6 @@
         <module name="dubbo-cluster" />
         <module name="mybatis-generator-gui" />
         <module name="dubbo-spring-boot-starter" />
-        <module name="netty-codec-http2" />
         <module name="chapter9" />
         <module name="chapter8" />
         <module name="chapter7" />
@@ -127,6 +125,7 @@
         <module name="netty-microbench" />
         <module name="dubbo-monitor-default" />
         <module name="netty-codec-socks" />
+        <module name="netty-transport-native-unix-common" />
         <module name="dubbo-serialization-jdk" />
         <module name="mybatis-generator-systests-common" />
         <module name="echo-client" />
@@ -137,6 +136,7 @@
         <module name="dubbo-rpc-injvm" />
         <module name="dubbo-remoting-api" />
         <module name="mybatis-generator-systests-ibatis2-java2" />
+        <module name="netty-common" />
         <module name="dubbo-registry-multicast" />
         <module name="netty-testsuite-shading" />
         <module name="netty-codec-http" />

@@ -2,6 +2,7 @@ package com.yfs.es.train.estrain;
 
 
 import com.google.common.base.Stopwatch;
+import com.yfs.es.train.estrain.biz.BizService;
 import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.entity.ThsPrice;
 import com.yfs.es.train.estrain.service.StockInfoService;
@@ -25,6 +26,9 @@ public class StockInfoServiceTest {
 
     @Autowired
     private StockPriceService stockPriceService;
+
+    @Autowired
+    private BizService bizService;
 
     @Test
     public void pageTest() {
@@ -54,6 +58,11 @@ public class StockInfoServiceTest {
         }
     }
 
+
+    @Test
+    public void handleDataTest() {
+        bizService.handleDayData();
+    }
 
 
 }

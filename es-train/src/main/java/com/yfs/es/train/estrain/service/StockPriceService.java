@@ -1,8 +1,10 @@
 package com.yfs.es.train.estrain.service;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.entity.StockPrice;
 import com.yfs.es.train.estrain.entity.ThsPrice;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -46,6 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -98,6 +102,20 @@ public class StockPriceService {
     }
 
 
+    public List<ThsPrice> queryBy(String code, Integer from, Integer size, Long startTime, Long endTime, SortOrder sortOrder) {
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(
+                        QueryBuilders.boolQuery()
+                                .filter(QueryBuilders.termQuery("code", code))
+                                .filter(QueryBuilders.rangeQuery("dayTime").lte(endTime).gte(startTime))
+                )
+                .from(from)
+                .size(size)
+                .sort("dayTime", sortOrder);
+        return this.queryFrom(searchSourceBuilder);
+    }
+
+
     /**
      * 查询
      * @param searchSourceBuilder 查询条件
@@ -136,5 +154,128 @@ public class StockPriceService {
         }
     }
 
+
+    public String highBefore(StockInfo stockInfo, long startTime, long endTime) {
+        try {
+            return this.highBefore(stockInfo.getCode(), startTime, endTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stockInfo.getCode();
+    }
+
+    public String highBefore(String code, long startTime, long endTime) throws IOException {
+        int from = 0;
+        int size = 500;
+        while (true) {
+            Stopwatch stopwatch = Stopwatch.createStarted();
+            List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);
+//            List<StockPrice> stockPrices = this.testQuery(code, from, size, 1546272000000L, 1595169096845L, SortOrder.DESC);
+            if (CollectionUtils.isEmpty(stockPrices)) {
+                break;
+            }
+            from = from + size;
+            stockPrices = stockPrices.stream().filter(it -> it.getHighBefore() == null).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(stockPrices)) {
+                continue;
+            }
+            BulkRequest bulkRequest = Requests.bulkRequest();
+            for (ThsPrice stockPrice : stockPrices) {
+                SearchRequest searchRequest = Requests.searchRequest(STOCK_PRICE_INDEX);
+                searchRequest.source()
+                        .query(
+                                QueryBuilders.boolQuery()
+                                        .filter(QueryBuilders.termQuery("code", code))
+                                        .filter(QueryBuilders.rangeQuery("dayTime").lt(stockPrice.getDayTime()).gt(0))
+                                        .filter(QueryBuilders.rangeQuery("high").gte(stockPrice.getHigh()))
+                        )
+                        .from(0)
+                        .size(1)
+                        .sort("dayTime", SortOrder.DESC);
+                SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+                Integer highBeforeDays = searchResponse.getHits().getTotalHits().value == 0L ? 1000 :
+                        Arrays.stream(searchResponse.getHits().getHits()).map(documentFields -> {
+                            StockPrice stockPriceDetail = new Gson().fromJson(documentFields.getSourceAsString(), StockPrice.class);
+                            stockPriceDetail.setId(documentFields.getId());
+                            return stockPriceDetail;
+                        }).findFirst().map(before -> (stockPrice.getDayTime() - before.getDayTime()) * 5 / 1000 / 60 / 60 / 24 / 7).orElse(1000L).intValue();
+                stockPrice.setHighBefore(highBeforeDays);
+                bulkRequest.add(new UpdateRequest(STOCK_PRICE_INDEX, stockPrice.getId()).doc(new Gson().toJson(stockPrice), XContentType.JSON));
+            }
+            BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            System.out.println(String.format("process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+        }
+        return code;
+    }
+
+
+
+    /**
+     * 计算指标
+     */
+    public void correctData(String code, long startTime, long endTime) throws IOException {
+        int from = 0;
+        int size = 500;
+        while (true) {
+            Stopwatch stopwatch = Stopwatch.createStarted();
+            List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);
+            if (CollectionUtils.isEmpty(stockPrices)) {
+                break;
+            }
+            from = from + size;
+            stockPrices = stockPrices.stream()/*.filter(it -> it.getMa5() == null || it.getMa60() == null)*/.collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(stockPrices)) {
+                continue;
+            }
+            BulkRequest bulkRequest = Requests.bulkRequest();
+//            Flux.fromIterable(stockPrices)
+//                    .flatMap(stockPrice -> Mono.fromSupplier(() -> this.wrapUpdateRequest(stockPrice, ma)).subscribeOn(Schedulers.elastic()))
+//                    .filter(Objects::nonNull)
+//                    .doOnError(e -> System.out.println("error" + e))
+//                    .doOnNext(bulkRequest::add)
+//                    .collectList()
+//                    .block();
+            stockPrices.stream().map(this::wrapUpdateRequest).forEach(bulkRequest::add);
+            BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
+            System.out.println(String.format("process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+        }
+    }
+
+
+    private UpdateRequest wrapUpdateRequest(ThsPrice stockPrice) {
+        try {
+            List<Integer> maList = Lists.newArrayList(5, 10, 20, 30, 60);
+            List<ThsPrice> maPrices = this.queryBy(stockPrice.getCode(), 0, 80, 0L, stockPrice.getDayTime(), SortOrder.DESC);
+            for (Integer ma : maList) {
+                BigDecimal maNPrice = stockPrice.getClose();
+                if (!CollectionUtils.isEmpty(maPrices)) {
+                    BigDecimal sum = BigDecimal.ZERO;
+                    int count = ma <= maPrices.size() ? ma : maPrices.size();
+                    for (int i = 0; i < count; i++) {
+                        ThsPrice maPrice = maPrices.get(i);
+                        sum = sum.add(maPrice.getClose());
+                    }
+                    maNPrice = sum.divide(BigDecimal.valueOf(count), 2, BigDecimal.ROUND_HALF_UP);
+                }
+                switch (ma) {
+                    case 5:
+                        stockPrice.setMa5(maNPrice);
+                    case 10:
+                        stockPrice.setMa10(maNPrice);
+                    case 20:
+                        stockPrice.setMa20(maNPrice);
+                    case 30:
+                        stockPrice.setMa30(maNPrice);
+                    case 60:
+                        stockPrice.setMa60(maNPrice);
+                    default:
+                }
+            }
+            return new UpdateRequest(STOCK_PRICE_INDEX, stockPrice.getId()).doc(new Gson().toJson(stockPrice), XContentType.JSON);
+        } catch (Exception e) {
+            System.out.println("error " + e);
+            return null;
+        }
+    }
 
 }
