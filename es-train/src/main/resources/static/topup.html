@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="js/jq.js"></script>
+    <script src="js/my.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <td width="100px">index</td>   <td width="100px">code</td>  <td width="100px">percent</td>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</body>
+<script>
+
+
+    let days = getQueryVariable("days");
+    if (days === '' || days == null) {
+        days = 5;
+    }
+    let url = "/findTopUp?days=" + days;
+    $.ajax({
+        url: url,
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            console.log(data)
+            for (let i = 0; i < data.length; i++) {
+                const index = i + 1;
+                $('tbody').append("<tr>");
+                $('tbody').append("<td>" + index + "</td>");
+                $('tbody').append("<td>" + data[i].code + "</td>");
+                $('tbody').append("<td>" + data[i].percent + "</td>");
+                $('tbody').append("</tr>");
+            }
+        }
+    });
+
+</script>
+</html>

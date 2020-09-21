@@ -25,15 +25,16 @@ class EsTrainApplicationTests {
  	@Test
 	void testCreateIndex() throws IOException {
 // 1、创建索引请求
-		CreateIndexRequest request = new CreateIndexRequest("test"); // 2、客户端执行请求 IndicesClient,请求后获得响应
-		CreateIndexResponse createIndexResponse =
-				client.indices().create(request, RequestOptions.DEFAULT);
+		CreateIndexRequest infoIndex = new CreateIndexRequest("ths_stock_info"); // 2、客户端执行请求 IndicesClient,请求后获得响应
+		CreateIndexRequest priceIndex = new CreateIndexRequest("ths_stock_price");
+		CreateIndexResponse createIndexResponse = client.indices().create(infoIndex, RequestOptions.DEFAULT);
+		CreateIndexResponse createPriceIndexResponse = client.indices().create(priceIndex, RequestOptions.DEFAULT);
 		System.out.println(createIndexResponse);
 	}
 
 	@Test
 	void testExistIndex() throws IOException {
-		GetIndexRequest request = new GetIndexRequest("test");
+		GetIndexRequest request = new GetIndexRequest("ths_stock_info");
 		boolean exists = client.indices().exists(request, RequestOptions.DEFAULT);
 		System.out.println(exists);
  	}

@@ -66,6 +66,21 @@
 			<artifactId>guava</artifactId>
 			<version>28.2-jre</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons.lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easyexcel</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>3.3.5.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="js/echarts.min.js"></script>
+    <script src="js/jq.js"></script>
+    <script src="js/my.js"></script>
+    <title>统计</title>
+    <style type="text/css">
+        .myDiv{
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="count">
+    <table>
+        <tr>
+            <td>count:</td>
+            <td id="count-td"></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;closeAvg:</td>
+            <td id="close-avg-td"></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;highAvg:</td>
+            <td id="high-avg-td"></td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;lowAvg:</td>
+            <td id="low-avg-td"></td>
+        </tr>
+    </table>
+</div>
+<div>
+    <table border="0">
+        <tr>
+            <td>close-sum</td>
+            <td>close-60x</td>
+            <td>close-000</td>
+            <td>close-002</td>
+            <td>close-300</td>
+        </tr>
+        <tr>
+            <td><div id="close-div-sum" class="myDiv"></div></td>
+            <td><div id="close-div-60x" class="myDiv"></div></td>
+            <td><div id="close-div-000" class="myDiv"></div></td>
+            <td><div id="close-div-002" class="myDiv"></div></td>
+            <td><div id="close-div-300" class="myDiv"></div></td>
+        </tr>
+
+        <tr>
+            <td>high-sum</td>
+            <td>high-60x</td>
+            <td>high-000</td>
+            <td>high-002</td>
+            <td>high-300</td>
+        </tr>
+        <tr>
+            <td><div id="high-div-sum" class="myDiv"></div></td>
+            <td><div id="high-div-60x" class="myDiv"></div></td>
+            <td><div id="high-div-000" class="myDiv"></div></td>
+            <td><div id="high-div-002" class="myDiv"></div></td>
+            <td><div id="high-div-300" class="myDiv"></div></td>
+        </tr>
+
+        <tr>
+            <td>low-sum</td>
+            <td>low-60x</td>
+            <td>low-000</td>
+            <td>low-002</td>
+            <td>low-300</td>
+        </tr>
+        <tr>
+            <td><div id="low-div-sum" class="myDiv"></div></td>
+            <td><div id="low-div-60x" class="myDiv"></div></td>
+            <td><div id="low-div-000" class="myDiv"></div></td>
+            <td><div id="low-div-002" class="myDiv"></div></td>
+            <td><div id="low-div-300" class="myDiv"></div></td>
+        </tr>
+
+    </table>
+</div>
+<!--<div id="close-div-sum" class="myDiv"></div>-->
+<!--<div id="close-div-60x" class="myDiv"></div>-->
+<!--<div id="close-div-000" class="myDiv"></div>-->
+<!--<div id="close-div-002" class="myDiv"></div>-->
+<!--<div id="close-div-300" class="myDiv"></div>-->
+<!--<div id="high-div-sum" class="myDiv"></div>-->
+<!--<div id="high-div-60x" class="myDiv"></div>-->
+<!--<div id="high-div-000" class="myDiv"></div>-->
+<!--<div id="high-div-002" class="myDiv"></div>-->
+<!--<div id="high-div-300" class="myDiv"></div>-->
+<!--<div id="low-div-sum" class="myDiv"></div>-->
+<!--<div id="low-div-60x" class="myDiv"></div>-->
+<!--<div id="low-div-000" class="myDiv"></div>-->
+<!--<div id="low-div-002" class="myDiv"></div>-->
+<!--<div id="low-div-300" class="myDiv"></div>-->
+
+<script type="text/javascript">
+
+
+    const today = getQueryVariable('t')
+    const yesterday = getQueryVariable('y')
+    $.ajax({
+        url: "/avg?t=" + today,
+        type: "get",
+        dataType: "json",
+        success: function (data) {
+            console.log(data)
+            $('#count-td').text(data.countShowVO.count);
+            $('#close-avg-td').text(data.countShowVO.closeAvg);
+            $('#high-avg-td').text(data.countShowVO.highAvg);
+            $('#low-avg-td').text(data.countShowVO.lowAvg);
+            initEchart(echarts.init(document.getElementById('close-div-sum')), data.countShowVO["closeAvgSum"], "close-sum")
+            initEchart(echarts.init(document.getElementById('close-div-60x')), data.countShowVO["closeAvg60x"], "close-60x")
+            initEchart(echarts.init(document.getElementById('close-div-000')), data.countShowVO["closeAvg000"], "close-000")
+            initEchart(echarts.init(document.getElementById('close-div-002')), data.countShowVO["closeAvg002"], "close-002")
+            initEchart(echarts.init(document.getElementById('close-div-300')), data.countShowVO["closeAvg300"], "close-300")
+
+            initEchart(echarts.init(document.getElementById('high-div-sum')), data.countShowVO["highAvgSum"], "high-sum")
+            initEchart(echarts.init(document.getElementById('high-div-60x')), data.countShowVO["highAvg60x"], "high-60x")
+            initEchart(echarts.init(document.getElementById('high-div-000')), data.countShowVO["highAvg000"], "high-000")
+            initEchart(echarts.init(document.getElementById('high-div-002')), data.countShowVO["highAvg002"], "high-002")
+            initEchart(echarts.init(document.getElementById('high-div-300')), data.countShowVO["highAvg300"], "high-300")
+
+            initEchart(echarts.init(document.getElementById('low-div-sum')), data.countShowVO["lowAvgSum"], "low-sum")
+            initEchart(echarts.init(document.getElementById('low-div-60x')), data.countShowVO["lowAvg60x"], "low-60x")
+            initEchart(echarts.init(document.getElementById('low-div-000')), data.countShowVO["lowAvg000"], "low-000")
+            initEchart(echarts.init(document.getElementById('low-div-002')), data.countShowVO["lowAvg002"], "low-002")
+            initEchart(echarts.init(document.getElementById('low-div-300')), data.countShowVO["lowAvg300"], "low-300")
+        }
+    });
+
+    function initEchart(myChart, myDataJson, codeTag) {
+        // alert(myDataJson)
+
+        // 指定图表的配置项和数据
+        var xAxisData = [];
+        var data1 = [];
+        var data2 = [];
+        for (const jsonIndex in myDataJson) {
+            const myDataDetail = myDataJson[jsonIndex];
+            // alert(myDataDetail["limitName"])
+            xAxisData.push(myDataDetail["limitName"]);
+            data1.push(myDataDetail["limitUpCount"]);
+            data2.push(-myDataDetail["limitDownCount"]);
+        }
+
+
+        // for (var i = 0; i < 10; i++) {
+        //     xAxisData.push(i + "~" + (i + 1));
+        //     data1.push(-i * 2);
+        //     data2.push(i*15);
+        // }
+
+        var emphasisStyle = {
+            itemStyle: {
+                barBorderWidth: 1,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0,0,0,0.5)'
+            }
+        };
+
+        option = {
+            backgroundColor: '#eee',
+            legend: {
+                data: ['up', 'down'],
+                left: 10
+            },
+            brush: {
+                toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                xAxisIndex: 0
+            },
+            toolbox: {
+                feature: {
+                    magicType: {
+                        type: ['stack', 'tiled']
+                    },
+                    dataView: {}
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                data: xAxisData,
+                // name: codeTag,
+                name: "",
+                axisLine: {onZero: true},
+                splitLine: {show: false},
+                splitArea: {show: false}
+            },
+            yAxis: {
+                inverse: true,
+                splitArea: {show: false}
+            },
+            grid: {
+                left: 50
+            },
+            visualMap: {
+                type: 'continuous',
+                dimension: 1,
+                text: ['High', 'Low'],
+                inverse: true,
+                itemHeight: 200,
+                calculable: true,
+                min: -2,
+                max: 6,
+                top: 60,
+                left: 10,
+                inRange: {
+                    colorLightness: [0.4, 0.8]
+                },
+                outOfRange: {
+                    color: '#bbb'
+                },
+                controller: {
+                    inRange: {
+                        color: '#2f4554'
+                    }
+                }
+            },
+            series: [
+                {
+                    name: 'up',
+                    type: 'bar',
+                    stack: 'one',
+                    emphasis: emphasisStyle,
+                    data: data1
+                },
+                {
+                    name: 'down',
+                    type: 'bar',
+                    stack: 'one',
+                    emphasis: emphasisStyle,
+                    data: data2
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        myChart.on('brushSelected', renderBrushed);
+    }
+
+
+
+    function renderBrushed(params) {
+        var brushed = [];
+        var brushComponent = params.batch[0];
+
+        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+            var rawIndices = brushComponent.selected[sIdx].dataIndex;
+            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        }
+
+        myChart.setOption({
+            title: {
+                backgroundColor: '#333',
+                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                bottom: 0,
+                right: 0,
+                width: 100,
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
