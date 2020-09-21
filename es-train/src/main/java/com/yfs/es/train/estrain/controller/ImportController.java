@@ -26,7 +26,7 @@ public class ImportController {
 
     @RequestMapping(value = "/importDayLine", method = RequestMethod.POST)
     public Map<String, Object> importDayLine(MultipartFile file) throws IOException {
-        ExcelListener excelListener = new ExcelListener("2020-09-18");
+        ExcelListener excelListener = new ExcelListener("2020-09-21");
         EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
         stockInfoService.compareAndSave(excelListener.getStockInfoList());
         stockPriceService.compareAndAdd(excelListener.getThsPriceList());

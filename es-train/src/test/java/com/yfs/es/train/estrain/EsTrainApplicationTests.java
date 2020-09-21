@@ -25,23 +25,23 @@ class EsTrainApplicationTests {
  	@Test
 	void testCreateIndex() throws IOException {
 // 1、创建索引请求
-		CreateIndexRequest infoIndex = new CreateIndexRequest("ths_stock_info"); // 2、客户端执行请求 IndicesClient,请求后获得响应
+//		CreateIndexRequest infoIndex = new CreateIndexRequest("ths_stock_info"); // 2、客户端执行请求 IndicesClient,请求后获得响应
 		CreateIndexRequest priceIndex = new CreateIndexRequest("ths_stock_price");
-		CreateIndexResponse createIndexResponse = client.indices().create(infoIndex, RequestOptions.DEFAULT);
+//		CreateIndexResponse createIndexResponse = client.indices().create(infoIndex, RequestOptions.DEFAULT);
 		CreateIndexResponse createPriceIndexResponse = client.indices().create(priceIndex, RequestOptions.DEFAULT);
-		System.out.println(createIndexResponse);
+		System.out.println(createPriceIndexResponse);
 	}
 
 	@Test
 	void testExistIndex() throws IOException {
-		GetIndexRequest request = new GetIndexRequest("ths_stock_info");
+		GetIndexRequest request = new GetIndexRequest("ths_stock_price");
 		boolean exists = client.indices().exists(request, RequestOptions.DEFAULT);
 		System.out.println(exists);
  	}
 	// 测试删除索引
 	@Test
 	void testDeleteIndex() throws IOException {
-		DeleteIndexRequest request = new DeleteIndexRequest("test");
+		DeleteIndexRequest request = new DeleteIndexRequest("ths_stock_price");
 		AcknowledgedResponse delete = client.indices().delete(request,
 				RequestOptions.DEFAULT); System.out.println(delete.isAcknowledged());
 	}

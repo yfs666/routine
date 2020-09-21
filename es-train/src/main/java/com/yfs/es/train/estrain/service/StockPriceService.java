@@ -1,25 +1,51 @@
 package com.yfs.es.train.estrain.service;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.yfs.es.train.estrain.entity.StockPrice;
 import com.yfs.es.train.estrain.entity.ThsPrice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.transport.TransportRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +54,11 @@ public class StockPriceService {
 
 
     public static final String STOCK_PRICE_INDEX = "ths_stock_price";
+
+    /**
+     * 每次查询数据
+     */
+    private static final Integer BEFORE_DAYS = 284;
 
 
     @Autowired
@@ -43,9 +74,8 @@ public class StockPriceService {
         if (CollectionUtils.isEmpty(priceList)) {
             return;
         }
-        SearchRequest searchRequest = Requests.searchRequest(STOCK_PRICE_INDEX);
-        searchRequest.source().query(QueryBuilders.termQuery("date", priceList.get(0).getDate())).from(0).size(10000);
-        List<String> existSymbols = this.queryFrom(searchRequest).stream().map(ThsPrice::getSymbol).collect(Collectors.toList());
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("date", priceList.get(0).getDate())).from(0).size(10000);
+        List<String> existSymbols = this.queryFrom(searchSourceBuilder).stream().map(ThsPrice::getSymbol).collect(Collectors.toList());
         List<ThsPrice> needAddList = priceList.stream().filter(it -> !existSymbols.contains(it.getSymbol())).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(needAddList)) {
             return;
@@ -70,11 +100,15 @@ public class StockPriceService {
 
     /**
      * 查询
-     * @param searchRequest 查询条件
+     * @param searchSourceBuilder 查询条件
      * @return 数据列表
      */
-    public List<ThsPrice> queryFrom(SearchRequest searchRequest) {
+    public List<ThsPrice> queryFrom(SearchSourceBuilder searchSourceBuilder) {
         try {
+            SearchRequest searchRequest = Requests.searchRequest(STOCK_PRICE_INDEX).source(searchSourceBuilder);
+            CountRequest countRequest = new CountRequest();
+            CountResponse count = restHighLevelClient.count(countRequest, RequestOptions.DEFAULT);
+            System.out.println(count.getCount());
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             SearchHit[] hits = searchResponse.getHits().getHits();
             if (hits == null || hits.length == 0) {
@@ -91,6 +125,16 @@ public class StockPriceService {
         return Collections.emptyList();
     }
 
+    public void delete(ThsPrice thsPrice) {
+        DeleteRequest deleteRequest = Requests.deleteRequest(STOCK_PRICE_INDEX);
+        deleteRequest.id(thsPrice.getId());
+        try {
+            DeleteResponse delete = restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
+            log.info("delete result is {}", new Gson().toJson(delete.getResult()));
+        } catch (Exception e) {
+            log.error("delete error, ", e);
+        }
+    }
 
 
 }
