@@ -3,6 +3,7 @@ package com.yfs.es.train.estrain.biz;
 import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,7 +23,7 @@ public class BizService {
     private StockPriceService stockPriceService;
 
     public void handleDayData() {
-        int start = 0;
+        int start = 2200;
         int pageSize = 50;
         while (true) {
             List<StockInfo> stockInfos = stockInfoService.pageList(start, pageSize);
@@ -30,6 +32,7 @@ public class BizService {
             }
             start = start + pageSize;
             this.handleData(stockInfos);
+            System.out.println("end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> start is " + start);
         }
     }
 
@@ -43,7 +46,7 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = 0;
+        long startTime = DateUtils.addDays(new Date(), -200).getTime();
         long endTime = System.currentTimeMillis();
         List<String> codes = Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> stockPriceService.highBefore(it, startTime, endTime)).subscribeOn(Schedulers.elastic()))
@@ -56,7 +59,7 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = 0;
+        long startTime = DateUtils.addDays(new Date(), -200).getTime();
         long endTime = System.currentTimeMillis();
         Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> this.correct(it.getCode(), startTime, endTime)).subscribeOn(Schedulers.elastic()))

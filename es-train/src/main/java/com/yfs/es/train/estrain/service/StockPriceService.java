@@ -124,9 +124,6 @@ public class StockPriceService {
     public List<ThsPrice> queryFrom(SearchSourceBuilder searchSourceBuilder) {
         try {
             SearchRequest searchRequest = Requests.searchRequest(STOCK_PRICE_INDEX).source(searchSourceBuilder);
-            CountRequest countRequest = new CountRequest();
-            CountResponse count = restHighLevelClient.count(countRequest, RequestOptions.DEFAULT);
-            System.out.println(count.getCount());
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             SearchHit[] hits = searchResponse.getHits().getHits();
             if (hits == null || hits.length == 0) {
