@@ -23,7 +23,7 @@ public class BizService {
     private StockPriceService stockPriceService;
 
     public void handleDayData() {
-        int start = 2200;
+        int start = 0;
         int pageSize = 50;
         while (true) {
             List<StockInfo> stockInfos = stockInfoService.pageList(start, pageSize);

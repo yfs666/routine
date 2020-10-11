@@ -1,6 +1,7 @@
 package com.yfs.es.train.estrain.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.yfs.es.train.estrain.biz.BizService;
 import com.yfs.es.train.estrain.excel.ExcelListener;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
@@ -24,12 +25,21 @@ public class ImportController {
     @Autowired
     private StockPriceService stockPriceService;
 
-    @RequestMapping(value = "/importDayLine", method = RequestMethod.POST)
-    public Map<String, Object> importDayLine(MultipartFile file) throws IOException {
-        ExcelListener excelListener = new ExcelListener("2020-09-21");
-        EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
-        stockInfoService.compareAndSave(excelListener.getStockInfoList());
-        stockPriceService.compareAndAdd(excelListener.getThsPriceList());
+    @Autowired
+    private BizService bizService;
+
+//    @RequestMapping(value = "/importDayLine", method = RequestMethod.POST)
+//    public Map<String, Object> importDayLine(MultipartFile file) throws IOException {
+//        ExcelListener excelListener = new ExcelListener("2020-09-21");
+//        EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
+//        stockInfoService.compareAndSave(excelListener.getStockInfoList());
+//        stockPriceService.compareAndAdd(excelListener.getThsPriceList());
+//        return Collections.emptyMap();
+//    }
+
+    @RequestMapping(value = "/handleData", method = RequestMethod.GET)
+    public Map<String,String> handleData() {
+        bizService.handleDayData();
         return Collections.emptyMap();
     }
 
