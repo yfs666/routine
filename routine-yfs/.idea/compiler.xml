@@ -149,8 +149,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-processor/1.0.0.Alpha1/gem-processor-1.0.0.Alpha1.jar" />
+          <entry name="$USER_HOME$/maven_jars/org/mapstruct/tools/gem/gem-api/1.0.0.Alpha1/gem-api-1.0.0.Alpha1.jar" />
         </processorPath>
         <module name="mapstruct-processor" />
       </profile>
@@ -324,7 +324,7 @@
       <module name="netty-transport-sctp" target="1.6" />
       <module name="netty-transport-udt" target="1.6" />
       <module name="nia-samples-parent" target="1.5" />
-      <module name="org.springframework.boot.gradle.plugin" target="1.8" />
+      <module name="org.springframework.boot.gradle.plugin" target="1.5" />
       <module name="rocketmq-all" target="1.7" />
       <module name="routine-yfs" target="1.8" />
       <module name="utils" target="1.8" />
