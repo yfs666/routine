@@ -164,17 +164,19 @@ public class StockPriceService {
     public String highBefore(String code, long startTime, long endTime) throws IOException {
         int from = 0;
         int size = 500;
-        while (true) {
+//        while (true) {
             Stopwatch stopwatch = Stopwatch.createStarted();
             List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);
 //            List<StockPrice> stockPrices = this.testQuery(code, from, size, 1546272000000L, 1595169096845L, SortOrder.DESC);
             if (CollectionUtils.isEmpty(stockPrices)) {
-                break;
+//                break;
+                return code;
             }
             from = from + size;
             stockPrices = stockPrices.stream().filter(it -> it.getHighBefore() == null).collect(Collectors.toList());
             if (CollectionUtils.isEmpty(stockPrices)) {
-                continue;
+                return code;
+//                continue;
             }
             BulkRequest bulkRequest = Requests.bulkRequest();
             for (ThsPrice stockPrice : stockPrices) {
@@ -200,8 +202,8 @@ public class StockPriceService {
                 bulkRequest.add(new UpdateRequest(STOCK_PRICE_INDEX, stockPrice.getId()).doc(new Gson().toJson(stockPrice), XContentType.JSON));
             }
             BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            System.out.println(String.format("process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
-        }
+            System.out.println(String.format("highBefore process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+//        }
         return code;
     }
 
@@ -213,16 +215,18 @@ public class StockPriceService {
     public void correctData(String code, long startTime, long endTime) throws IOException {
         int from = 0;
         int size = 500;
-        while (true) {
+//        while (true) {
             Stopwatch stopwatch = Stopwatch.createStarted();
             List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);
             if (CollectionUtils.isEmpty(stockPrices)) {
-                break;
+//                break;
+                return;
             }
-            from = from + size;
+//            from = from + size;
             stockPrices = stockPrices.stream()/*.filter(it -> it.getMa5() == null || it.getMa60() == null)*/.collect(Collectors.toList());
             if (CollectionUtils.isEmpty(stockPrices)) {
-                continue;
+                return;
+//                continue;
             }
             BulkRequest bulkRequest = Requests.bulkRequest();
 //            Flux.fromIterable(stockPrices)
@@ -234,8 +238,8 @@ public class StockPriceService {
 //                    .block();
             stockPrices.stream().map(this::wrapUpdateRequest).forEach(bulkRequest::add);
             BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            System.out.println(String.format("process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
-        }
+            System.out.println(String.format("correctData process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+//        }
     }
 
 

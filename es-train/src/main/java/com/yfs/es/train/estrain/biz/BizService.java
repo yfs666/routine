@@ -46,7 +46,7 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = DateUtils.addDays(new Date(), -200).getTime();
+        long startTime = DateUtils.addDays(new Date(), -10).getTime();
         long endTime = System.currentTimeMillis();
         List<String> codes = Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> stockPriceService.highBefore(it, startTime, endTime)).subscribeOn(Schedulers.elastic()))
@@ -59,7 +59,7 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = DateUtils.addDays(new Date(), -200).getTime();
+        long startTime = DateUtils.addDays(new Date(), -10).getTime();
         long endTime = System.currentTimeMillis();
         Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> this.correct(it.getCode(), startTime, endTime)).subscribeOn(Schedulers.elastic()))
