@@ -25,15 +25,9 @@
         dataType: "json",
         success: function (data) {
             console.log(data)
-            const index = 0;
             let html = "";
             for (let i = 0; i < data.length; i++) {
-                i++;
                 html = html + data[i] + "&nbsp;"
-                if (i % 10 === 0) {
-                    html = html + "<br/>"
-                    i=0;
-                }
             }
             alert(html)
             $('#today-list').html(html);
