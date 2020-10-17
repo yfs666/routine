@@ -31,6 +31,7 @@ import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -43,12 +44,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -277,6 +273,37 @@ public class StockPriceService {
             System.out.println("error " + e);
             return null;
         }
+    }
+
+
+    public String getTodayDate() {
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(
+                        QueryBuilders.boolQuery()
+                )
+                .from(0)
+                .size(1)
+                .sort("dayTime", SortOrder.DESC);
+        return this.queryFrom(searchSourceBuilder).get(0).getDate();
+    }
+
+    public String getYesterdayDate(String today) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        long todayTime;
+        try {
+            todayTime = sdf.parse(today).getTime();
+        } catch (Exception e){
+            todayTime = new Date().getTime();
+        }
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(
+                        QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.rangeQuery("dayTime").lt(todayTime))
+                )
+                .from(0)
+                .size(1)
+                .sort("dayTime", SortOrder.DESC);
+        return this.queryFrom(searchSourceBuilder).get(0).getDate();
     }
 
 }

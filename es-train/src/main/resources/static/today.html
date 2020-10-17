@@ -28,8 +28,10 @@
             let html = "";
             for (let i = 0; i < data.length; i++) {
                 html = html + data[i] + "&nbsp;"
+                if ((i + 1) % 10 === 0) {
+                    html = html + "<br/>";
+                }
             }
-            alert(html)
             $('#today-list').html(html);
         }
     });

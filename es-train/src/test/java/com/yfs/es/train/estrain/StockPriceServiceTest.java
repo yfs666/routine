@@ -23,4 +23,11 @@ public class StockPriceServiceTest {
         System.out.println(thsPrices);
     }
 
+    @Test
+    public void dateTest() {
+        String todayDate = stockPriceService.getTodayDate();
+        String yesterdayDate = stockPriceService.getYesterdayDate(todayDate);
+        System.out.println(yesterdayDate);
+    }
+
 }

@@ -15,6 +15,7 @@ import com.yfs.es.train.estrain.entity.UpDown;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -25,9 +26,10 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.util.function.Tuple2;
 
@@ -72,8 +74,11 @@ public class IndexController {
 
 
     @RequestMapping(value = "/avg", method = RequestMethod.GET)
-    public Map<String, Object> avg(String t) throws IOException {
-        String y = getPreDate(t);
+    public Map<String, Object> avg(@RequestParam(name = "t", required = false) String t) throws IOException {
+        if (StringUtils.isBlank(t)) {
+            t = stockPriceService.getTodayDate();
+        }
+        String y = stockPriceService.getYesterdayDate(t);
         SearchRequest searchRequest = Requests.searchRequest(StockPriceService.STOCK_PRICE_INDEX);
         searchRequest.source().query(QueryBuilders.termsQuery("date", Lists.newArrayList(y, t))).from(0).size(10000);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
@@ -231,35 +236,18 @@ public class IndexController {
 
 
 
-    private String getPreDate(String today) {
-        try {
-            Date parse = sdf.parse(today);
-            long dayTime = parse.getTime();
-            SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
-                    .query(
-                            QueryBuilders.boolQuery()
-                                    .filter(QueryBuilders.termQuery("code", "601398"))
-                                    .filter(QueryBuilders.rangeQuery("dayTime").lte(parse.getTime()))
-                    )
-                    .from(0)
-                    .size(2)
-                    .sort("dayTime", SortOrder.DESC);
-            List<ThsPrice> stockPrices = stockPriceService.queryFrom(searchSourceBuilder);
-            return sdf.format(new Date(stockPrices.get(1).getDayTime()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return today;
-    }
 
 
     @RequestMapping(value = "/getMyToday", method = RequestMethod.GET)
-    public List<String> getMyToday(String date) throws Exception {
+    public List<String> getMyToday(@RequestParam(name = "date", required = false) String date) throws Exception {
+        if (StringUtils.isBlank(date)) {
+            date = stockPriceService.getTodayDate();
+        }
         SearchRequest searchRequest = Requests.searchRequest(StockPriceService.STOCK_PRICE_INDEX);
         searchRequest.source()
                 .query(
                         QueryBuilders.boolQuery()
-                                .filter(QueryBuilders.termQuery("date", !StringUtils.isEmpty(date) ? date : sdf.format(new Date())))
+                                .filter(QueryBuilders.termQuery("date", StringUtils.isNotBlank(date) ? date : sdf.format(new Date())))
                                 .filter(QueryBuilders.rangeQuery("highBefore").gte(50))
                 ).from(0).size(2000);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
