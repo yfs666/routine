@@ -64,13 +64,12 @@ public class IndexController {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public Map<String, Object> index() {
+    @RequestMapping(value = {"/index", ""}, method = RequestMethod.GET)
+    public String index() {
         Map<String, Object> result = Maps.newHashMap();
         result.put("code", 200);
-        return result;
+        return "<h1>一个大写的 帅 </h1>";
     }
-
 
 
     @RequestMapping(value = "/avg", method = RequestMethod.GET)
@@ -98,7 +97,7 @@ public class IndexController {
         List<KLineVO> kLineVO000 = Lists.newArrayList();
         List<KLineVO> kLineVO002 = Lists.newArrayList();
         List<KLineVO> kLineVO300 = Lists.newArrayList();
-        int myCount=0;
+        int myCount = 0;
         for (ThsPrice stockPrice : group.get(t)) {
             ThsPrice yesterdayPrice = yesterdayMap.get(stockPrice.getCode());
             if (yesterdayPrice != null) {
@@ -231,11 +230,8 @@ public class IndexController {
             detailVO.setLimitUpCount(limitCountMap.getOrDefault(it.getT1(), 0L).intValue());
             detailVO.setLimitDownCount(limitCountMap.getOrDefault(it.getT2(), 0L).intValue());
             return detailVO;
-        }).sorted(Comparator.<CountShowDetailVO> comparingDouble(it -> Double.parseDouble(it.getLimitName().split("~")[0])).thenComparingInt(it -> it.getLimitName().length())).collect(Collectors.toList());
+        }).sorted(Comparator.<CountShowDetailVO>comparingDouble(it -> Double.parseDouble(it.getLimitName().split("~")[0])).thenComparingInt(it -> it.getLimitName().length())).collect(Collectors.toList());
     }
-
-
-
 
 
     @RequestMapping(value = "/getMyToday", method = RequestMethod.GET)
