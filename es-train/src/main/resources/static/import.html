@@ -2,14 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>import</title>
+    <link rel="stylesheet" type="text/css" href="css/date.css" />
+    <script src="js/jq.js"></script>
+    <script src="js/my.js"></script>
+    <script src="js/date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/nongli.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 
 <form action="/import/importDayLine" enctype="multipart/form-data" method="post">
-    <input type="file" name="file"/>
-    <input type="submit" value="提交"/>
-</form>
+    <div id='date'>
+        <input type="text" value='' name="date" placeholder="点击选择时间" id='inputdate' />
+    </div>
+    <br/>
+    <br/>
+    <div>
+        <input type="file" name="file"/>
+        <input type="submit" value="提交"/>
+    </div>
 
+</form>
+<script type="text/javascript">
+    const d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    });
+</script>
 </body>
 </html>
