@@ -18,7 +18,7 @@ public class StockPriceServiceTest {
 
     @Test
     public void queryTest() {
-        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("date", "2020-09-21")).from(0).size(10000);
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("date", "2020-09-22")).from(0).size(10000);
         List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
         System.out.println(thsPrices);
     }

@@ -190,7 +190,7 @@ public class StockPriceService {
                 SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
                 Integer highBeforeDays = searchResponse.getHits().getTotalHits().value == 0L ? 1000 :
                         Arrays.stream(searchResponse.getHits().getHits()).map(documentFields -> {
-                            StockPrice stockPriceDetail = new Gson().fromJson(documentFields.getSourceAsString(), StockPrice.class);
+                            ThsPrice stockPriceDetail = new Gson().fromJson(documentFields.getSourceAsString(), ThsPrice.class);
                             stockPriceDetail.setId(documentFields.getId());
                             return stockPriceDetail;
                         }).findFirst().map(before -> (stockPrice.getDayTime() - before.getDayTime()) * 5 / 1000 / 60 / 60 / 24 / 7).orElse(1000L).intValue();

@@ -28,17 +28,12 @@ public class ImportController {
     @Autowired
     private BizService bizService;
 
-//    @RequestMapping(value = "/importDayLine", method = RequestMethod.POST)
-//    public Map<String, Object> importDayLine(MultipartFile file) throws IOException {
-//        ExcelListener excelListener = new ExcelListener("2020-09-21");
-//        EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
-//        stockInfoService.compareAndSave(excelListener.getStockInfoList());
-//        stockPriceService.compareAndAdd(excelListener.getThsPriceList());
-//        return Collections.emptyMap();
-//    }
-
-    @RequestMapping(value = "/handleData", method = RequestMethod.GET)
-    public Map<String,String> handleData() {
+    @RequestMapping(value = "/importDayLine", method = RequestMethod.POST)
+    public Map<String, Object> importDayLine(MultipartFile file) throws IOException {
+        ExcelListener excelListener = new ExcelListener("2020-09-24");
+        EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
+        stockInfoService.compareAndSave(excelListener.getStockInfoList());
+        stockPriceService.compareAndAdd(excelListener.getThsPriceList());
         bizService.handleDayData();
         return Collections.emptyMap();
     }
