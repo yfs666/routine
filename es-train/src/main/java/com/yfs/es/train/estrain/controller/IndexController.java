@@ -40,12 +40,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,6 +69,7 @@ public class IndexController {
 
     @RequestMapping(value = "/avg", method = RequestMethod.GET)
     public Map<String, Object> avg(@RequestParam(name = "t", required = false) String t) throws IOException {
+        HashMap<String, Object> result = Maps.newHashMap();
         if (StringUtils.isBlank(t)) {
             t = stockPriceService.getTodayDate();
         }
@@ -85,6 +81,10 @@ public class IndexController {
         Map<String, List<ThsPrice>> group = Arrays.stream(hits).map(hit -> new Gson().fromJson(hit.getSourceAsString(), ThsPrice.class))
                 .collect(Collectors.groupingBy(ThsPrice::getDate));
         Map<String, ThsPrice> yesterdayMap = group.get(y).stream().collect(Collectors.toMap(ThsPrice::getCode, Function.identity(), (o1, o2) -> o1));
+        if (group.size() <= 1) {
+            result.put("code", 201);
+            return result;
+        }
         int count = 0;
         BigDecimal closeSum = BigDecimal.ZERO;
         BigDecimal highSum = BigDecimal.ZERO;
@@ -215,7 +215,7 @@ public class IndexController {
                 countShowVO.setLowAvg300(detailVos);
             }
         }
-        HashMap<String, Object> result = Maps.newHashMap();
+
         result.put("code", 200);
         result.put("countShowVO", countShowVO);
         result.put("marketLine", new MarketKLineShowVO(kLineVOSum, kLineVO60x, kLineVO000, kLineVO002, kLineVO300));
