@@ -3,38 +3,83 @@
 <head>
     <script src="js/jq.js"></script>
     <script src="js/my.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/date.css" />
+    <script src="js/date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/nongli.js" type="text/javascript" charset="utf-8"></script>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<div>
+    <table>
+        <tr>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td><div id='date'>
+                <input type="text" value='' placeholder="点击选择时间" id='inputdate' /> &nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            </td>
+            <td>
+                <button id="checkDate">选择日期</button>
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="count.html" target="_blank">统计</a>
+            </td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="kline.html" target="_blank">图形</a>
+            </td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="topup.html" target="_blank">排名</a>
+            </td>
+            <td>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="today.html" target="_blank">当日数据</a>
+            </td>
+        </tr>
+    </table>
+</div>
 <div id="today-list">
 
 </div>
 </body>
 <script>
 
-    const date = getQueryVariable('date');
-    let url = "/getMyToday";
-    if (date != null && date !== '') {
-        url = url + "?date=" + date
+    const d = new DateJs({
+        inputEl: '#inputdate',
+        el: '#date'
+    });
+    $(function () {
+        $('#checkDate').click(function () {
+            getData($('#inputdate').val())
+        });
+    });
+
+    function getData(date) {
+        let url = "/getMyToday"
+        if (date != null && date !== '') {
+            url = url + "?t=" + date;
+        }
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                let html = "";
+                for (let i = 0; i < data.length; i++) {
+                    html = html + data[i] + "&nbsp;"
+                    if ((i + 1) % 10 === 0) {
+                        html = html + "<br/>";
+                    }
+                }
+                $('#today-list').html(html);
+            }
+        });
     }
 
-    $.ajax({
-        url: url,
-        type: "get",
-        dataType: "json",
-        success: function (data) {
-            console.log(data)
-            let html = "";
-            for (let i = 0; i < data.length; i++) {
-                html = html + data[i] + "&nbsp;"
-                if ((i + 1) % 10 === 0) {
-                    html = html + "<br/>";
-                }
-            }
-            $('#today-list').html(html);
-        }
-    });
 
 
 </script>
