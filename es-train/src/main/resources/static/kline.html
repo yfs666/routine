@@ -61,6 +61,12 @@
         <tr>
             <td><div id="k-line-60x-2" class="myDiv" ></div></td>
         </tr>
+        <tr>
+            <td>60x_3</td>
+        </tr>
+        <tr>
+            <td><div id="k-line-60x-3" class="myDiv" ></div></td>
+        </tr>
 
         <tr>
             <td>000</td>
@@ -87,6 +93,13 @@
         </tr>
         <tr>
             <td><div id="k-line-300" class="myDiv" ></div></td>
+        </tr>
+
+        <tr>
+            <td>688</td>
+        </tr>
+        <tr>
+            <td><div id="k-line-688" class="myDiv" ></div></td>
         </tr>
 
     </table>
@@ -123,10 +136,12 @@
                 // initEchart(echarts.init(document.getElementById('k-line-sum')), data.marketLine["ksum"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-60x-1')), data.marketLine["k60x_1"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-60x-2')), data.marketLine["k60x_2"], "1")
+                initEchart(echarts.init(document.getElementById('k-line-60x-3')), data.marketLine["k60x_3"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-000')), data.marketLine["k000"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-002-1')), data.marketLine["k002_1"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-002-2')), data.marketLine["k002_2"], "1")
                 initEchart(echarts.init(document.getElementById('k-line-300')), data.marketLine["k300"], "1")
+                initEchart(echarts.init(document.getElementById('k-line-688')), data.marketLine["k688"], "1")
             }
         });
     }
