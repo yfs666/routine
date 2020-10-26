@@ -97,6 +97,7 @@ public class IndexController {
         List<KLineVO> kLineVO000 = Lists.newArrayList();
         List<KLineVO> kLineVO002 = Lists.newArrayList();
         List<KLineVO> kLineVO300 = Lists.newArrayList();
+        List<KLineVO> kLineVO688 = Lists.newArrayList();
         int myCount = 0;
         for (ThsPrice stockPrice : group.get(t)) {
             ThsPrice yesterdayPrice = yesterdayMap.get(stockPrice.getCode());
@@ -129,6 +130,9 @@ public class IndexController {
                 }
                 if (stockPrice.getCode().startsWith("300")) {
                     kLineVO300.add(kLineVO);
+                }
+                if (stockPrice.getCode().startsWith("688")) {
+                    kLineVO688.add(kLineVO);
                 }
             }
         }
@@ -168,6 +172,9 @@ public class IndexController {
             if ("300".equals(stringMapEntry.getKey())) {
                 countShowVO.setCloseAvg300(detailVos);
             }
+            if ("688".equals(stringMapEntry.getKey())) {
+                countShowVO.setCloseAvg688(detailVos);
+            }
         }
         Map<String, Map<LimitEnum, Long>> collectHigh = highUpDowns.stream().collect(Collectors.groupingBy(it -> {
             if (it.getCode().startsWith("60")) {
@@ -190,6 +197,9 @@ public class IndexController {
             }
             if ("300".equals(stringMapEntry.getKey())) {
                 countShowVO.setHighAvg300(detailVos);
+            }
+            if ("688".equals(stringMapEntry.getKey())) {
+                countShowVO.setHighAvg688(detailVos);
             }
         }
         Map<String, Map<LimitEnum, Long>> collectLow = lowUpDowns.stream().collect(Collectors.groupingBy(it -> {
@@ -214,11 +224,14 @@ public class IndexController {
             if ("300".equals(stringMapEntry.getKey())) {
                 countShowVO.setLowAvg300(detailVos);
             }
+            if ("300".equals(stringMapEntry.getKey())) {
+                countShowVO.setLowAvg688(detailVos);
+            }
         }
 
         result.put("code", 200);
         result.put("countShowVO", countShowVO);
-        result.put("marketLine", new MarketKLineShowVO(kLineVOSum, kLineVO60x, kLineVO000, kLineVO002, kLineVO300));
+        result.put("marketLine", new MarketKLineShowVO(kLineVOSum, kLineVO60x, kLineVO000, kLineVO002, kLineVO300, kLineVO688));
         return result;
     }
 

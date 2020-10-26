@@ -18,6 +18,8 @@
         </tbody>
     </table>
 </body>
+<br/><br/><br/><br/><br/>
+<span id="codes"></span>
 <script>
 
 
@@ -40,6 +42,11 @@
                 $('tbody').append("<td>" + data[i].percent + "</td>");
                 $('tbody').append("</tr>");
             }
+            let codes = ""
+            for (let i = 0; i < 100; i++) {
+                codes = codes + data[i].code + " "
+            }
+            $('#codes').text(codes);
         }
     });
 
