@@ -67,6 +67,38 @@ public class IndexController {
     }
 
 
+    @RequestMapping(value = "listDayLine", method = RequestMethod.GET)
+    public Map<String, Object> listDayLine(@RequestParam String code, @RequestParam(name = "days", required = false) Integer days) {
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("code", code)).sort("dayTime", SortOrder.DESC).from(0).size(days == null ? 100 : days));
+        if (CollectionUtils.isEmpty(thsPrices)) {
+            return Collections.emptyMap();
+        }
+        Collections.reverse(thsPrices);
+        ThsPrice prePrice = thsPrices.get(0);
+        List<ThsPrice> todayOpenPriceList = Lists.newArrayList();
+        for (ThsPrice thsPrice : thsPrices) {
+            thsPrice.setYesterdayClose(prePrice.getClose());
+            thsPrice.setOpenPercent(thsPrice.getOpen().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            thsPrice.setClosePercent(thsPrice.getClose().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            thsPrice.setHighPercent(thsPrice.getHigh().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            thsPrice.setLowPercent(thsPrice.getLow().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            prePrice = thsPrice;
+            ThsPrice openData = new ThsPrice();
+            openData.setOpenPercent(BigDecimal.ZERO);
+            openData.setClosePercent(thsPrice.getClose().divide(thsPrice.getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            openData.setHighPercent(thsPrice.getHigh().divide(thsPrice.getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            openData.setLowPercent(thsPrice.getLow().divide(thsPrice.getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100.0)));
+            todayOpenPriceList.add(openData);
+        }
+        Map<String, Object> result = Maps.newHashMap();
+        result.put("code", 0);
+        result.put("list", thsPrices);
+        result.put("openList", todayOpenPriceList);
+        return result;
+    }
+
+
+
     @RequestMapping(value = "/avg", method = RequestMethod.GET)
     public Map<String, Object> avg(@RequestParam(name = "t", required = false) String t) throws IOException {
         HashMap<String, Object> result = Maps.newHashMap();

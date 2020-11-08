@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/date.css" />
+    <script src="js/echarts.min.js"></script>
+    <script src="js/jq.js"></script>
+    <script src="js/my.js"></script>
+    <script src="js/date.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/nongli.js" type="text/javascript" charset="utf-8"></script>
+    <title>统计</title>
+    <style type="text/css">
+        .myDiv{
+            width: 5000px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="count">
+    <table>
+        <tr>
+            <td>code <label for="code"></label><input id="code"/></td>
+            <td>days <label for="days"></label><input id="days"/></td>
+            <td>
+                <button id="checkDate">确定</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <table border="0">
+        <tr>
+            <td>yesterdayClose</td>
+        </tr>
+        <tr>
+            <td><div id="k-line-close-1" class="myDiv" ></div></td>
+        </tr>
+        <tr>
+            <td>todayOpen</td>
+        </tr>
+        <tr>
+            <td><div id="k-line-open-1" class="myDiv" ></div></td>
+        </tr>
+
+
+    </table>
+</div>
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#checkDate').click(function () {
+            getData($('#code').val(),$("#days").val())
+        });
+    });
+
+    function getData(code, days) {
+        let url = "/listDayLine?code=" + code
+        if (days != null && days !== '') {
+            url = url + "&days=" + days;
+        }
+        $.ajax({
+            url: url,
+            type: "get",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                // initEchart(echarts.init(document.getElementById('k-line-sum')), data.marketLine["ksum"], "1")
+                initEchart(echarts.init(document.getElementById('k-line-close-1')), data["list"], "1")
+                initEchart(echarts.init(document.getElementById('k-line-open-1')), data["openList"], "1")
+            }
+        });
+    }
+
+
+    function initEchart(myChart, myDataJson, codeTag) {
+        // alert(myDataJson)
+
+        // 指定图表的配置项和数据
+
+        const dataJson = [];
+        const countJson = [];
+        for (const kLine in myDataJson) {
+            const lineShow = [myDataJson[kLine].openPercent, myDataJson[kLine].closePercent, myDataJson[kLine].lowPercent, myDataJson[kLine].highPercent];
+            dataJson.push(lineShow)
+            countJson.push('1')
+        }
+
+
+        const option = {
+            xAxis: {
+                data: countJson
+            },
+            yAxis: {},
+            series: [{
+                type: 'k',
+                data: dataJson
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        myChart.on('brushSelected', renderBrushed);
+    }
+
+
+
+    function renderBrushed(params) {
+        var brushed = [];
+        var brushComponent = params.batch[0];
+
+        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+            var rawIndices = brushComponent.selected[sIdx].dataIndex;
+            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
+        }
+
+        myChart.setOption({
+            title: {
+                backgroundColor: '#333',
+                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
+                bottom: 0,
+                right: 0,
+                width: 100,
+                textStyle: {
+                    fontSize: 12,
+                    color: '#fff'
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
