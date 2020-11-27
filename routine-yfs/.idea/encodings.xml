@@ -159,7 +159,6 @@
     <file url="file://$PROJECT_DIR$/../mapstruct/processor/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../my-mvc/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../my-mvc/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../my-mvc/src/main/resources/mvc-dispatcher-servlet.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/../mybatis-3" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../mybatis-3/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../mybatis-generator-gui/src/main/java" charset="UTF-8" />
@@ -221,6 +220,22 @@
     <file url="file://$PROJECT_DIR$/../netty/transport-udt/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../netty/transport/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/broker/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/broker/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/example/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/example/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/filter/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/filtersrv/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/logappender/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/namesrv/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/openmessaging/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/remoting/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/store/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/test/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../rocketmq-all-4.2.0/tools/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../yfs-netty-study/src/main/java" charset="UTF-8" />
   </component>
 </project>
