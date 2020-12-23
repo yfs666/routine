@@ -285,9 +285,17 @@ public class DefaultRequestProcessor implements NettyRequestProcessor {
         final GetRouteInfoRequestHeader requestHeader =
             (GetRouteInfoRequestHeader) request.decodeCommandCustomHeader(GetRouteInfoRequestHeader.class);
         //从RouteInfoManager中获取topic的路由信息
+        /*
+        调用 RouterlnfoManager 的方法，从路由 topicQueueTable brokerAddrTable
+        filterServerTable 中分别填充 TopicRouteData 中的 List<Queu Data＞、 List BrokerData＞和
+        filterServer 地址表
+         */
         TopicRouteData topicRouteData = this.namesrvController.getRouteInfoManager().pickupTopicRouteData(requestHeader.getTopic());
         //如果支持顺序消息，则填充KVConfig信息
         if (topicRouteData != null) {
+            /*
+            如果找到主题对应的路由信息并且该主题为顺序消息，则从 NameServer KVconfig 中获取关于顺序消息相 的配置填充路由信息
+             */
             if (this.namesrvController.getNamesrvConfig().isOrderMessageEnable()) {
                 String orderTopicConf =
                     this.namesrvController.getKvConfigManager().getKVConfig(NamesrvUtil.NAMESPACE_ORDER_TOPIC_CONFIG,
@@ -301,7 +309,7 @@ public class DefaultRequestProcessor implements NettyRequestProcessor {
             response.setRemark(null);
             return response;
         }
-
+//      如果找不到路由信息 CODE 则使用 TOPIC NOT_EXISTS ，表示没有找到对应的路由
         response.setCode(ResponseCode.TOPIC_NOT_EXIST);
         response.setRemark("No topic route info in name server for the topic: " + requestHeader.getTopic()
             + FAQUrl.suggestTodo(FAQUrl.APPLY_TOPIC_URL));

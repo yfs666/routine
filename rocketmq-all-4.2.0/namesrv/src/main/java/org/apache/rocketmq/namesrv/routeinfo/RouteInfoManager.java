@@ -116,9 +116,11 @@ public class RouteInfoManager {
         RegisterBrokerResult result = new RegisterBrokerResult();
         try {
             try {
+//                添加写锁，防止并发操作
                 this.lock.writeLock().lockInterruptibly();
                 //更新cluster和broker对应关系
                 Set<String> brokerNames = this.clusterAddrTable.get(clusterName);
+//                判断集群是否存在
                 if (null == brokerNames) {
                     brokerNames = new HashSet<String>();
                     this.clusterAddrTable.put(clusterName, brokerNames);
@@ -143,6 +145,7 @@ public class RouteInfoManager {
                         ConcurrentMap<String, TopicConfig> tcTable =
                             topicConfigWrapper.getTopicConfigTable();
                         if (tcTable != null) {
+//                            更新路由元信息，填充topicQueueTable，其实就是为默认主题自动注册路由信息，当消息生产者发送主题时，如果该主题未创建并且BrokerConfig的自动创建为true时，返回默认的
                             for (Map.Entry<String, TopicConfig> entry : tcTable.entrySet()) {
                                 this.createAndUpdateQueueData(brokerName, entry.getValue());
                             }

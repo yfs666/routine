@@ -57,7 +57,7 @@ public class NamesrvStartup {
                 System.exit(-1);
                 return null;
             }
-
+            // NameServer加载配置文件
             final NamesrvConfig namesrvConfig = new NamesrvConfig();
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
             nettyServerConfig.setListenPort(9876);

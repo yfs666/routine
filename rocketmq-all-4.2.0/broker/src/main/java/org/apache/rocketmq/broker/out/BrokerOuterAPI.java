@@ -111,8 +111,10 @@ public class BrokerOuterAPI {
 
         List<String> nameServerAddressList = this.remotingClient.getNameServerAddressList();
         if (nameServerAddressList != null) {
+//            遍历NameServer列表
             for (String namesrvAddr : nameServerAddressList) {
                 try {
+//                    分别向NameServer注册
                     RegisterBrokerResult result = this.registerBroker(namesrvAddr, clusterName, brokerAddr, brokerName, brokerId,
                         haServerAddr, topicConfigWrapper, filterServerList, oneway, timeoutMills);
                     if (result != null) {
@@ -131,12 +133,24 @@ public class BrokerOuterAPI {
 
     private RegisterBrokerResult registerBroker(
         final String namesrvAddr,
+//        集群名称
         final String clusterName,
+//        broker地址
         final String brokerAddr,
         final String brokerName,
+//        broker的id 0表示master，大于0表示slave
         final long brokerId,
+//        master地址，初次请求时该值为空，slave向NameServer注册后返回
         final String haServerAddr,
+        /*
+         *         主题配置 opicConfigWrapper 内部封装的是 Top icConfigManager 中的 topicConfigTable ，内部存储的是 Broker 启动时默认的 Topic,
+         *         MixAll. SELF TEST_ TOPIC MixAll.DEFAULT TOPIC ( AutoCreateTopic -
+         *         Enable=true )., MixAll.BENCHMARK TOPIC MixAll.OFFSET MOVED
+         *         EVENT BrokerConfig#brokerClusterName BrokerConfig#brokerName Broker
+         *         Topic 默认存储在$｛Rock Hom巳｝ store confg/topic. on
+         */
         final TopicConfigSerializeWrapper topicConfigWrapper,
+//        消息过滤服务器列表
         final List<String> filterServerList,
         final boolean oneway,
         final int timeoutMills
