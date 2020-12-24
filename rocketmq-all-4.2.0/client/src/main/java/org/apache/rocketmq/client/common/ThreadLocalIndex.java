@@ -23,6 +23,10 @@ public class ThreadLocalIndex {
     private final ThreadLocal<Integer> threadLocalIndex = new ThreadLocal<Integer>();
     private final Random random = new Random();
 
+    /**
+     * 第一次使用随机数，后面每次加1，超过int最大值，取绝对值
+     * @return 数字
+     */
     public int getAndIncrement() {
         Integer index = this.threadLocalIndex.get();
         if (null == index) {

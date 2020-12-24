@@ -495,7 +495,7 @@ public class DefaultMQProducer extends ClientConfig implements MQProducer {
      * @param key accesskey
      * @param newTopic topic name
      * @param queueNum topic's queue number
-     * @param topicSysFlag topic system flag
+     * @param topicSysFlag topic system flag 默认为0
      * @throws MQClientException if there is any client error.
      */
     @Override
