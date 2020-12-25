@@ -173,6 +173,7 @@ public class DefaultMessageStore implements MessageStore {
         boolean result = true;
 
         try {
+//            通过判断abort文件是否存在来判断broker是否正常退出，如果不是正常退出，说明可能存在文件数据不一致，需要修改
             boolean lastExitOK = !this.isTempFileExist();
             log.info("last shutdown {}", lastExitOK ? "normally" : "abnormally");
 
@@ -1470,8 +1471,12 @@ public class DefaultMessageStore implements MessageStore {
 
         private void deleteExpiredFiles() {
             int deleteCount = 0;
+//            文件保留时间，也就是从最后一次更新时间到现在，如果超过了该时间，则任务是过期文件，可以被删除
             long fileReservedTime = DefaultMessageStore.this.getMessageStoreConfig().getFileReservedTime();
+//            删除物理文件的间隔，因为在一次清除过程中，可能需要被删除的文件不止一个，该值指定两次删除文件的间隔时间
             int deletePhysicFilesInterval = DefaultMessageStore.this.getMessageStoreConfig().getDeleteCommitLogFilesInterval();
+//            在清除过期文件时，如果该文件被其他线程锁占用（引用次数大于0，比如读取消息），此时会阻止此次删除任务，同时在第一次试图删除该文件时记录当前时间戳，
+//            destroyMapedFileIntervalForcibly表示第一次拒绝删除之后能保留的最大时间，在此期间内，同样可以被拒绝删除，同时会将引用减少1000个，超过该时间后，文件将被强制删除
             int destroyMapedFileIntervalForcibly = DefaultMessageStore.this.getMessageStoreConfig().getDestroyMapedFileIntervalForcibly();
 
             boolean timeup = this.isTimeToDelete();
