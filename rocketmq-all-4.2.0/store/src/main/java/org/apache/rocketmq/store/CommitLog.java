@@ -48,6 +48,9 @@ public class CommitLog {
     private static final Logger log = LoggerFactory.getLogger(LoggerName.STORE_LOGGER_NAME);
     // End of file empty MAGIC CODE cbd43194
     private final static int BLANK_MAGIC_CODE = 0xBBCCDDEE ^ 1880681586 + 8;
+    /**
+     * MappedFile的管理容器，是对存储目录的封装
+     */
     private final MappedFileQueue mappedFileQueue;
     private final DefaultMessageStore defaultMessageStore;
     private final FlushCommitLogService flushCommitLogService;
@@ -362,6 +365,28 @@ public class CommitLog {
         return new DispatchRequest(-1, false /* success */);
     }
 
+    /*
+        1 ) TOTALSIZE:
+        2)MAGICCODE: 魔数， 4字节。 固定值Oxdaa320a7。
+        3)BODYCRC: 消息体ere校验码，4字节。该消息条目总长度 ，4 字节 。
+        4) QUEUEID:
+        5)FLAG: 消息FLAG, RocketMQ不做处理， 供应用程序使用，默认4字节。
+        6) QUEUEOFFSET:消息在消息消费队列的偏移量， 8字节。消息消费队列 ID, 4字节。
+        7) PHYSICALOFFSET:
+        8)SYSFLAG: 消息系统Flag，例如是否压缩、是否是事务消息等， 4字节。
+        9 ) BORNTIMESTAMP: 消息生产者调用消息发送 API 的时间戳， 8 字节 。
+        10)BORNHOST:消息发送者IP、端口号， 8字节。
+        11 ) STORETIMESTAMP: 消息存储时间戳， 8字节。
+        12)STOREHOSTADDRESS: Broker服务器IP+端口号， 8字节。
+        13)阻CONSUMETIMES: 消息重试次数，4字节。
+        14) PreparedTransactionOffset: 事务消息物理偏移量， 8字节。
+        15 ) BodyLength:消息体长度， 4 字节 。
+        16)Body: 消息体内容，长度为bodyLenth中存储的值。
+        17) TopieLength: 主题存储长度， 1字节，表示主题名称不能超过255个字符。 消息在 CommitLog文件中的偏移量， 8字节。
+        18) Topie:
+        19)PropertiesLength: 消息属性长度， 2字节， 表示消息属性长度不能超过65536个主题，长度为 TopieLength 中存储的值。
+        20 ) Properties: 消息属性，长度为propertiesLength存储的值
+     */
     private static int calMsgLength(int bodyLength, int topicLength, int propertiesLength) {
         final int msgLen = 4 //TOTALSIZE
             + 4 //MAGICCODE
