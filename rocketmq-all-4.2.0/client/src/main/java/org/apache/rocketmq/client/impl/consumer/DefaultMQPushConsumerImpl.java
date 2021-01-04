@@ -198,11 +198,12 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
 
     public void pullMessage(final PullRequest pullRequest) {
         final ProcessQueue processQueue = pullRequest.getProcessQueue();
+//        如果被丢弃，则直接返回
         if (processQueue.isDropped()) {
             log.info("the pull request[{}] is dropped.", pullRequest.toString());
             return;
         }
-
+//       更新最后修改时间
         pullRequest.getProcessQueue().setLastPullTimestamp(System.currentTimeMillis());
 
         try {
@@ -212,13 +213,13 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
             this.executePullRequestLater(pullRequest, PULL_TIME_DELAY_MILLS_WHEN_EXCEPTION);
             return;
         }
-
+//        如果当前消费者被挂起，则延迟1s再次放入到PullMessageService队列中，结束本次消息拉取
         if (this.isPause()) {
             log.warn("consumer was paused, execute pull request later. instanceName={}, group={}", this.defaultMQPushConsumer.getInstanceName(), this.defaultMQPushConsumer.getConsumerGroup());
             this.executePullRequestLater(pullRequest, PULL_TIME_DELAY_MILLS_WHEN_SUSPEND);
             return;
         }
-
+//        进行消息拉取流控
         long cachedMessageCount = processQueue.getMsgCount().get();
         long cachedMessageSizeInMiB = processQueue.getMsgSize().get() / (1024 * 1024);
         //1、如果堆积未处理的消息过多，则扔回PullMessageService,延时执行（默认50ms）
@@ -589,6 +590,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 this.pullAPIWrapper.registerFilterMessageHook(filterMessageHookList);
                 //8、consumer客户端消t;  21.
                 // 费offset持久化接口
+//                初始化消息进度，如果是集群模式，那么消息进度保存到broker上；如果是广播模式，那么消息消费进度存储在消费端
                 if (this.defaultMQPushConsumer.getOffsetStore() != null) {
                     this.offsetStore = this.defaultMQPushConsumer.getOffsetStore();
                 } else {
@@ -607,6 +609,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 //9、如果是本地持久化会从文件中load
                 this.offsetStore.load();
                 //10、消费服务，顺序和并发消息逻辑不同,接收消息并调用listener消费，处理消费结果
+//                根据是否是顺序消费，创建消费端消费线程服务consumeMessageService主要负责消息消费，内部维护一个线程池
                 if (this.getMessageListenerInner() instanceof MessageListenerOrderly) {
                     this.consumeOrderly = true;
                     this.consumeMessageService =
@@ -620,6 +623,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 this.consumeMessageService.start();
                 //12、注册（缓存）consumer，保证CID单例
                 boolean registerOK = mQClientFactory.registerConsumer(this.defaultMQPushConsumer.getConsumerGroup(), this);
+//                向MQClientInstance 注册消费者，并启动 MQClientInstance，在一个jvm中的所有消费者，生产者持有同一个MQClientInstance，MQClientInstance只启动一次
                 if (!registerOK) {
                     this.serviceState = ServiceState.CREATE_JUST;
                     this.consumeMessageService.shutdown();
@@ -828,6 +832,9 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                 for (final Map.Entry<String, String> entry : sub.entrySet()) {
                     final String topic = entry.getKey();
                     final String subString = entry.getValue();
+//                    构建主题订阅信息subscriptionData，并加入到 rebalanceImpl 的订阅消息中，订阅关系来源主要有两个
+//                    1、通过调用DefaultMQPushConsumerImpl#subscribe方法
+//                    2、订阅重试主题信息。从这里可以看出，RocketMQ消息重试以消费组为单位，而不是主题，消息重试主题名称为 %RETRY%+消费组名。消费者在启动的时候会自动订阅该主题，参与该主题的消息队列负载
                     SubscriptionData subscriptionData = FilterAPI.buildSubscriptionData(this.defaultMQPushConsumer.getConsumerGroup(),
                         topic, subString);
                     this.rebalanceImpl.getSubscriptionInner().put(topic, subscriptionData);
