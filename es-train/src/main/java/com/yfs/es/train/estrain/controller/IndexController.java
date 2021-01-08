@@ -11,6 +11,7 @@ import com.yfs.es.train.estrain.entity.MarketKLineShowVO;
 import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.entity.StockPrice;
 import com.yfs.es.train.estrain.entity.ThsPrice;
+import com.yfs.es.train.estrain.entity.UpCount;
 import com.yfs.es.train.estrain.entity.UpDown;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
@@ -31,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
 import java.io.IOException;
@@ -43,6 +46,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class IndexController {
@@ -94,6 +98,41 @@ public class IndexController {
         result.put("code", 0);
         result.put("list", thsPrices);
         result.put("openList", todayOpenPriceList);
+        return result;
+    }
+
+
+    @RequestMapping(value = "goodList", method = RequestMethod.GET)
+    public Map<String, Object> goodList(Integer count) throws Exception {
+        List<String> symbols = stockInfoService.pageList(1, 5000).stream().map(StockInfo::getSymbol).collect(Collectors.toList());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = sdf.parse("2020-01-01");
+        Date end = sdf.parse("2021-01-01");
+        List<UpCount> upCountList = Flux.fromIterable(symbols)
+                .subscribeOn(Schedulers.parallel())
+                .map(it -> {
+                    SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.rangeQuery("dayTime").gte(start).lte(end)).from(0).size(10000);
+                    List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+                    UpCount upCount = new UpCount();
+                    upCount.setCode(it.substring(2, 8));
+                    upCount.setUpDays((int) thsPrices.stream().filter(ite -> ite.getClosePercent().doubleValue() >= 0).count());
+                    upCount.setUpPercent(BigDecimal.ZERO);
+                    if (thsPrices.size() > 1) {
+                        ThsPrice first = thsPrices.stream().min(Comparator.comparing(ThsPrice::getDayTime)).get();
+                        ThsPrice last = thsPrices.stream().max(Comparator.comparing(ThsPrice::getDayTime)).get();
+                        upCount.setUpPercent(last.getClose().divide(first.getClose(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+                    }
+                    upCount.setDays(thsPrices.size());
+                    return upCount;
+                }).collectList()
+                .block();
+        Map<String, Object> result = Maps.newHashMap();
+//        upCountList.stream().sorted(Comparator.comparing(UpCount::getUpDays)).
+        upCountList.sort(Comparator.comparing(UpCount::getUpDays));
+        result.put("code", 0);
+        result.put("upCountList", upCountList.subList(0, count));
+        upCountList.sort(Comparator.comparing(UpCount::getUpPercent));
+        result.put("upPercentList", upCountList.subList(0, count));
         return result;
     }
 
