@@ -43,6 +43,11 @@ public class PullMessageService extends ServiceThread {
         this.mQClientFactory = mQClientFactory;
     }
 
+    /**
+     * 延迟将PullRequest放入到pullRequestQueue中
+     * @param pullRequest 拉取请求
+     * @param timeDelay 延迟时间
+     */
     public void executePullRequestLater(final PullRequest pullRequest, final long timeDelay) {
         this.scheduledExecutorService.schedule(new Runnable() {
 
@@ -53,6 +58,13 @@ public class PullMessageService extends ServiceThread {
         }, timeDelay, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * 立即将PullRequest放入到pullRequestQueue中
+     * 根据此方法的调用链即可发现，有两个地方调用
+     * 1、RocketMQ根据PullRequest拉取任务执行完一次消息拉取任务后，又将PullRequest对象放入到pullRequestQueue
+     * 2、在RebalanceImpl中创建
+     * @param pullRequest 拉取请求详情
+     */
     public void executePullRequestImmediately(final PullRequest pullRequest) {
         try {
             this.pullRequestQueue.put(pullRequest);
@@ -69,10 +81,16 @@ public class PullMessageService extends ServiceThread {
         return scheduledExecutorService;
     }
 
+    /**
+     * 调用消息的拉取
+     * @param pullRequest 拉取任务请求
+     */
     private void pullMessage(final PullRequest pullRequest) {
+//        从MQClientInstance中找到相应的MQConsumerInner，并强制转换成DefaultMQPushConsumerImpl
         final MQConsumerInner consumer = this.mQClientFactory.selectConsumer(pullRequest.getConsumerGroup());
         if (consumer != null) {
             DefaultMQPushConsumerImpl impl = (DefaultMQPushConsumerImpl) consumer;
+//            该线程只为push模式服务
             impl.pullMessage(pullRequest);
         } else {
             log.warn("No matched consumer for the PullRequest {}, drop it", pullRequest);
@@ -82,9 +100,10 @@ public class PullMessageService extends ServiceThread {
     @Override
     public void run() {
         log.info(this.getServiceName() + " service started");
-
+// stopped设计为volatile，保证判断数据的实时性
         while (!this.isStopped()) {
             try {
+//                从阻塞队列中拉取任务，为空则阻塞
                 PullRequest pullRequest = this.pullRequestQueue.take();
                 if (pullRequest != null) {
                     this.pullMessage(pullRequest);

@@ -196,6 +196,13 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
         this.offsetStore = offsetStore;
     }
 
+    /**
+     * 消息拉取分三步
+     * 1、消息拉取客户端消息拉取请求封装
+     * 2、消息服务器查找并返回消息
+     * 3、消息拉取客户端处理返回的消息
+     * @param pullRequest 消息请求
+     */
     public void pullMessage(final PullRequest pullRequest) {
         final ProcessQueue processQueue = pullRequest.getProcessQueue();
 //        如果被丢弃，则直接返回

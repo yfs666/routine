@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 
 /**
  * Queue consumption snapshot
+ * 是mq在消费端的重现、快照
+ * PullMessageService从消息服务器默认每次拉取32条消息，按消息的队列偏移量顺序存放在ProcessQueue中，PullMessageService然后将消息提交到消费者消费线程池，消息成功消费后从ProcessQueue中移除
  */
 public class ProcessQueue {
     public final static long REBALANCE_LOCK_MAX_LIVE_TIME =
