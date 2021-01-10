@@ -59,7 +59,7 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = DateUtils.addDays(new Date(), -10).getTime();
+        long startTime = DateUtils.addDays(new Date(), -1000).getTime();
         long endTime = System.currentTimeMillis();
         Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> this.correct(it.getCode(), startTime, endTime)).subscribeOn(Schedulers.elastic()))

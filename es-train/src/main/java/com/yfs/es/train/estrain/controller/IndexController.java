@@ -44,6 +44,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -101,17 +103,23 @@ public class IndexController {
         return result;
     }
 
+    private ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-    @RequestMapping(value = "goodList", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/goodList", method = RequestMethod.GET)
     public Map<String, Object> goodList(Integer count) throws Exception {
         List<String> symbols = stockInfoService.pageList(1, 5000).stream().map(StockInfo::getSymbol).collect(Collectors.toList());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date start = sdf.parse("2020-01-01");
         Date end = sdf.parse("2021-01-01");
         List<UpCount> upCountList = Flux.fromIterable(symbols)
-                .subscribeOn(Schedulers.parallel())
+                .subscribeOn(Schedulers.fromExecutorService(executorService))
                 .map(it -> {
-                    SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.rangeQuery("dayTime").gte(start).lte(end)).from(0).size(10000);
+                    SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                            .query(QueryBuilders.boolQuery()
+                                    .filter(QueryBuilders.termQuery("code", it.substring(2, 8)))
+                                    .filter(QueryBuilders.rangeQuery("dayTime").gte(start.getTime()).lte(end.getTime()))
+                            )
+                            .from(0).size(10000);
                     List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
                     UpCount upCount = new UpCount();
                     upCount.setCode(it.substring(2, 8));
@@ -120,19 +128,28 @@ public class IndexController {
                     if (thsPrices.size() > 1) {
                         ThsPrice first = thsPrices.stream().min(Comparator.comparing(ThsPrice::getDayTime)).get();
                         ThsPrice last = thsPrices.stream().max(Comparator.comparing(ThsPrice::getDayTime)).get();
-                        upCount.setUpPercent(last.getClose().divide(first.getClose(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+                        upCount.setUpPercent(last.getClose().divide(first.getClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
                     }
                     upCount.setDays(thsPrices.size());
+                    System.out.println(it);
                     return upCount;
                 }).collectList()
                 .block();
         Map<String, Object> result = Maps.newHashMap();
-//        upCountList.stream().sorted(Comparator.comparing(UpCount::getUpDays)).
-        upCountList.sort(Comparator.comparing(UpCount::getUpDays));
+        upCountList.sort(Comparator.comparing(UpCount::getUpDays).reversed());
+        List<UpCount> theUpCountList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            theUpCountList.add(upCountList.get(i));
+        }
+        upCountList.sort(Comparator.comparing(UpCount::getUpPercent).reversed());
+        List<UpCount> theUpPercentList = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            theUpPercentList.add(upCountList.get(i));
+        }
         result.put("code", 0);
-        result.put("upCountList", upCountList.subList(0, count));
-        upCountList.sort(Comparator.comparing(UpCount::getUpPercent));
-        result.put("upPercentList", upCountList.subList(0, count));
+        result.put("upCountList", theUpCountList);
+
+        result.put("upPercentList", theUpPercentList);
         return result;
     }
 

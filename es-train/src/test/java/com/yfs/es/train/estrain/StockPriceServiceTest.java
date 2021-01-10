@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -17,8 +20,17 @@ public class StockPriceServiceTest {
     private StockPriceService stockPriceService;
 
     @Test
-    public void queryTest() {
-        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("date", "2020-09-22")).from(0).size(10000);
+    public void queryTest() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date start = sdf.parse("2020-01-01");
+        Date end = sdf.parse("2021-01-01");
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("code", "600093"))
+                        .filter(QueryBuilders.rangeQuery("dayTime").gte(start.getTime()).lte(end.getTime()))
+                )
+                .from(0).size(10000);
+//        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("code", "600004")).from(0).size(10000);
         List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
         System.out.println(thsPrices);
     }
