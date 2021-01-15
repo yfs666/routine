@@ -50,24 +50,32 @@ public class StockProfitService {
 
     private static final String STOCK_PROFIT_INDEX = "ths_stock_profit";
 
+    private static final BigDecimal compare = BigDecimal.valueOf(-0.01);
+    private static final BigDecimal compare2020 = BigDecimal.valueOf(0.1);
+
     public void findUpList() {
         List<StockInfo> stockInfos = stockInfoService.pageList(0, 10000);
         AtomicInteger count = new AtomicInteger();
-        List<Tuple2<String, BigDecimal>> upDetails = stockInfos.parallelStream().map(stockInfo -> {
+        List<String> codes = Lists.newArrayList("600031", "300677");
+        List<Tuple2<String, BigDecimal>> upDetails = stockInfos.parallelStream().filter(it -> !it.getCode().startsWith("688")).map(stockInfo -> {
             SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("symbol.keyword", stockInfo.getSymbol())).from(0).size(10000);
             List<StockProfit> stockProfits = this.queryFrom(searchSourceBuilder);
             Map<String, StockProfit> stockProfitMap = stockProfits.stream().collect(Collectors.toMap(StockProfit::getReportName, Function.identity(), (o1, o2) -> o1));
-            BigDecimal profit2019 = Optional.ofNullable(stockProfitMap.get("2019年报")).map(StockProfit::getProfitPercent).orElse(null);
-            BigDecimal profit2018 = Optional.ofNullable(stockProfitMap.get("2018年报")).map(StockProfit::getProfitPercent).orElse(null);
             BigDecimal profit2017 = Optional.ofNullable(stockProfitMap.get("2017年报")).map(StockProfit::getProfitPercent).orElse(null);
+            BigDecimal profit2018 = Optional.ofNullable(stockProfitMap.get("2018年报")).map(StockProfit::getProfitPercent).orElse(null);
+            BigDecimal profit2019 = Optional.ofNullable(stockProfitMap.get("2019年报")).map(StockProfit::getProfitPercent).orElse(null);
+            BigDecimal profit2020 = Optional.ofNullable(stockProfitMap.get("2020三季报")).map(StockProfit::getProfitPercent).orElse(null);
+            if (codes.contains(stockInfo.getCode())) {
+                System.out.println();
+            }
+            if (profit2017 == null || profit2018 == null || profit2019 == null || profit2020 == null) {
+                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
+            }
+            if (profit2017.compareTo(compare) < 0 || profit2018.compareTo(compare) < 0 || profit2019.compareTo(compare) < 0 || profit2020.compareTo(compare2020) < 0) {
+                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
+            }
             System.out.println(stockInfo.getCode() + " " + count.getAndIncrement());
-            if (profit2017 == null || profit2018 == null || profit2019 == null) {
-                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
-            }
-            if (profit2017.compareTo(BigDecimal.ZERO) < 0 || profit2018.compareTo(BigDecimal.ZERO) < 0 || profit2019.compareTo(BigDecimal.ZERO) < 0) {
-                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
-            }
-            return Tuples.of(stockInfo.getCode(), profit2017.add(profit2018).add(profit2019));
+            return Tuples.of(stockInfo.getCode(), profit2020);
         }).filter(it -> it.getT2().compareTo(BigDecimal.ZERO) > 0).sorted(Comparator.<Tuple2<String, BigDecimal>, BigDecimal>comparing(Tuple2::getT2).reversed()).collect(Collectors.toList());
         String upList = upDetails.stream().map(Tuple2::getT1).collect(Collectors.joining(" "));
         System.out.println(upList);
