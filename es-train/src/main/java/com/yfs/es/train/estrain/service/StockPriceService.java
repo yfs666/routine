@@ -198,7 +198,7 @@ public class StockPriceService {
                 bulkRequest.add(new UpdateRequest(STOCK_PRICE_INDEX, stockPrice.getId()).doc(new Gson().toJson(stockPrice), XContentType.JSON));
             }
             BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            System.out.println(String.format("highBefore process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+            log.info(String.format("highBefore process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
 //        }
         return code;
     }
@@ -210,7 +210,7 @@ public class StockPriceService {
      */
     public void correctData(String code, long startTime, long endTime) throws IOException {
         int from = 0;
-        int size = 500;
+        int size = 100;
 //        while (true) {
             Stopwatch stopwatch = Stopwatch.createStarted();
             List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);
@@ -234,7 +234,7 @@ public class StockPriceService {
 //                    .block();
             stockPrices.stream().map(this::wrapUpdateRequest).forEach(bulkRequest::add);
             BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-            System.out.println(String.format("correctData process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
+            log.info(String.format("correctData process 500, cost %s ms, has failure %s", stopwatch.elapsed(TimeUnit.MILLISECONDS), bulkResponse.hasFailures()));
 //        }
     }
 

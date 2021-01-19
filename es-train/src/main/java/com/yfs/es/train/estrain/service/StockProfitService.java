@@ -56,7 +56,6 @@ public class StockProfitService {
     public void findUpList() {
         List<StockInfo> stockInfos = stockInfoService.pageList(0, 10000);
         AtomicInteger count = new AtomicInteger();
-        List<String> codes = Lists.newArrayList("600031", "300677");
         List<Tuple2<String, BigDecimal>> upDetails = stockInfos.parallelStream().filter(it -> !it.getCode().startsWith("688")).map(stockInfo -> {
             SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("symbol.keyword", stockInfo.getSymbol())).from(0).size(10000);
             List<StockProfit> stockProfits = this.queryFrom(searchSourceBuilder);
@@ -65,9 +64,6 @@ public class StockProfitService {
             BigDecimal profit2018 = Optional.ofNullable(stockProfitMap.get("2018年报")).map(StockProfit::getProfitPercent).orElse(null);
             BigDecimal profit2019 = Optional.ofNullable(stockProfitMap.get("2019年报")).map(StockProfit::getProfitPercent).orElse(null);
             BigDecimal profit2020 = Optional.ofNullable(stockProfitMap.get("2020三季报")).map(StockProfit::getProfitPercent).orElse(null);
-            if (codes.contains(stockInfo.getCode())) {
-                System.out.println();
-            }
             if (profit2017 == null || profit2018 == null || profit2019 == null || profit2020 == null) {
                 return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
             }

@@ -8,6 +8,7 @@ import com.yfs.es.train.estrain.entity.ThsPrice;
 import com.yfs.es.train.estrain.excel.ExcelListener;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -36,7 +37,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping(value = "/import")
 public class ImportController {
@@ -59,6 +60,12 @@ public class ImportController {
         EasyExcel.read(file.getInputStream(), excelListener).sheet().headRowNumber(1).doRead();
         stockInfoService.compareAndSave(excelListener.getStockInfoList());
         stockPriceService.compareAndAdd(excelListener.getThsPriceList());
+        bizService.handleDayData();
+        return Collections.emptyMap();
+    }
+
+    @RequestMapping(value = "/handleMa", method = RequestMethod.GET)
+    public Map<String, Object> handleMa() throws IOException {
         bizService.handleDayData();
         return Collections.emptyMap();
     }
@@ -106,7 +113,7 @@ public class ImportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(code);
+        log.info(code);
 
 
     }

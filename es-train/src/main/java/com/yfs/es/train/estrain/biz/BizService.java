@@ -1,9 +1,19 @@
 package com.yfs.es.train.estrain.biz;
 
+import com.google.gson.Gson;
 import com.yfs.es.train.estrain.entity.StockInfo;
+import com.yfs.es.train.estrain.entity.StockProfit;
+import com.yfs.es.train.estrain.entity.ThsPrice;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
+import com.yfs.es.train.estrain.service.StockProfitService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -12,15 +22,56 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+@Slf4j
 @Service
 public class BizService {
     @Autowired
     private StockInfoService stockInfoService;
     @Autowired
     private StockPriceService stockPriceService;
+    @Autowired
+    private StockProfitService stockProfitService;
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+
+    private static final BigDecimal compare = BigDecimal.valueOf(-0.01);
+    private static final BigDecimal compare2020 = BigDecimal.valueOf(0.1);
+
+    public void queryMyStock() {
+        SearchSourceBuilder searchSourceBuilder2018 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2018年报")).from(0).size(10000);
+        SearchSourceBuilder searchSourceBuilder2019 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2019年报")).from(0).size(10000);
+        SearchSourceBuilder searchSourceBuilder2020 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2020三季报")).from(0).size(10000);
+        List<String> symbols2018 = stockProfitService.queryFrom(searchSourceBuilder2018).stream()
+                .filter(it -> it.getProfit().compareTo(BigDecimal.ZERO) > 0)
+                .filter(it -> it.getProfitPercent().compareTo(compare) > 0)
+                .map(StockProfit::getSymbol).collect(Collectors.toList());
+        List<String> symbols2019 = stockProfitService.queryFrom(searchSourceBuilder2019).stream()
+                .filter(it -> it.getProfit().compareTo(BigDecimal.ZERO) > 0)
+                .filter(it -> it.getProfitPercent().compareTo(compare) > 0)
+                .map(StockProfit::getSymbol).collect(Collectors.toList());
+        List<String> symbols2020 = stockProfitService.queryFrom(searchSourceBuilder2020).stream()
+                .filter(it -> it.getProfit().compareTo(BigDecimal.ZERO) > 0)
+                .filter(it -> it.getProfitPercent().compareTo(compare2020) > 0)
+                .map(StockProfit::getSymbol).collect(Collectors.toList());
+        symbols2020 = symbols2020.stream().filter(symbols2018::contains).filter(symbols2019::contains).collect(Collectors.toList());
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(
+                        QueryBuilders.boolQuery()
+                                .filter(QueryBuilders.termQuery("date", "2021-01-15"))
+                ).from(0).size(10000);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+        List<String> finalSymbols202 = symbols2020;
+//        List<String> codes = thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getCode).collect(Collectors.toList());
+        List<String> codes = thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getCode).collect(Collectors.toList());
+        log.info(String.join(" ", codes));
+
+    }
 
     public void handleDayData() {
         int start = 0;
@@ -32,7 +83,7 @@ public class BizService {
             }
             start = start + pageSize;
             this.handleData(stockInfos);
-            System.out.println("end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> start is " + start);
+            log.info("end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> start is " + start);
         }
     }
 
@@ -46,20 +97,20 @@ public class BizService {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = DateUtils.addDays(new Date(), -10).getTime();
+        long startTime = DateUtils.addDays(new Date(), -1000).getTime();
         long endTime = System.currentTimeMillis();
         List<String> codes = Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> stockPriceService.highBefore(it, startTime, endTime)).subscribeOn(Schedulers.elastic()))
                 .collectList()
                 .block();
-        System.out.println(codes);
+        log.info(new Gson().toJson(codes));
     }
 
     public void handleMa(List<StockInfo> stockInfos) {
         if (CollectionUtils.isEmpty(stockInfos)) {
             return;
         }
-        long startTime = DateUtils.addDays(new Date(), -1000).getTime();
+        long startTime = DateUtils.addDays(new Date(), -100).getTime();
         long endTime = System.currentTimeMillis();
         Flux.fromIterable(stockInfos)
                 .flatMap(it -> Mono.fromSupplier(() -> this.correct(it.getCode(), startTime, endTime)).subscribeOn(Schedulers.elastic()))

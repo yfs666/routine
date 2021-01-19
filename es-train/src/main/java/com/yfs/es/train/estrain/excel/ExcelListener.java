@@ -5,6 +5,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.google.common.collect.Lists;
 import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.entity.ThsPrice;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-
+@Slf4j
 public class ExcelListener extends AnalysisEventListener<Map<Integer, String>> {
     /**
      * 日期字符串 yyyy-MM-dd
@@ -51,38 +52,42 @@ public class ExcelListener extends AnalysisEventListener<Map<Integer, String>> {
      */
     @Override
     public void invoke(Map<Integer, String> data, AnalysisContext context) {
-        String symbol = data.get(0);
-        String code = symbol.substring(2, 8);
-        String name = data.get(1);
-        StockInfo stockInfo = new StockInfo();
-        stockInfo.setSymbol(symbol);
-        stockInfo.setCode(code);
-        stockInfo.setName(name);
-        stockInfoList.add(stockInfo);
-        String closePercent = data.get(3);
-        if (StringUtils.isEmpty(closePercent) || "--".equals(closePercent)) {
-            return;
-        }
-        ThsPrice thsPrice = new ThsPrice();
-        thsPrice.setSymbol(symbol);
-        thsPrice.setCode(code);
-        thsPrice.setDate(date);
-        thsPrice.setDayTime(dayTime);
-        thsPrice.setOpen(new BigDecimal(data.get(9)));
-        thsPrice.setClose(new BigDecimal(data.get(4)));
-        thsPrice.setHigh(new BigDecimal(data.get(10)));
-        thsPrice.setLow(new BigDecimal(data.get(11)));
-        String yesterdayClose = data.get(8);
-        thsPrice.setYesterdayClose(StringUtils.isEmpty(yesterdayClose) || "--".equals(yesterdayClose) ? thsPrice.getOpen() : new BigDecimal(yesterdayClose));
-        thsPrice.setOpenPercent(thsPrice.getOpen().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
-        thsPrice.setHighPercent(thsPrice.getHigh().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
-        thsPrice.setLowPercent(thsPrice.getLow().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
-        thsPrice.setClosePercent(new BigDecimal(data.get(3)));
-        thsPrice.setIndustry(data.get(16));
-        thsPrice.setVol(new BigDecimal(data.get(23)));
-        String volRaise = data.get(15);
-        thsPrice.setVolRise(StringUtils.isEmpty(volRaise) || "--".equals(volRaise) ? BigDecimal.ONE : new BigDecimal(volRaise));
-        thsPriceList.add(thsPrice);
+       try {
+           String symbol = data.get(0);
+           String code = symbol.substring(2, 8);
+           String name = data.get(1);
+           StockInfo stockInfo = new StockInfo();
+           stockInfo.setSymbol(symbol);
+           stockInfo.setCode(code);
+           stockInfo.setName(name);
+           stockInfoList.add(stockInfo);
+           String closePercent = data.get(3);
+           if (StringUtils.isEmpty(closePercent) || "--".equals(closePercent)) {
+               return;
+           }
+           ThsPrice thsPrice = new ThsPrice();
+           thsPrice.setSymbol(symbol);
+           thsPrice.setCode(code);
+           thsPrice.setDate(date);
+           thsPrice.setDayTime(dayTime);
+           thsPrice.setOpen(new BigDecimal(data.get(9)));
+           thsPrice.setClose(new BigDecimal(data.get(4)));
+           thsPrice.setHigh(new BigDecimal(data.get(10)));
+           thsPrice.setLow(new BigDecimal(data.get(11)));
+           String yesterdayClose = data.get(8);
+           thsPrice.setYesterdayClose(StringUtils.isEmpty(yesterdayClose) || "--".equals(yesterdayClose) ? thsPrice.getOpen() : new BigDecimal(yesterdayClose));
+           thsPrice.setOpenPercent(thsPrice.getOpen().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
+           thsPrice.setHighPercent(thsPrice.getHigh().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
+           thsPrice.setLowPercent(thsPrice.getLow().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
+           thsPrice.setClosePercent(new BigDecimal(data.get(3)));
+           thsPrice.setIndustry(data.get(16));
+//           thsPrice.setVol(new BigDecimal(data.get(23)));
+           String volRaise = data.get(15);
+           thsPrice.setVolRise(StringUtils.isEmpty(volRaise) || "--".equals(volRaise) ? BigDecimal.ONE : new BigDecimal(volRaise));
+           thsPriceList.add(thsPrice);
+       } catch (Exception e) {
+           log.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+data.get(0));
+       }
 //        thsPrice.setHighBefore();
 //        thsPrice.setMa5();
 //        thsPrice.setMa10();

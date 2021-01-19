@@ -36,6 +36,18 @@ public class StockPriceServiceTest {
     }
 
     @Test
+    public void Test() {
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("code", "603327"))
+                        .filter(QueryBuilders.termQuery("date","2020-05-06"))
+                )
+                .from(0).size(10000);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+        System.out.println(thsPrices);
+    }
+
+    @Test
     public void dateTest() {
         String todayDate = stockPriceService.getTodayDate();
         String yesterdayDate = stockPriceService.getYesterdayDate(todayDate);

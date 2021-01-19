@@ -66,10 +66,14 @@ public class ThsPrice {
     }
 
     public boolean allUp() {
+        if (ma5 == null || ma10 == null || ma20 == null || ma30 == null) {
+            System.err.println("数据错误，code = " + code);
+            return false;
+        }
         return ma5.doubleValue() >= ma10.doubleValue()
                 && ma10.doubleValue() >= ma20.doubleValue()
                 && ma20.doubleValue() >= ma30.doubleValue()
-                && ma30.doubleValue() >= ma60.doubleValue()
+//                && ma30.doubleValue() >= ma60.doubleValue()
                 ;
     }
 

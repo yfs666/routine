@@ -15,6 +15,7 @@ import com.yfs.es.train.estrain.entity.UpCount;
 import com.yfs.es.train.estrain.entity.UpDown;
 import com.yfs.es.train.estrain.service.StockInfoService;
 import com.yfs.es.train.estrain.service.StockPriceService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequest;
@@ -49,7 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+@Slf4j
 @RestController
 public class IndexController {
 
@@ -193,7 +194,7 @@ public class IndexController {
                 if (stockPrice.getHigh().divide(yesterdayPrice.getClose(), 6, BigDecimal.ROUND_HALF_UP).doubleValue() > 1.005 &&
                         stockPrice.getLow().divide(yesterdayPrice.getClose(), 6, BigDecimal.ROUND_HALF_UP).doubleValue() < 0.995) {
                     myCount++;
-                    System.out.println(myCount + "符合条件：" + stockPrice.getCode());
+                    log.info(myCount + "符合条件：" + stockPrice.getCode());
                 }
                 count++;
                 BigDecimal closePercent = stockPrice.getClose().divide(yesterdayPrice.getClose(), 10, BigDecimal.ROUND_HALF_UP);
@@ -348,7 +349,7 @@ public class IndexController {
                                 .filter(QueryBuilders.rangeQuery("highBefore").gte(50))
                 ).from(0).size(2000);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        System.out.println("共 " + searchResponse.getHits().getTotalHits().value + "个");
+        log.info("共 " + searchResponse.getHits().getTotalHits().value + "个");
         int count = 0;
         List<String> stocks = Lists.newArrayList();
         if (searchResponse.getHits().getTotalHits().value > 0) {
@@ -391,12 +392,12 @@ public class IndexController {
         }
         upDowns.sort(Comparator.comparing(UpDown::getPercent).reversed());
         for (int i = 0; i < 100; i++) {
-            System.out.println(upDowns.get(i).getCode() + " ~ " + i + " ~ " + upDowns.get(i).getPercent());
+            log.info(upDowns.get(i).getCode() + " ~ " + i + " ~ " + upDowns.get(i).getPercent());
         }
         upDowns.sort(Comparator.comparing(UpDown::getPercent).reversed());
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         for (int i = 0; i < 500; i++) {
-            System.out.print(upDowns.get(i).getCode() + " ");
+            log.info(upDowns.get(i).getCode() + " ");
         }
         return upDowns;
     }
