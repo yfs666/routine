@@ -530,6 +530,11 @@ public class PullMessageProcessor implements NettyRequestProcessor {
         }
     }
 
+    /**
+     * 这里的核心又回到长轮训的入口代码了，其核心是设置brokerAllowSuspend为false，表示不支持拉取线程挂起，即当根据偏移量无法获取消息时将不挂起线程
+     * 等待新消息到来，而是直接返回告诉客户端本次消息拉取未找到消息
+     * RocketMQ引入另外一种机制：当消息到达时唤醒挂起线程触发一次检查
+     */
     public void executeRequestWhenWakeup(final Channel channel,
         final RemotingCommand request) throws RemotingCommandException {
         Runnable run = new Runnable() {
