@@ -140,7 +140,7 @@ public class AllocateMappedFileService extends ServiceThread {
 
     public void run() {
         log.info(this.getServiceName() + " service started");
-
+//        正常都会一直执行下去，除非isStopped为true或者mmapOperation方法操作线程被中断
         while (!this.isStopped() && this.mmapOperation()) {
 
         }

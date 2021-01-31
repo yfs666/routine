@@ -37,7 +37,7 @@ public class IndexFile {
     private final MappedFile mappedFile;
     private final FileChannel fileChannel;
     private final MappedByteBuffer mappedByteBuffer;
-//    头部，包含40个字节，记录该IndexFile的统计信
+//    头部，包含40个字节，记录该IndexFile的统计信息
     private final IndexHeader indexHeader;
 
     public IndexFile(final String fileName, final int hashSlotNum, final int indexNum,
@@ -91,6 +91,8 @@ public class IndexFile {
     }
 
     public boolean putKey(final String key, final long phyOffset, final long storeTimestamp) {
+//        如果当前已使用条目大于等于允许最大条目数时，则返回false，表示当前索引文件已写满
+//        如果未写满，则根据key计算出key对应的hashcode，然后对hash槽进行取余计算，得出槽的下标，计算出绝对游标，因为有头文件和每个槽的大小，如果槽冲突则使用链表
         if (this.indexHeader.getIndexCount() < this.indexNum) {
             int keyHash = indexKeyHashMethod(key);
             int slotPos = keyHash % this.hashSlotNum;
@@ -103,6 +105,7 @@ public class IndexFile {
                 // fileLock = this.fileChannel.lock(absSlotPos, hashSlotSize,
                 // false);
                 int slotValue = this.mappedByteBuffer.getInt(absSlotPos);
+//                读取hash槽中存储的数据，如果hash槽存储的数据小于0或大于当前索引文件中的索引条目格式，则slotValue设置为0
                 if (slotValue <= invalidIndex || slotValue > this.indexHeader.getIndexCount()) {
                     slotValue = invalidIndex;
                 }
@@ -110,7 +113,7 @@ public class IndexFile {
                 long timeDiff = storeTimestamp - this.indexHeader.getBeginTimestamp();
 
                 timeDiff = timeDiff / 1000;
-
+//                计算待存储消息的时间戳与第一条消息时间戳的差值，转换成秒
                 if (this.indexHeader.getBeginTimestamp() <= 0) {
                     timeDiff = 0;
                 } else if (timeDiff > Integer.MAX_VALUE) {
@@ -118,10 +121,15 @@ public class IndexFile {
                 } else if (timeDiff < 0) {
                     timeDiff = 0;
                 }
-
+                /*
+                    将条目信息存储在IndexFile中
+                    1、计算新添加条目的起始物理偏移量，等于头部字节长度+hash槽数量*每个hash槽大小(4字节)+当前index条目数*单个index条目大小(20字节)
+                    2、依次将hashcode、消息物理偏移量、消息存储时间戳与索引文件时间戳、当前hash槽的值存入MappedByteBuffer中
+                    3、将当前Index中包含的条目数量存入Hash槽中，将覆盖原先Hash槽的值
+                */
                 int absIndexPos =
-                    IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize
-                        + this.indexHeader.getIndexCount() * indexSize;
+                        IndexHeader.INDEX_HEADER_SIZE + this.hashSlotNum * hashSlotSize
+                                + this.indexHeader.getIndexCount() * indexSize;
 
                 this.mappedByteBuffer.putInt(absIndexPos, keyHash);
                 this.mappedByteBuffer.putLong(absIndexPos + 4, phyOffset);

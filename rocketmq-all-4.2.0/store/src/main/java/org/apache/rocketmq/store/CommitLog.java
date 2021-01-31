@@ -1232,6 +1232,7 @@ public class CommitLog {
             long wroteOffset = fileFromOffset + byteBuffer.position();
 
             this.resetByteBuffer(hostHolder, 8);
+//            创建全局唯一消息id，共16字节，4字节ip，4字节端口号，8字节消息偏移量
             String msgId = MessageDecoder.createMessageId(this.msgIdMemory, msgInner.getStoreHostBytes(hostHolder), wroteOffset);
 
             // Record ConsumeQueue information
@@ -1289,6 +1290,7 @@ public class CommitLog {
             }
 
             // Determines whether there is sufficient free space
+//            如果消息长度+空闲的8字节大于commitlog的剩余空间，则返回END_OF_FILE
             if ((msgLen + END_FILE_MIN_BLANK_LENGTH) > maxBlank) {
                 this.resetByteBuffer(this.msgStoreItemMemory, maxBlank);
                 // 1 TOTALSIZE

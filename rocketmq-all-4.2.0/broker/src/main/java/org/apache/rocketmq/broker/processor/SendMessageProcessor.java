@@ -294,17 +294,18 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         final RemotingCommand request,
         final SendMessageContext sendMessageContext,
         final SendMessageRequestHeader requestHeader) throws RemotingCommandException {
-
+//        构造响应体，用于返回数据
         final RemotingCommand response = RemotingCommand.createResponseCommand(SendMessageResponseHeader.class);
+//        构造响应体的头内容，用于返回数据头
         final SendMessageResponseHeader responseHeader = (SendMessageResponseHeader) response.readCustomHeader();
-
+//        唯一标识，让客户端做对应关系处理，及回调对应
         response.setOpaque(request.getOpaque());
-
+//        响应的扩展内容
         response.addExtField(MessageConst.PROPERTY_MSG_REGION, this.brokerController.getBrokerConfig().getRegionId());
         response.addExtField(MessageConst.PROPERTY_TRACE_SWITCH, String.valueOf(this.brokerController.getBrokerConfig().isTraceOn()));
 
         log.debug("receive SendMessage request command, {}", request);
-
+//        时间的设置
         final long startTimstamp = this.brokerController.getBrokerConfig().getStartAcceptSendRequestTimeStamp();
         if (this.brokerController.getMessageStore().now() < startTimstamp) {
             response.setCode(ResponseCode.SYSTEM_ERROR);
@@ -313,30 +314,33 @@ public class SendMessageProcessor extends AbstractSendMessageProcessor implement
         }
 
         response.setCode(-1);
+//        验证消息的正确性
         super.msgCheck(ctx, requestHeader, response);
         if (response.getCode() != -1) {
             return response;
         }
-
+//        请求消息体
         final byte[] body = request.getBody();
-
+//        根据请求体获得topic的配置
         int queueIdInt = requestHeader.getQueueId();
+//        获得消息的topic的配置信息
         TopicConfig topicConfig = this.brokerController.getTopicConfigManager().selectTopicConfig(requestHeader.getTopic());
-
+//        判断
         if (queueIdInt < 0) {
             queueIdInt = Math.abs(this.random.nextInt() % 99999999) % topicConfig.getWriteQueueNums();
         }
-
+//        消息的内部操作
         MessageExtBrokerInner msgInner = new MessageExtBrokerInner();
         msgInner.setTopic(requestHeader.getTopic());
         msgInner.setQueueId(queueIdInt);
-
+//        处理retry相关的topic信息
         if (!handleRetryAndDLQ(requestHeader, response, request, msgInner, topicConfig)) {
             return response;
         }
 
         msgInner.setBody(body);
         msgInner.setFlag(requestHeader.getFlag());
+//        扩展属性配置
         MessageAccessor.setProperties(msgInner, MessageDecoder.string2messageProperties(requestHeader.getProperties()));
         msgInner.setPropertiesString(requestHeader.getProperties());
         msgInner.setBornTimestamp(requestHeader.getBornTimestamp());

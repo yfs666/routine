@@ -122,29 +122,38 @@ public class DefaultMessageStore implements MessageStore {
         this.brokerConfig = brokerConfig;
         this.messageStoreConfig = messageStoreConfig;
         this.brokerStatsManager = brokerStatsManager;
+//        请求定位服务
         this.allocateMappedFileService = new AllocateMappedFileService(this);
+//        内容的存储服务
         this.commitLog = new CommitLog(this);
+//        消费者的信息定位
         this.consumeQueueTable = new ConcurrentHashMap<>(32);
-
+//        刷新服务
         this.flushConsumeQueueService = new FlushConsumeQueueService();
+//        清除消息的操作，定期清理过期的数据，提前创建文件
         this.cleanCommitLogService = new CleanCommitLogService();
+//        清除消费
         this.cleanConsumeQueueService = new CleanConsumeQueueService();
+//        存储状态
         this.storeStatsService = new StoreStatsService();
+//        索引服务
         this.indexService = new IndexService(this);
+//        高可用服务配置
         this.haService = new HAService(this);
 
         this.reputMessageService = new ReputMessageService();
-
+//        调度
         this.scheduleMessageService = new ScheduleMessageService(this);
-
+//        持久存储池化，内存
         this.transientStorePool = new TransientStorePool(messageStoreConfig);
 
         if (messageStoreConfig.isTransientStorePoolEnable()) {
+//            主要提升性能的池的初始化操作
             this.transientStorePool.init();
         }
-
+//      分配服务启动
         this.allocateMappedFileService.start();
-
+//      无实际业务逻辑，空实现
         this.indexService.start();
 
         this.dispatcherList = new LinkedList<>();
@@ -176,7 +185,7 @@ public class DefaultMessageStore implements MessageStore {
 //            通过判断abort文件是否存在来判断broker是否正常退出，如果不是正常退出，说明可能存在文件数据不一致，需要修改
             boolean lastExitOK = !this.isTempFileExist();
             log.info("last shutdown {}", lastExitOK ? "normally" : "abnormally");
-
+//            加载任务调度
             if (null != scheduleMessageService) {
                 result = result && this.scheduleMessageService.load();
             }
@@ -186,7 +195,7 @@ public class DefaultMessageStore implements MessageStore {
 
             // load Consume Queue
             result = result && this.loadConsumeQueue();
-
+//            成功后加载检查点、索引服务
             if (result) {
                 this.storeCheckpoint =
                     new StoreCheckpoint(StorePathConfigHelper.getStoreCheckpoint(this.messageStoreConfig.getStorePathRootDir()));
@@ -201,7 +210,7 @@ public class DefaultMessageStore implements MessageStore {
             log.error("load exception", e);
             result = false;
         }
-
+//        成功的标识验证
         if (!result) {
             this.allocateMappedFileService.shutdown();
         }
@@ -1659,14 +1668,15 @@ public class DefaultMessageStore implements MessageStore {
         private long lastFlushTimestamp = 0;
 
         private void doFlush(int retryTimes) {
+//            获取刷盘页数
             int flushConsumeQueueLeastPages = DefaultMessageStore.this.getMessageStoreConfig().getFlushConsumeQueueLeastPages();
-
+//            TODO  为啥相等设置为0？
             if (retryTimes == RETRY_TIMES_OVER) {
                 flushConsumeQueueLeastPages = 0;
             }
 
             long logicsMsgTimestamp = 0;
-
+//            彻底间隔
             int flushConsumeQueueThoroughInterval = DefaultMessageStore.this.getMessageStoreConfig().getFlushConsumeQueueThoroughInterval();
             long currentTimeMillis = System.currentTimeMillis();
             if (currentTimeMillis >= (this.lastFlushTimestamp + flushConsumeQueueThoroughInterval)) {
@@ -1674,13 +1684,14 @@ public class DefaultMessageStore implements MessageStore {
                 flushConsumeQueueLeastPages = 0;
                 logicsMsgTimestamp = DefaultMessageStore.this.getStoreCheckpoint().getLogicsMsgTimestamp();
             }
-
+//            所有消息消费队列
             ConcurrentMap<String, ConcurrentMap<Integer, ConsumeQueue>> tables = DefaultMessageStore.this.consumeQueueTable;
 
             for (ConcurrentMap<Integer, ConsumeQueue> maps : tables.values()) {
                 for (ConsumeQueue cq : maps.values()) {
                     boolean result = false;
                     for (int i = 0; i < retryTimes && !result; i++) {
+//                        循环刷盘操作
                         result = cq.flush(flushConsumeQueueLeastPages);
                     }
                 }

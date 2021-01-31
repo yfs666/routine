@@ -92,13 +92,14 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
         super(nettyServerConfig.getServerOnewaySemaphoreValue(), nettyServerConfig.getServerAsyncSemaphoreValue());
         this.serverBootstrap = new ServerBootstrap();
         this.nettyServerConfig = nettyServerConfig;
+//        监听客户端连接(Channel)的变化，通知RouteInfoManager检查broker是否有变化
         this.channelEventListener = channelEventListener;
-
+//        公共线程池的线程个数，小于等于0则给定默认值4
         int publicThreadNums = nettyServerConfig.getServerCallbackExecutorThreads();
         if (publicThreadNums <= 0) {
             publicThreadNums = 4;
         }
-
+//创建公共线程池
         this.publicExecutor = Executors.newFixedThreadPool(publicThreadNums, new ThreadFactory() {
             private AtomicInteger threadIndex = new AtomicInteger(0);
 
@@ -107,7 +108,7 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
                 return new Thread(r, "NettyServerPublicExecutor_" + this.threadIndex.incrementAndGet());
             }
         });
-
+//创建 eventLoopGroupBoss，线程数是1
         this.eventLoopGroupBoss = new NioEventLoopGroup(1, new ThreadFactory() {
             private AtomicInteger threadIndex = new AtomicInteger(0);
 
@@ -116,7 +117,7 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
                 return new Thread(r, String.format("NettyBoss_%d", this.threadIndex.incrementAndGet()));
             }
         });
-
+//创建eventLoopGroupSelector，时间循环组选择器本身就是一个定时任务线程池，根据useEpoll参数，给定不同类型的事件循环组
         if (useEpoll()) {
             this.eventLoopGroupSelector = new EpollEventLoopGroup(nettyServerConfig.getServerSelectorThreads(), new ThreadFactory() {
                 private AtomicInteger threadIndex = new AtomicInteger(0);
