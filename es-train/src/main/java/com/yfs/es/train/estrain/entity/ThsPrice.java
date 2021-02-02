@@ -70,10 +70,11 @@ public class ThsPrice {
             System.err.println("数据错误，code = " + code);
             return false;
         }
-        return ma5.doubleValue() >= ma10.doubleValue()
-                && ma10.doubleValue() >= ma20.doubleValue()
-                && ma20.doubleValue() >= ma30.doubleValue()
-//                && ma30.doubleValue() >= ma60.doubleValue()
+        return close.doubleValue() >= ma5.doubleValue()
+                && close.doubleValue() >= ma10.doubleValue()
+                && close.doubleValue() >= ma20.doubleValue()
+                && close.doubleValue() >= ma30.doubleValue()
+                && close.doubleValue() >= ma60.doubleValue()
                 ;
     }
 
