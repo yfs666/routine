@@ -210,7 +210,7 @@ public class StockPriceService {
      */
     public void correctData(String code, long startTime, long endTime) throws IOException {
         int from = 0;
-        int size = 100;
+        int size = 2;
 //        while (true) {
             Stopwatch stopwatch = Stopwatch.createStarted();
             List<ThsPrice> stockPrices = this.queryBy(code, from, size, startTime, endTime, SortOrder.DESC);

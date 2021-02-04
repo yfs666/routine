@@ -43,7 +43,7 @@ public class BizService {
     private static final BigDecimal compare = BigDecimal.valueOf(-0.01);
     private static final BigDecimal compare2020 = BigDecimal.valueOf(0.1);
 
-    public void queryMyStock() {
+    public List<String> queryMyStock() {
         SearchSourceBuilder searchSourceBuilder2018 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2018年报")).from(0).size(10000);
         SearchSourceBuilder searchSourceBuilder2019 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2019年报")).from(0).size(10000);
         SearchSourceBuilder searchSourceBuilder2020 = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2020三季报")).from(0).size(10000);
@@ -59,17 +59,15 @@ public class BizService {
                 .filter(it -> it.getProfit().compareTo(BigDecimal.ZERO) > 0)
                 .filter(it -> it.getProfitPercent().compareTo(compare2020) > 0)
                 .map(StockProfit::getSymbol).collect(Collectors.toList());
-        symbols2020 = symbols2020.stream().filter(symbols2018::contains).filter(symbols2019::contains).collect(Collectors.toList());
-        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
-                .query(
-                        QueryBuilders.boolQuery()
-                                .filter(QueryBuilders.termQuery("date", "2021-01-15"))
-                ).from(0).size(10000);
-        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
-        List<String> finalSymbols202 = symbols2020;
-//        List<String> codes = thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getCode).collect(Collectors.toList());
-        List<String> codes = thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getCode).collect(Collectors.toList());
-        log.info(String.join(" ", codes));
+        return symbols2020.stream().filter(symbols2018::contains).filter(symbols2019::contains).collect(Collectors.toList());
+//        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+//                .query(
+//                        QueryBuilders.boolQuery()
+//                                .filter(QueryBuilders.termQuery("date", date))
+//                ).from(0).size(10000);
+//        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+//        List<String> finalSymbols202 = symbols2020;
+//        return thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getSymbol).collect(Collectors.toList());
 
     }
 
@@ -88,7 +86,7 @@ public class BizService {
     }
 
     public void handleData(List<StockInfo> stockInfos) {
-        this.handleHighBefore(stockInfos);
+//        this.handleHighBefore(stockInfos);
         this.handleMa(stockInfos);
     }
 

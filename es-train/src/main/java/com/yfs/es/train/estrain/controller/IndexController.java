@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.yfs.es.train.estrain.LimitEnum;
+import com.yfs.es.train.estrain.biz.BizService;
 import com.yfs.es.train.estrain.entity.CountShowDetailVO;
 import com.yfs.es.train.estrain.entity.CountShowVO;
 import com.yfs.es.train.estrain.entity.KLineVO;
@@ -63,6 +64,9 @@ public class IndexController {
 
     @Autowired
     private StockInfoService stockInfoService;
+
+    @Autowired
+    private BizService bizService;
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -341,63 +345,53 @@ public class IndexController {
         if (StringUtils.isBlank(date)) {
             date = stockPriceService.getTodayDate();
         }
-        SearchRequest searchRequest = Requests.searchRequest(StockPriceService.STOCK_PRICE_INDEX);
-        searchRequest.source()
-                .query(
-                        QueryBuilders.boolQuery()
-                                .filter(QueryBuilders.termQuery("date", StringUtils.isNotBlank(date) ? date : sdf.format(new Date())))
-                                .filter(QueryBuilders.rangeQuery("highBefore").gte(50))
-                ).from(0).size(2000);
-        SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-        log.info("共 " + searchResponse.getHits().getTotalHits().value + "个");
-        int count = 0;
-        List<String> stocks = Lists.newArrayList();
-        if (searchResponse.getHits().getTotalHits().value > 0) {
-            stocks = Arrays.stream(searchResponse.getHits().getHits())
-                    .map(hit -> {
-                        ThsPrice stockPrice = new Gson().fromJson(hit.getSourceAsString(), ThsPrice.class);
-                        stockPrice.setId(hit.getId());
-                        return stockPrice;
-                    })
-                    .filter(ThsPrice::allUp)
-//                    .filter(it->it.getClose().doubleValue()>it.getMa5().doubleValue())
-                    .sorted(Comparator.comparing(it -> it.getMa5().divide(it.getMa30(), 5, BigDecimal.ROUND_HALF_UP)))
-                    .map(ThsPrice::getCode)
-                    .collect(Collectors.toList());
-            for (String code : stocks) {
-                count++;
-//                System.out.println(stockPrice.getCode() + "    " + stockPrice.getHighBefore());
-                System.out.print(code + " ");
-                if (count % 10 == 0) {
-                    System.out.println();
-                }
-            }
+        List<String> symbols = bizService.queryMyStock();
+        if (CollectionUtils.isEmpty(symbols)) {
+            return Collections.emptyList();
         }
-        return stocks;
+        String yesterdayDate = stockPriceService.getYesterdayDate(date);
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(
+                QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termsQuery("date", Lists.newArrayList(date, yesterdayDate)))
+                        .filter(QueryBuilders.termsQuery("symbol.keyword", symbols))
+        ).from(0).size(10000);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+        Map<String, List<ThsPrice>> datePriceMap = thsPrices.stream().collect(Collectors.groupingBy(ThsPrice::getDate));
+        List<ThsPrice> todayPrices = datePriceMap.getOrDefault(date, Collections.emptyList());
+        Map<String, ThsPrice> yesterdayPriceMap = datePriceMap.getOrDefault(date, Collections.emptyList()).stream().collect(Collectors.toMap(ThsPrice::getCode, Function.identity(), (o1, o2) -> o1));
+        return todayPrices.stream().filter(todayPrice -> {
+            if (todayPrice.getClose().compareTo(todayPrice.getMa10()) >= 0) {
+                return true;
+            }
+            return Optional.ofNullable(yesterdayPriceMap.get(todayPrice.getCode())).map(it -> todayPrice.getMa10().compareTo(it.getMa10()) > 0).orElse(false);
+        }).map(ThsPrice::getCode).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/findTopUp", method = RequestMethod.GET)
     public List<UpDown> findTopUp(Integer days) throws IOException {
         if (days == null) days = 10;
+        Integer thDays = days;
         long endTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        List<StockInfo> stockInfos = stockInfoService.pageList(0, 4000);
+        List<StockInfo> stockInfos = stockInfoService.pageList(0, 5000);
         List<UpDown> upDowns = Lists.newArrayList();
-        for (StockInfo stockInfo : stockInfos) {
-            List<ThsPrice> stockPrices = stockPriceService.queryBy(stockInfo.getCode(), 0, days, 0L, endTime, SortOrder.DESC);
-            if (CollectionUtils.isEmpty(stockPrices) || stockPrices.size() < days) {
-                continue;
-            }
-            BigDecimal percent = stockPrices.get(0).getClose().divide(stockPrices.get(stockPrices.size() - 1).getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE);
-            upDowns.add(new UpDown(stockInfo.getCode(), percent));
-        }
+        Flux.fromIterable(stockInfos)
+                .subscribeOn(Schedulers.elastic())
+                .doOnNext(stockInfo->{
+                    List<ThsPrice> stockPrices = stockPriceService.queryBy(stockInfo.getCode(), 0, thDays, 0L, endTime, SortOrder.DESC);
+                    if (CollectionUtils.isNotEmpty(stockPrices) && stockPrices.size() >= thDays) {
+                        BigDecimal percent = stockPrices.get(0).getClose().divide(stockPrices.get(stockPrices.size() - 1).getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE);
+                        upDowns.add(new UpDown(stockInfo.getCode(), percent));
+                    }
+
+                }).collectList().block();
         upDowns.sort(Comparator.comparing(UpDown::getPercent).reversed());
         for (int i = 0; i < 100; i++) {
             log.info(upDowns.get(i).getCode() + " ~ " + i + " ~ " + upDowns.get(i).getPercent());
         }
         upDowns.sort(Comparator.comparing(UpDown::getPercent).reversed());
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        for (int i = 0; i < 500; i++) {
-            log.info(upDowns.get(i).getCode() + " ");
+        for (UpDown upDown : upDowns) {
+            log.info(upDown.getCode() + " ");
         }
         return upDowns;
     }
