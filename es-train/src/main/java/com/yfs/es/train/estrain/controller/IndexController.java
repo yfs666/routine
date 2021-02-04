@@ -397,4 +397,26 @@ public class IndexController {
     }
 
 
+    @RequestMapping(value = "/mySumKline", method = RequestMethod.GET)
+    public List<List<Object>> mySumKline() {
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(
+                QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("code.keyword", "300424")
+                        )
+        ).from(0).size(10000).sort("dayTime", SortOrder.ASC);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+        return thsPrices.stream().map(it -> {
+                    List<Object> kLine = Lists.newArrayList();
+                    kLine.add(it.getDate());
+                    kLine.add(it.getOpen());
+                    kLine.add(it.getClose());
+                    kLine.add(it.getLow());
+                    kLine.add(it.getHigh());
+                    kLine.add(it.getVol());
+                    return kLine;
+                }
+        ).collect(Collectors.toList());
+    }
+
+
 }

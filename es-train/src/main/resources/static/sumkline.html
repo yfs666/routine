@@ -1,208 +1,305 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=candlestick-brush
+-->
 <!DOCTYPE html>
-<html lang="en">
+<html style="height: 100%">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/date.css" />
-    <script src="js/echarts.min.js"></script>
-    <script src="js/jq.js"></script>
-    <script src="js/my.js"></script>
-    <script src="js/date.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/nongli.js" type="text/javascript" charset="utf-8"></script>
-    <title>统计</title>
-    <style type="text/css">
-        .myDiv{
-            width: 5000px;
-            height: 500px;
-        }
-    </style>
+    <meta charset="utf-8">
 </head>
-<body>
-<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="count">
-    <table>
-        <tr>
-            <td>count:</td>
-            <td id="count-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;closeAvg:</td>
-            <td id="close-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;highAvg:</td>
-            <td id="high-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;lowAvg:</td>
-            <td id="low-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td><div id='date'>
-                <input type="text" value='' placeholder="点击选择时间" id='inputdate' /> &nbsp;&nbsp;&nbsp;&nbsp;
-            </div>
-            </td>
-            <td>
-                <button id="checkDate">选择日期</button>
-            </td>
-        </tr>
-    </table>
-</div>
-<div>
-    <table border="0">
-<!--        <tr>-->
-<!--            <td>sum</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td><div id="k-line-sum" class="myDiv" style="width: 30340px;"></div></td>-->
-<!--        </tr>-->
-
-        <tr>
-            <td>60x_1</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-1" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>60x_2</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-2" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>60x_3</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-3" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>000</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-000" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>002_1</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-002-1" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>002_2</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-002-2" class="myDiv"></div></td>
-        </tr>
-
-        <tr>
-            <td>300</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-300" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>688</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-688" class="myDiv" ></div></td>
-        </tr>
-
-    </table>
-</div>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+<script src="js/jq.js"></script>
+<script type="text/javascript" src="js/echarts5.min.js"></script>
+<!-- Uncomment this line if you want to dataTool extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.0.1/dist/extension/dataTool.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use gl extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+-->
+<!-- Uncomment this line if you want to echarts-stat extension
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+-->
+<!-- Uncomment this line if you want to use map
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.0.1/map/js/china.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.0.1/map/js/world.js"></script>
+-->
+<!-- Uncomment these two lines if you want to use bmap extension
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.0.1/dist/extension/bmap.min.js"></script>
+-->
 
 <script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
 
-    const d = new DateJs({
-        inputEl: '#inputdate',
-        el: '#date'
-    });
-    $(function () {
-        $('#checkDate').click(function () {
-            getData($('#inputdate').val())
-        });
-    });
-
-    function getData(date) {
-        let url = "/avg"
-        if (date != null && date !== '') {
-            url = url + "?t=" + date;
-        }
-        $.ajax({
-            url: url,
-            type: "get",
-            dataType: "json",
-            success: function (data) {
-                console.log(data)
-                console.log(data.marketLine["kSum"])
-                $('#count-td').text(data.countShowVO.count);
-                $('#close-avg-td').text(data.countShowVO.closeAvg);
-                $('#high-avg-td').text(data.countShowVO.highAvg);
-                $('#low-avg-td').text(data.countShowVO.lowAvg);
-                // initEchart(echarts.init(document.getElementById('k-line-sum')), data.marketLine["ksum"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-1')), data.marketLine["k60x_1"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-2')), data.marketLine["k60x_2"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-3')), data.marketLine["k60x_3"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-000')), data.marketLine["k000"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-002-1')), data.marketLine["k002_1"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-002-2')), data.marketLine["k002_2"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-300')), data.marketLine["k300"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-688')), data.marketLine["k688"], "1")
-            }
-        });
-    }
+    var option;
 
 
-    function initEchart(myChart, myDataJson, codeTag) {
-        // alert(myDataJson)
 
-        // 指定图表的配置项和数据
+    var upColor = '#ec0000';
+    var downColor = '#00da3c';
 
-        const dataJson = [];
-        const countJson = [];
-        for (const kLine in myDataJson) {
-            const lineShow = [myDataJson[kLine].openPercent, myDataJson[kLine].closePercent, myDataJson[kLine].lowPercent, myDataJson[kLine].highPercent];
-            dataJson.push(lineShow)
-            countJson.push('1')
+
+    function splitData(rawData) {
+        var categoryData = [];
+        var values = [];
+        var volumes = [];
+        for (var i = 0; i < rawData.length; i++) {
+            categoryData.push(rawData[i].splice(0, 1)[0]);
+            values.push(rawData[i]);
+            volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1]);
         }
 
-
-        const option = {
-            xAxis: {
-                data: countJson
-            },
-            yAxis: {},
-            series: [{
-                type: 'k',
-                data: dataJson
-            }]
+        return {
+            categoryData: categoryData,
+            values: values,
+            volumes: volumes
         };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-
-        myChart.on('brushSelected', renderBrushed);
     }
 
-
-
-    function renderBrushed(params) {
-        var brushed = [];
-        var brushComponent = params.batch[0];
-
-        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-            var rawIndices = brushComponent.selected[sIdx].dataIndex;
-            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
-        }
-
-        myChart.setOption({
-            title: {
-                backgroundColor: '#333',
-                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
-                bottom: 0,
-                right: 0,
-                width: 100,
-                textStyle: {
-                    fontSize: 12,
-                    color: '#fff'
-                }
+    function calculateMA(dayCount, data) {
+        var result = [];
+        for (var i = 0, len = data.values.length; i < len; i++) {
+            if (i < dayCount) {
+                result.push('-');
+                continue;
             }
-        });
+            var sum = 0;
+            for (var j = 0; j < dayCount; j++) {
+                sum += data.values[i - j][1];
+            }
+            result.push(+(sum / dayCount).toFixed(3));
+        }
+        return result;
     }
+
+    $.get('/mySumKline', function (rawData) {
+
+        var data = splitData(rawData);
+
+        myChart.setOption(option = {
+            animation: false,
+            legend: {
+                bottom: 10,
+                left: 'center',
+                data: ['Dow-Jones index', 'MA5', 'MA10', 'MA20', 'MA30']
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                },
+                borderWidth: 1,
+                borderColor: '#ccc',
+                padding: 10,
+                textStyle: {
+                    color: '#000'
+                },
+                position: function (pos, params, el, elRect, size) {
+                    var obj = {top: 10};
+                    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                    return obj;
+                }
+                // extraCssText: 'width: 170px'
+            },
+            axisPointer: {
+                link: {xAxisIndex: 'all'},
+                label: {
+                    backgroundColor: '#777'
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: false
+                    },
+                    brush: {
+                        type: ['lineX', 'clear']
+                    }
+                }
+            },
+            brush: {
+                xAxisIndex: 'all',
+                brushLink: 'all',
+                outOfBrush: {
+                    colorAlpha: 0.1
+                }
+            },
+            visualMap: {
+                show: false,
+                seriesIndex: 5,
+                dimension: 2,
+                pieces: [{
+                    value: 1,
+                    color: downColor
+                }, {
+                    value: -1,
+                    color: upColor
+                }]
+            },
+            grid: [
+                {
+                    left: '10%',
+                    right: '8%',
+                    height: '50%'
+                },
+                {
+                    left: '10%',
+                    right: '8%',
+                    top: '63%',
+                    height: '16%'
+                }
+            ],
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.categoryData,
+                    scale: true,
+                    boundaryGap: false,
+                    axisLine: {onZero: false},
+                    splitLine: {show: false},
+                    splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax',
+                    axisPointer: {
+                        z: 100
+                    }
+                },
+                {
+                    type: 'category',
+                    gridIndex: 1,
+                    data: data.categoryData,
+                    scale: true,
+                    boundaryGap: false,
+                    axisLine: {onZero: false},
+                    axisTick: {show: false},
+                    splitLine: {show: false},
+                    axisLabel: {show: false},
+                    splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax'
+                }
+            ],
+            yAxis: [
+                {
+                    scale: true,
+                    splitArea: {
+                        show: true
+                    }
+                },
+                {
+                    scale: true,
+                    gridIndex: 1,
+                    splitNumber: 2,
+                    axisLabel: {show: false},
+                    axisLine: {show: false},
+                    axisTick: {show: false},
+                    splitLine: {show: false}
+                }
+            ],
+            dataZoom: [
+                {
+                    type: 'inside',
+                    xAxisIndex: [0, 1],
+                    start: 98,
+                    end: 100
+                },
+                {
+                    show: true,
+                    xAxisIndex: [0, 1],
+                    type: 'slider',
+                    top: '85%',
+                    start: 98,
+                    end: 100
+                }
+            ],
+            series: [
+                {
+                    name: 'Dow-Jones index',
+                    type: 'candlestick',
+                    data: data.values,
+                    itemStyle: {
+                        color: upColor,
+                        color0: downColor,
+                        borderColor: null,
+                        borderColor0: null
+                    },
+                    tooltip: {
+                        formatter: function (param) {
+                            param = param[0];
+                            return [
+                                'Date: ' + param.name + '<hr size=1 style="margin: 3px 0">',
+                                'Open: ' + param.data[0] + '<br/>',
+                                'Close: ' + param.data[1] + '<br/>',
+                                'Lowest: ' + param.data[2] + '<br/>',
+                                'Highest: ' + param.data[3] + '<br/>'
+                            ].join('');
+                        }
+                    }
+                },
+                {
+                    name: 'MA5',
+                    type: 'line',
+                    data: calculateMA(5, data),
+                    smooth: true,
+                    lineStyle: {
+                        opacity: 0.5
+                    }
+                },
+                {
+                    name: 'MA10',
+                    type: 'line',
+                    data: calculateMA(10, data),
+                    smooth: true,
+                    lineStyle: {
+                        opacity: 0.5
+                    }
+                },
+                {
+                    name: 'MA20',
+                    type: 'line',
+                    data: calculateMA(20, data),
+                    smooth: true,
+                    lineStyle: {
+                        opacity: 0.5
+                    }
+                },
+                {
+                    name: 'MA30',
+                    type: 'line',
+                    data: calculateMA(30, data),
+                    smooth: true,
+                    lineStyle: {
+                        opacity: 0.5
+                    }
+                },
+                {
+                    name: 'Volume',
+                    type: 'bar',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    data: data.volumes
+                }
+            ]
+        }, true);
+
+        myChart.dispatchAction({
+            type: 'brush',
+            areas: [
+                {
+                    brushType: 'lineX',
+                    coordRange: ['2016-06-02', '2016-06-20'],
+                    xAxisIndex: 0
+                }
+            ]
+        });
+    });
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+
 </script>
 </body>
 </html>

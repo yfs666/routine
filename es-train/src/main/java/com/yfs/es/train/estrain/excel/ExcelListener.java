@@ -81,7 +81,11 @@ public class ExcelListener extends AnalysisEventListener<Map<Integer, String>> {
            thsPrice.setLowPercent(thsPrice.getLow().divide(thsPrice.getYesterdayClose(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
            thsPrice.setClosePercent(new BigDecimal(data.get(3)));
            thsPrice.setIndustry(data.get(16));
-//           thsPrice.setVol(new BigDecimal(data.get(23)));
+           try {
+               thsPrice.setVol(new BigDecimal(data.get(23)));
+           } catch (Exception e) {
+               thsPrice.setVol(BigDecimal.ZERO);
+           }
            String volRaise = data.get(15);
            thsPrice.setVolRise(StringUtils.isEmpty(volRaise) || "--".equals(volRaise) ? BigDecimal.ONE : new BigDecimal(volRaise));
            thsPriceList.add(thsPrice);
