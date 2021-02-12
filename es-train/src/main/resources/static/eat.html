@@ -1,208 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="css/date.css" />
-    <script src="js/echarts.min.js"></script>
-    <script src="js/jq.js"></script>
-    <script src="js/my.js"></script>
-    <script src="js/date.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/nongli.js" type="text/javascript" charset="utf-8"></script>
-    <title>统计</title>
-    <style type="text/css">
-        .myDiv{
-            width: 5000px;
-            height: 500px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>早餐统计</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+
+    <![endif]-->
+
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div id="count">
-    <table>
-        <tr>
-            <td>count:</td>
-            <td id="count-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;closeAvg:</td>
-            <td id="close-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;highAvg:</td>
-            <td id="high-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;lowAvg:</td>
-            <td id="low-avg-td"></td>
-            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-            <td><div id='date'>
-                <input type="text" value='' placeholder="点击选择时间" id='inputdate' /> &nbsp;&nbsp;&nbsp;&nbsp;
+
+<div class="container-fluid">
+    <form class="form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="count"></label>
+            <div class="input-group">
+                <div class="input-group-addon">个数</div>
+                <input type="text" value="1.5" class="form-control" id="count" placeholder="请填写个数">
+                <div class="input-group-addon">个</div>
             </div>
-            </td>
-            <td>
-                <button id="checkDate">选择日期</button>
-            </td>
-        </tr>
-    </table>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label class="sr-only" for="currTimePre"></label>
+            <div class="input-group">
+                <div class="input-group-addon">往前</div>
+                <input type="text" value="0" class="form-control" id="currTimePre" placeholder="请填写个数">
+                <div class="input-group-addon">分</div>
+            </div>
+        </div>
+        <br/>
+        <div class="btn-group" data-toggle="buttons" id="types">
+<!--            <div class="input-group-addon">类型</div>-->
+            <label class="btn btn-primary">
+                <input type="radio" name="options" id="eat-type-breakfast" autocomplete="off" value="2"> 早餐
+            </label>
+            <label class="btn btn-primary">
+               <input type="radio" name="options" id="eat-type-others" autocomplete="off" value="1"> 其他
+            </label>
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="eatType"></label>-->
+<!--            <div class="input-group">-->
+<!--                <div class="input-group-addon">类型</div>-->
+<!--                <select class="form-control" id="eatType">-->
+<!--                    <option value="0">请选择</option>-->
+<!--                    <option value="2">吃早餐</option>-->
+<!--                    <option value="1">其他</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+        <br/>
+        <br/>
+        <div class="form-group">
+            <label class="sr-only" for="operator"></label>
+            <div class="input-group">
+                <div class="input-group-addon">操作人</div>
+                <input type="text" class="form-control" id="operator"/>
+            </div>
+        </div>
+        <br/>
+        <div class="form-group">
+            <button type="reset" class="btn btn-second">重置</button>
+            <button type="button" class="btn btn-primary" id="form-btn-submit" onclick="formSubmit()">提交</button>
+        </div>
+        <br/>
+        <br/>
+    </form>
 </div>
-<div>
-    <table border="0">
-<!--        <tr>-->
-<!--            <td>sum</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td><div id="k-line-sum" class="myDiv" style="width: 30340px;"></div></td>-->
-<!--        </tr>-->
-
-        <tr>
-            <td>60x_1</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-1" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>60x_2</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-2" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>60x_3</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-60x-3" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>000</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-000" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>002_1</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-002-1" class="myDiv" ></div></td>
-        </tr>
-        <tr>
-            <td>002_2</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-002-2" class="myDiv"></div></td>
-        </tr>
-
-        <tr>
-            <td>300</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-300" class="myDiv" ></div></td>
-        </tr>
-
-        <tr>
-            <td>688</td>
-        </tr>
-        <tr>
-            <td><div id="k-line-688" class="myDiv" ></div></td>
-        </tr>
-
-    </table>
-</div>
-
-<script type="text/javascript">
-
-    const d = new DateJs({
-        inputEl: '#inputdate',
-        el: '#date'
-    });
-    $(function () {
-        $('#checkDate').click(function () {
-            getData($('#inputdate').val())
-        });
-    });
-
-    function getData(date) {
-        let url = "/avg"
-        if (date != null && date !== '') {
-            url = url + "?t=" + date;
+</body>
+<script>
+    function formSubmit() {
+        const count = $("#count").val();
+        const currTimePre = $("#currTimePre").val();
+        const size = $("#types").find(".active").length;
+        if (size === 0) {
+            alert("请检查类型")
         }
-        $.ajax({
-            url: url,
-            type: "get",
-            dataType: "json",
-            success: function (data) {
-                console.log(data)
-                console.log(data.marketLine["kSum"])
-                $('#count-td').text(data.countShowVO.count);
-                $('#close-avg-td').text(data.countShowVO.closeAvg);
-                $('#high-avg-td').text(data.countShowVO.highAvg);
-                $('#low-avg-td').text(data.countShowVO.lowAvg);
-                // initEchart(echarts.init(document.getElementById('k-line-sum')), data.marketLine["ksum"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-1')), data.marketLine["k60x_1"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-2')), data.marketLine["k60x_2"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-60x-3')), data.marketLine["k60x_3"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-000')), data.marketLine["k000"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-002-1')), data.marketLine["k002_1"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-002-2')), data.marketLine["k002_2"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-300')), data.marketLine["k300"], "1")
-                initEchart(echarts.init(document.getElementById('k-line-688')), data.marketLine["k688"], "1")
+        let eatType = $('input:radio:checked').val();
+        const operator = $("#operator").val();
+        if (count == null || currTimePre == null || eatType == null || operator == null) {
+            alert("请填写完整的表单")
+            return;
+        }
+        if (count === '' || currTimePre === '' || eatType === 0 || operator === '') {
+            alert("请填写完整的表单")
+            return;
+        }
+        const ajaxUrl = "/eatLog/addEatLog?count=" + count + "&operateTimePre=" + currTimePre + "&eatType=" + eatType + "&operator=" + operator;
+        $.get(ajaxUrl, function (resultData) {
+            if (resultData["code"] === 0) {
+                alert("操作成功")
+            } else {
+                alert("数据异常，请检查")
             }
         });
-    }
 
 
-    function initEchart(myChart, myDataJson, codeTag) {
-        // alert(myDataJson)
-
-        // 指定图表的配置项和数据
-
-        const dataJson = [];
-        const countJson = [];
-        for (const kLine in myDataJson) {
-            const lineShow = [myDataJson[kLine].openPercent, myDataJson[kLine].closePercent, myDataJson[kLine].lowPercent, myDataJson[kLine].highPercent];
-            dataJson.push(lineShow)
-            countJson.push('1')
-        }
-
-
-        const option = {
-            xAxis: {
-                data: countJson
-            },
-            yAxis: {},
-            series: [{
-                type: 'k',
-                data: dataJson
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
-
-        myChart.on('brushSelected', renderBrushed);
-    }
-
-
-
-    function renderBrushed(params) {
-        var brushed = [];
-        var brushComponent = params.batch[0];
-
-        for (var sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
-            var rawIndices = brushComponent.selected[sIdx].dataIndex;
-            brushed.push('[Series ' + sIdx + '] ' + rawIndices.join(', '));
-        }
-
-        myChart.setOption({
-            title: {
-                backgroundColor: '#333',
-                text: 'SELECTED DATA INDICES: \n' + brushed.join('\n'),
-                bottom: 0,
-                right: 0,
-                width: 100,
-                textStyle: {
-                    fontSize: 12,
-                    color: '#fff'
-                }
-            }
-        });
     }
 </script>
-</body>
 </html>

@@ -8,6 +8,7 @@
 </head>
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
+<script src="js/my.js"></script>
 <script src="js/jq.js"></script>
 <script type="text/javascript" src="js/echarts5.min.js"></script>
 <!-- Uncomment this line if you want to dataTool extension
@@ -74,10 +75,19 @@
         return result;
     }
 
-    $.get('/mySumKline', function (rawData) {
 
+    let ajaxUrl = "/mySumKlineForValue";
+    const start = getQueryVariable("start");
+    if (start != null && start.length > 0) {
+        ajaxUrl = ajaxUrl + "?start=" + start;
+    }
+    const end = getQueryVariable("start");
+    if (end != null && end.length > 0) {
+        ajaxUrl = ajaxUrl + "&end=" + end;
+    }
+
+    $.get(ajaxUrl, function (rawData) {
         var data = splitData(rawData);
-
         myChart.setOption(option = {
             animation: false,
             legend: {

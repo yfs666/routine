@@ -8,7 +8,8 @@
 </head>
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
-
+<script src="js/jq.js"></script>
+<script src="js/my.js"></script>
 <script type="text/javascript" src="js/echarts5.min.js"></script>
 <script type="text/javascript">
     var dom = document.getElementById("container");
@@ -17,25 +18,42 @@
 
     var option;
 
+    const keyList = [];
+    const valueList = [];
 
-
-    option = {
-        xAxis: {
-            type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [{
-            data: [-1.50, 2.30, 2.24, 2.18, 1.35, 1.47, 2.60],
-            type: 'line'
-        }]
-    };
-
-    if (option && typeof option === 'object') {
-        myChart.setOption(option);
+    let ajaxUrl = "/avgUpDown";
+    const currentDate = getQueryVariable("currDate");
+    if (currentDate != null && currentDate.length > 0) {
+        ajaxUrl = ajaxUrl + "?date=" + currentDate;
     }
+
+    $.get(ajaxUrl, function (list) {
+        for (let i = 0; i < list.length; i++) {
+            const dataRow = list[i];
+            keyList.push(dataRow["code"])
+            valueList.push(dataRow["percent"])
+        }
+        option = {
+            xAxis: {
+                type: 'category',
+                data: keyList //['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: valueList, //[-1.50, 2.30, 2.24, 2.18, 1.35, 1.47, 2.60],
+                type: 'line'
+            }]
+        };
+
+        if (option && typeof option === 'object') {
+            myChart.setOption(option);
+        }
+    });
+
+
+
 
 </script>
 </body>

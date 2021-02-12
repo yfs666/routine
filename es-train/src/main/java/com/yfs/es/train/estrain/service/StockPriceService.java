@@ -7,6 +7,7 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.yfs.es.train.estrain.entity.StockInfo;
 import com.yfs.es.train.estrain.entity.StockPrice;
 import com.yfs.es.train.estrain.entity.ThsPrice;
+import com.yfs.es.train.estrain.entity.UpDown;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.client.CookieStore;
@@ -63,6 +64,8 @@ public class StockPriceService {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    public static final BigDecimal YI = new BigDecimal("100000000");
 
 
     /**
@@ -305,5 +308,23 @@ public class StockPriceService {
                 .sort("dayTime", SortOrder.DESC);
         return this.queryFrom(searchSourceBuilder).get(0).getDate();
     }
+
+    public List<UpDown> avgUpDown(String date) {
+        SearchSourceBuilder searchSourceBuilderDetail = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termsQuery("date", date))
+                )
+                .from(0).size(10000);
+        List<ThsPrice> thsPrices = this.queryFrom(searchSourceBuilderDetail);
+        thsPrices.sort(Comparator.comparing(ThsPrice::getMarketValue).reversed());
+        return Lists.partition(thsPrices, 100).stream().map(listDetail -> {
+            double avg = listDetail.stream().map(ThsPrice::getClosePercent).filter(it -> it.doubleValue() <= 21).mapToDouble(BigDecimal::doubleValue).average().orElse(0.0);
+            UpDown upDown = new UpDown();
+            upDown.setCode(String.valueOf(listDetail.get(0).getMarketValue().divide(StockPriceService.YI, 2, BigDecimal.ROUND_HALF_UP).intValue()));
+            upDown.setPercent(BigDecimal.valueOf(avg).setScale(2, BigDecimal.ROUND_HALF_UP));
+            return upDown;
+        }).collect(Collectors.toList());
+    }
+
 
 }

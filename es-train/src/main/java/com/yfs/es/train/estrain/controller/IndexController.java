@@ -19,6 +19,7 @@ import com.yfs.es.train.estrain.service.StockPriceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -40,6 +41,7 @@ import reactor.util.function.Tuple2;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,7 +52,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 @Slf4j
 @RestController
 public class IndexController {
@@ -171,7 +172,7 @@ public class IndexController {
         searchRequest.source().query(QueryBuilders.termsQuery("date", Lists.newArrayList(y, t))).from(0).size(10000);
         SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         SearchHit[] hits = searchResponse.getHits().getHits();
-        Map<String, List<ThsPrice>> group = Arrays.stream(hits).map(hit -> new Gson().fromJson(hit.getSourceAsString(), ThsPrice.class))
+        Map<String, List<ThsPrice>> group = Arrays.stream(hits).map(hit -> new Gson().fromJson(hit.getSourceAsString(), ThsPrice.class))//.filter(it->it.getMarketValue().compareTo(BigDecimal.valueOf(500000000000.0))>0)
                 .collect(Collectors.groupingBy(ThsPrice::getDate));
         Map<String, ThsPrice> yesterdayMap = group.get(y).stream().collect(Collectors.toMap(ThsPrice::getCode, Function.identity(), (o1, o2) -> o1));
         if (group.size() <= 1) {
@@ -398,12 +399,165 @@ public class IndexController {
 
 
     @RequestMapping(value = "/mySumKline", method = RequestMethod.GET)
-    public List<List<Object>> mySumKline() {
-        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(
-                QueryBuilders.boolQuery()
-                        .filter(QueryBuilders.termQuery("code.keyword", "300424")
-                        )
-        ).from(0).size(10000).sort("dayTime", SortOrder.ASC);
+    public List<List<Object>> mySumKline(String startDate, String endDate) throws ParseException {
+        Date endTime;
+        if (StringUtils.isNotBlank(endDate)) {
+            endTime = sdf.parse(endDate);
+        } else {
+            endTime = new Date();
+        }
+        Date currentTime;
+        if (StringUtils.isNotBlank(startDate)) {
+            currentTime = sdf.parse(startDate);
+        } else {
+            currentTime = DateUtils.addDays(endTime, -60);
+        }
+        if (currentTime.after(endTime)) {
+            return Collections.emptyList();
+        }
+        List<String> dateList = Lists.newArrayList();
+        while (true) {
+            Date newDate = DateUtils.addDays(currentTime, 1);
+            currentTime = newDate;
+            dateList.add(sdf.format(newDate));
+            if (newDate.getTime() > System.currentTimeMillis()) {
+                break;
+            }
+        }
+        List<ThsPrice> sumPriceList = dateList.parallelStream().map(currDate -> {
+            SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(
+                    QueryBuilders.boolQuery()
+                            .filter(QueryBuilders.termQuery("date", currDate)
+                            )
+            ).from(0).size(10000);
+            List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+            if (CollectionUtils.isEmpty(thsPrices)) {
+                System.out.println("data is null " + currDate);
+                return null;
+            }
+            double avgOpen = thsPrices.stream().mapToDouble(it -> it.getOpenPercent().doubleValue()).average().orElse(0);
+            double avgClose = thsPrices.stream().mapToDouble(it -> it.getClosePercent().doubleValue()).average().orElse(0);
+            double avgHigh = thsPrices.stream().mapToDouble(it -> it.getHighPercent().doubleValue()).average().orElse(0);
+            double avgLow = thsPrices.stream().mapToDouble(it -> it.getLowPercent().doubleValue()).average().orElse(0);
+            ThsPrice sumPrice = new ThsPrice();
+            sumPrice.setDate(currDate);
+            sumPrice.setDayTime(thsPrices.get(0).getDayTime());
+            sumPrice.setOpenPercent(BigDecimal.valueOf(avgOpen));
+            sumPrice.setClosePercent(BigDecimal.valueOf(avgClose));
+            sumPrice.setHighPercent(BigDecimal.valueOf(avgHigh));
+            sumPrice.setLowPercent(BigDecimal.valueOf(avgLow));
+            log.info("find data " + currDate);
+            return sumPrice;
+        }).filter(Objects::nonNull).sorted(Comparator.comparing(ThsPrice::getDayTime)).collect(Collectors.toList());
+        BigDecimal currentSum = BigDecimal.valueOf(10000);
+        for (ThsPrice thsPrice : sumPriceList) {
+            thsPrice.setOpen(currentSum.multiply(thsPrice.getOpenPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setClose(currentSum.multiply(thsPrice.getClosePercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setHigh(currentSum.multiply(thsPrice.getHighPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setLow(currentSum.multiply(thsPrice.getLowPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            currentSum = thsPrice.getClose();
+        }
+        return sumPriceList.stream().map(it -> {
+                    List<Object> kLine = Lists.newArrayList();
+                    kLine.add(it.getDate());
+                    kLine.add(it.getOpen());
+                    kLine.add(it.getClose());
+                    kLine.add(it.getLow());
+                    kLine.add(it.getHigh());
+                    kLine.add(it.getVol());
+                    return kLine;
+                }
+        ).collect(Collectors.toList());
+    }
+
+
+
+    @RequestMapping(value = "/mySumKlineForValue", method = RequestMethod.GET)
+    public List<List<Object>> mySumKlineForValue(Integer start, Integer end) throws ParseException {
+        if (start == null) start = 0;
+        if (end == null) end = start + 100;
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("date", stockPriceService.getTodayDate()))
+                )
+                .from(0).size(10000);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
+        thsPrices.sort(Comparator.comparing(ThsPrice::getMarketValue).reversed());
+        List<String> symbols = thsPrices.subList(start, end).stream().map(ThsPrice::getSymbol).collect(Collectors.toList());
+        List<ThsPrice> selectPrices = Flux.fromIterable(symbols)
+                .subscribeOn(Schedulers.parallel())
+                .buffer(20)
+                .map(it -> {
+                    SearchSourceBuilder searchSourceBuilderDetail = SearchSourceBuilder.searchSource()
+                            .query(QueryBuilders.boolQuery()
+                                    .filter(QueryBuilders.termsQuery("symbol.keyword", it))
+                            )
+                            .from(0).size(10000).sort("dayTime", SortOrder.DESC);
+                    return stockPriceService.queryFrom(searchSourceBuilderDetail);
+                }).flatMapIterable(Function.identity())
+                .collectList().block();
+        Map<Long, List<ThsPrice>> priceGroup = selectPrices.stream().collect(Collectors.groupingBy(ThsPrice::getDayTime));
+        List<ThsPrice> sumPriceList = priceGroup.entrySet().stream().map(priceGroupEntry -> {
+            List<ThsPrice> thsPriceList = priceGroupEntry.getValue();
+            if (CollectionUtils.isEmpty(thsPriceList)) {
+                return null;
+            }
+            double avgOpen = thsPriceList.stream().mapToDouble(it -> it.getOpenPercent().doubleValue()).average().orElse(0);
+            double avgClose = thsPriceList.stream().mapToDouble(it -> it.getClosePercent().doubleValue()).average().orElse(0);
+            double avgHigh = thsPriceList.stream().mapToDouble(it -> it.getHighPercent().doubleValue()).average().orElse(0);
+            double avgLow = thsPriceList.stream().mapToDouble(it -> it.getLowPercent().doubleValue()).average().orElse(0);
+            ThsPrice sumPrice = new ThsPrice();
+            sumPrice.setDate(thsPriceList.get(0).getDate());
+            sumPrice.setDayTime(thsPriceList.get(0).getDayTime());
+            sumPrice.setOpenPercent(BigDecimal.valueOf(avgOpen));
+            sumPrice.setClosePercent(BigDecimal.valueOf(avgClose));
+            sumPrice.setHighPercent(BigDecimal.valueOf(avgHigh));
+            sumPrice.setLowPercent(BigDecimal.valueOf(avgLow));
+            return sumPrice;
+        }).filter(Objects::nonNull).sorted(Comparator.comparing(ThsPrice::getDayTime)).collect(Collectors.toList());
+        BigDecimal currentSum = BigDecimal.valueOf(10000);
+        for (ThsPrice thsPrice : sumPriceList) {
+            thsPrice.setOpen(currentSum.multiply(thsPrice.getOpenPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setClose(currentSum.multiply(thsPrice.getClosePercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setHigh(currentSum.multiply(thsPrice.getHighPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            thsPrice.setLow(currentSum.multiply(thsPrice.getLowPercent().divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP));
+            currentSum = thsPrice.getClose();
+        }
+        return sumPriceList.stream().map(it -> {
+                    List<Object> kLine = Lists.newArrayList();
+                    kLine.add(it.getDate());
+                    kLine.add(it.getOpen());
+                    kLine.add(it.getClose());
+                    kLine.add(it.getLow());
+                    kLine.add(it.getHigh());
+                    kLine.add(it.getVol());
+                    return kLine;
+                }
+        ).collect(Collectors.toList());
+    }
+
+
+
+
+
+
+    @RequestMapping(value = "/stockKLine", method = RequestMethod.GET)
+    public List<List<Object>> stockKLine(String code, String endDate) throws ParseException {
+        if (StringUtils.isBlank(code)) {
+            return Collections.emptyList();
+        }
+        Date currentTime;
+        if (StringUtils.isBlank(endDate)) {
+            currentTime = new Date();
+        } else {
+            currentTime = sdf.parse(endDate);
+        }
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("code",code))
+                        .filter(QueryBuilders.rangeQuery("dayTime").lte(currentTime.getTime()))
+                )
+                .from(0).size(10000).sort("dayTime");
         List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder);
         return thsPrices.stream().map(it -> {
                     List<Object> kLine = Lists.newArrayList();
@@ -416,6 +570,15 @@ public class IndexController {
                     return kLine;
                 }
         ).collect(Collectors.toList());
+    }
+
+
+    @RequestMapping(value = "/avgUpDown", method = RequestMethod.GET)
+    public List<UpDown> avgUpDown(String date) {
+        if (StringUtils.isBlank(date)) {
+            date = stockPriceService.getTodayDate();
+        }
+        return stockPriceService.avgUpDown(date);
     }
 
 

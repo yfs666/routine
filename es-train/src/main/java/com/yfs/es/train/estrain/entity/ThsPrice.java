@@ -42,6 +42,14 @@ public class ThsPrice {
     private BigDecimal ma30;
     private BigDecimal ma60;
     private Integer upTag;
+    /**
+     * 市值
+     */
+    private BigDecimal marketValue;
+    /**
+     * 流通市值
+     */
+    private BigDecimal activeMarketValue;
 
 
 
