@@ -2,6 +2,7 @@ package com.yfs.es.train.estrain;
 
 import com.google.common.collect.Lists;
 import com.yfs.es.train.estrain.biz.BizService;
+import com.yfs.es.train.estrain.entity.StockProfit;
 import com.yfs.es.train.estrain.entity.ThsPrice;
 import com.yfs.es.train.estrain.service.StockPriceService;
 import com.yfs.es.train.estrain.service.StockProfitService;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +38,45 @@ public class StockProfitServiceTest {
 
     @Test
     public void findUpListTest() {
-        stockProfitService.findUpList();
-        System.out.println(123);
+        List<StockProfit> stockProfits = stockProfitService.findUpList();
+        Map<String, StockProfit> stockProfitMap = stockProfits.stream().collect(Collectors.toMap(StockProfit::getSymbol, Function.identity(), (o1, o2) -> o1));
+        List<String> symbols = stockProfits.stream().map(StockProfit::getSymbol).collect(Collectors.toList());
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(
+                QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("date","2021-02-22"))
+                        .filter(QueryBuilders.termsQuery("symbol.keyword", symbols))
+        ).from(0).size(10000);
+        List<ThsPrice> thsPrices = stockPriceService.queryFrom(searchSourceBuilder).stream().filter(
+                it-> {
+                    StockProfit stockProfit = stockProfitMap.get(it.getSymbol());
+                    if (stockProfit == null) {
+                        return true;
+                    }
+                    return stockProfit.getProfit().multiply(BigDecimal.valueOf(40)).compareTo(it.getMarketValue()) > 0;
+                }
+        ).collect(Collectors.toList());
+        System.out.println(thsPrices);
+        Map<String, List<ThsPrice>> priceMap = thsPrices.stream().collect(Collectors.groupingBy(it -> {
+            if (StockProfitService.YI.multiply(BigDecimal.valueOf(500)).compareTo(it.getMarketValue()) < 0) {
+                return "大盘";
+            }
+            if (StockProfitService.YI.multiply(BigDecimal.valueOf(200)).compareTo(it.getMarketValue()) < 0) {
+                return "中盘";
+            }
+            if (StockProfitService.YI.multiply(BigDecimal.valueOf(100)).compareTo(it.getMarketValue()) < 0) {
+                return "中小盘";
+            }
+            if (StockProfitService.YI.multiply(BigDecimal.valueOf(50)).compareTo(it.getMarketValue()) < 0) {
+                return "小盘";
+            }
+            return "超小盘";
+        }));
+        System.out.println(priceMap);
+        for (Map.Entry<String, List<ThsPrice>> stringListEntry : priceMap.entrySet()) {
+            System.out.print(stringListEntry.getKey() + "   ");
+            System.out.println(stringListEntry.getValue().stream().map(ThsPrice::getCode).collect(Collectors.joining(" ")));
+        }
+
     }
 
     @Test

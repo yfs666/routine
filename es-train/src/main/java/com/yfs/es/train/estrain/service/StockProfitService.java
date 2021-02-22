@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.yfs.es.train.estrain.entity.StockInfo;
+import com.yfs.es.train.estrain.entity.StockPrice;
 import com.yfs.es.train.estrain.entity.StockProfit;
+import com.yfs.es.train.estrain.entity.ThsPrice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.client.CookieStore;
@@ -46,35 +48,41 @@ public class StockProfitService {
     @Autowired
     private StockInfoService stockInfoService;
 
+    @Autowired
+    private StockPriceService stockPriceService;
+
     Gson gson = new Gson();
+
+    public static BigDecimal YI = new BigDecimal("100000000");
 
     private static final String STOCK_PROFIT_INDEX = "ths_stock_profit";
 
     private static final BigDecimal compare = BigDecimal.valueOf(-0.01);
     private static final BigDecimal compare2020 = BigDecimal.valueOf(0.1);
 
-    public void findUpList() {
-        List<StockInfo> stockInfos = stockInfoService.pageList(0, 10000);
-        AtomicInteger count = new AtomicInteger();
-        List<Tuple2<String, BigDecimal>> upDetails = stockInfos.parallelStream().filter(it -> !it.getCode().startsWith("688")).map(stockInfo -> {
-            SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("symbol.keyword", stockInfo.getSymbol())).from(0).size(10000);
-            List<StockProfit> stockProfits = this.queryFrom(searchSourceBuilder);
-            Map<String, StockProfit> stockProfitMap = stockProfits.stream().collect(Collectors.toMap(StockProfit::getReportName, Function.identity(), (o1, o2) -> o1));
-            BigDecimal profit2017 = Optional.ofNullable(stockProfitMap.get("2017年报")).map(StockProfit::getProfitPercent).orElse(null);
-            BigDecimal profit2018 = Optional.ofNullable(stockProfitMap.get("2018年报")).map(StockProfit::getProfitPercent).orElse(null);
-            BigDecimal profit2019 = Optional.ofNullable(stockProfitMap.get("2019年报")).map(StockProfit::getProfitPercent).orElse(null);
-            BigDecimal profit2020 = Optional.ofNullable(stockProfitMap.get("2020三季报")).map(StockProfit::getProfitPercent).orElse(null);
-            if (profit2017 == null || profit2018 == null || profit2019 == null || profit2020 == null) {
-                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
-            }
-            if (profit2017.compareTo(compare) < 0 || profit2018.compareTo(compare) < 0 || profit2019.compareTo(compare) < 0 || profit2020.compareTo(compare2020) < 0) {
-                return Tuples.of(stockInfo.getCode(), BigDecimal.ZERO);
-            }
-            System.out.println(stockInfo.getCode() + " " + count.getAndIncrement());
-            return Tuples.of(stockInfo.getCode(), profit2020);
-        }).filter(it -> it.getT2().compareTo(BigDecimal.ZERO) > 0).sorted(Comparator.<Tuple2<String, BigDecimal>, BigDecimal>comparing(Tuple2::getT2).reversed()).collect(Collectors.toList());
-        String upList = upDetails.stream().map(Tuple2::getT1).collect(Collectors.joining(" "));
-        System.out.println(upList);
+    public  List<StockProfit> findUpList() {
+
+        SearchSourceBuilder searchSourceBuilder1 = SearchSourceBuilder.searchSource()
+                .query(QueryBuilders.boolQuery()
+                        .filter(QueryBuilders.termQuery("date", "2021-02-18"))
+                )
+                .from(0).size(10000);
+        Map<String, ThsPrice> priceMap = stockPriceService.queryFrom(searchSourceBuilder1).stream().collect(Collectors.toMap(ThsPrice::getSymbol, Function.identity(), (o1, o2) -> o1));
+        SearchSourceBuilder searchSourceBuilder = SearchSourceBuilder.searchSource().query(QueryBuilders.termQuery("reportName.keyword", "2020三季报")).from(0).size(10000);
+
+        List<StockProfit> stockProfits = this.queryFrom(searchSourceBuilder).stream()
+                .filter(it -> it.getProfit().compareTo(YI) > 0)
+                .filter(it -> !"银行".equals(Optional.ofNullable(priceMap.get(it.getSymbol())).map(ThsPrice::getIndustry).orElse("")))
+                .peek(it -> {
+                    BigDecimal value = Optional.ofNullable(priceMap.get(it.getSymbol())).map(ThsPrice::getMarketValue).orElse(YI);
+                    it.setRevenuePercent(it.getProfit().divide(value, 2, BigDecimal.ROUND_HALF_UP));
+                }).sorted(Comparator.comparing(StockProfit::getRevenuePercent).reversed()).collect(Collectors.toList());
+        int index = 0;
+        for (StockProfit stockProfit : stockProfits) {
+            index++;
+            System.out.println(index + "-" + stockProfit.getRevenuePercent());
+        }
+        return stockProfits;
     }
 
 
