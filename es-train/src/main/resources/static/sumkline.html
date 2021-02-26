@@ -9,6 +9,7 @@
 <body style="height: 100%; margin: 0">
 <div id="container" style="height: 100%"></div>
 <script src="js/jq.js"></script>
+<script src="js/my.js"></script>
 <script type="text/javascript" src="js/echarts5.min.js"></script>
 <!-- Uncomment this line if you want to dataTool extension
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.0.1/dist/extension/dataTool.min.js"></script>
@@ -74,7 +75,16 @@
         return result;
     }
 
-    $.get('/mySumKline', function (rawData) {
+    let ajaxUrl = "mySumKline";
+    const start = getQueryVariable("start");
+    if (start != null && start.length > 0) {
+        ajaxUrl = ajaxUrl + "?startDate=" + start;
+    }
+    const end = getQueryVariable("end");
+    if (end != null && end.length > 0) {
+        ajaxUrl = ajaxUrl + "&endDate=" + end;
+    }
+    $.get(ajaxUrl, function (rawData) {
 
         var data = splitData(rawData);
 

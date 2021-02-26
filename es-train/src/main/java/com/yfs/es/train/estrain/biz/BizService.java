@@ -15,6 +15,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
@@ -70,7 +71,7 @@ public class BizService {
 //        return thsPrices.stream().filter(ThsPrice::allUp).filter(it-> finalSymbols202.contains(it.getSymbol())).map(ThsPrice::getSymbol).collect(Collectors.toList());
 
     }
-
+    @Async
     public void handleDayData() {
         int start = 0;
         int pageSize = 50;

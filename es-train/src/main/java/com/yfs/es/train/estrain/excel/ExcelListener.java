@@ -82,17 +82,17 @@ public class ExcelListener extends AnalysisEventListener<Map<Integer, String>> {
            thsPrice.setClosePercent(new BigDecimal(data.get(3)));
            thsPrice.setIndustry(data.get(16));
            try {
-               thsPrice.setVol(new BigDecimal(data.get(23)));
+               thsPrice.setVol(new BigDecimal(data.get(18)));
            } catch (Exception e) {
                thsPrice.setVol(BigDecimal.ZERO);
            }
            try {
-               thsPrice.setMarketValue(new BigDecimal(data.get(28)));
+               thsPrice.setMarketValue(new BigDecimal(data.get(23)));
            } catch (Exception e) {
                thsPrice.setMarketValue(BigDecimal.ZERO);
            }
            try {
-               thsPrice.setActiveMarketValue(new BigDecimal(data.get(29)));
+               thsPrice.setActiveMarketValue(new BigDecimal(data.get(21)));
            } catch (Exception e) {
                thsPrice.setActiveMarketValue(BigDecimal.ZERO);
            }
