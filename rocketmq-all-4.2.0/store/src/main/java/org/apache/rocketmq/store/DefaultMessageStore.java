@@ -472,11 +472,11 @@ public class DefaultMessageStore implements MessageStore {
 //        当前队列的最小偏移量
         long minOffset = 0;
 //        当前队列的最大偏移量
-//        当前commitlog文件最大偏移量
         long maxOffset = 0;
 
         GetMessageResult getResult = new GetMessageResult();
 
+//        当前commitlog文件最大偏移量
         final long maxOffsetPy = this.commitLog.getMaxOffset();
 
         ConsumeQueue consumeQueue = findConsumeQueue(topic, queueId);
@@ -485,6 +485,7 @@ public class DefaultMessageStore implements MessageStore {
             maxOffset = consumeQueue.getMaxOffsetInQueue();
 
             if (maxOffset == 0) {
+//                TODO 为什么这么设置？ 偏移量校对是怎么回事？
 //                表示当前队列中没有消息，如果当前Broker为主节点或offsetCheckInSlave为false，下次拉取偏移量依然为offset
 //                如果Broker为从节点，offsetCheckInSlave为ture，设置下次拉取偏移量为0
                 status = GetMessageStatus.NO_MESSAGE_IN_QUEUE;

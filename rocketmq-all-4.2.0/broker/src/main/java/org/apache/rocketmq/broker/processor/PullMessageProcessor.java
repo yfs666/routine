@@ -463,9 +463,14 @@ public class PullMessageProcessor implements NettyRequestProcessor {
         storeOffsetEnable = storeOffsetEnable
             && this.brokerController.getMessageStoreConfig().getBrokerRole() != BrokerRole.SLAVE;
         if (storeOffsetEnable) {
+            // 如果commitlog标记可用，并且当前节点为master节点，则更新消息消费进度
             this.brokerController.getConsumerOffsetManager().commitOffset(RemotingHelper.parseChannelRemoteAddr(channel),
                 requestHeader.getConsumerGroup(), requestHeader.getTopic(), requestHeader.getQueueId(), requestHeader.getCommitOffset());
         }
+        // 服务端拉取消息完毕，将返回结果返回给调用方
+        // 在调用方， 需要重点关注
+        // PULL_RETRY_IMMEDIATELY    PULL_OFFSET_MOVED    PULL_NOT_FOUND 情况
+        // 下如何校正拉取偏移
         return response;
     }
 

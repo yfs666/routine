@@ -314,8 +314,10 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                                 pullRequest.getMessageQueue().getTopic(), pullRT);
 
                             long firstMsgOffset = Long.MAX_VALUE;
-                            //7、如果获取到的消息数为0，则立即发起下一次pull
+                            //7、如果获取到的消息数为0，则立即发起下一次pull，
+                            // 特殊说明，status是FOUND，为何没消息？可能被过滤机制过滤掉了
                             if (pullResult.getMsgFoundList() == null || pullResult.getMsgFoundList().isEmpty()) {
+                                // 放入队列中，以便唤醒执行下一次拉取操作
                                 DefaultMQPushConsumerImpl.this.executePullRequestImmediately(pullRequest);
                             } else {
                                 firstMsgOffset = pullResult.getMsgFoundList().get(0).getQueueOffset();
@@ -331,6 +333,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                                     pullRequest.getMessageQueue(),
                                     dispathToConsume);
                                 //10、再次提交pull request
+                                // 将消息提供给消费者线程之后PullCallBack将立即返回，本次拉取任务完成，然后根据pullInterval（拉取间隔），执行下一次拉取操作
                                 if (DefaultMQPushConsumerImpl.this.defaultMQPushConsumer.getPullInterval() > 0) {
                                     DefaultMQPushConsumerImpl.this.executePullRequestLater(pullRequest,
                                         DefaultMQPushConsumerImpl.this.defaultMQPushConsumer.getPullInterval());
@@ -349,6 +352,7 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                             }
 
                             break;
+                            // NO_NEW_MSG和NO_MATCHED_MSG 直接使用服务器端校正的偏移量进行下一次拉取
                         case NO_NEW_MSG:
                             pullRequest.setNextOffset(pullResult.getNextBeginOffset());
 
@@ -368,10 +372,11 @@ public class DefaultMQPushConsumerImpl implements MQConsumerInner {
                             log.warn("the pull request offset illegal, {} {}",
                                 pullRequest.toString(), pullResult.toString());
                             pullRequest.setNextOffset(pullResult.getNextBeginOffset());
-
+                            // 设置dropped，表示丢弃该消息队列，该ProcessQueue中的消息将停止消费
+                            // 然后根据服务端下一次校验偏移量尝试更新消息消费进度（内存中），然后尝试持久化消息消费进度
                             pullRequest.getProcessQueue().setDropped(true);
                             DefaultMQPushConsumerImpl.this.executeTaskLater(new Runnable() {
-                                //存储消费offset，从rebalance中移除ProcessQueue
+                                //存储消费offset，从rebalance中移除ProcessQueue，并等待下一次消息负载均衡
                                 @Override
                                 public void run() {
                                     try {
