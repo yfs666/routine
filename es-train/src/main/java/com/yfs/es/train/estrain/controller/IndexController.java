@@ -374,10 +374,14 @@ public class IndexController {
         Integer thDays = days;
         long endTime = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.of("+8")).toEpochMilli();
         List<StockInfo> stockInfos = stockInfoService.pageList(0, 5000);
-        List<UpDown> upDowns = Lists.newArrayList();
+        List<UpDown> upDowns = Lists.newCopyOnWriteArrayList();
         Flux.fromIterable(stockInfos)
                 .subscribeOn(Schedulers.elastic())
                 .doOnNext(stockInfo->{
+                    List<ThsPrice> countList = stockPriceService.queryBy(stockInfo.getCode(), 0, 100, 0L, endTime, SortOrder.DESC);
+                    if (CollectionUtils.isEmpty(countList) && countList.size() < 100) {
+                        return;
+                    }
                     List<ThsPrice> stockPrices = stockPriceService.queryBy(stockInfo.getCode(), 0, thDays, 0L, endTime, SortOrder.DESC);
                     if (CollectionUtils.isNotEmpty(stockPrices) && stockPrices.size() >= thDays) {
                         BigDecimal percent = stockPrices.get(0).getClose().divide(stockPrices.get(stockPrices.size() - 1).getOpen(), 4, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE);
